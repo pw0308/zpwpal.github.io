@@ -79,13 +79,30 @@
 
 
 
-<meta property="og:type" content="website">
+<meta name="description" content="Practical Lessons from Developing a Large-Scale Recommender System at Zalando#推荐引擎/论文 阅读笔记首先介绍工业推荐系统需要考虑的和一些经验认识,其次介绍三种推荐场景进行数据建模,然后介绍使用的LTR,然后介绍系统架构以及如何实现那些考虑的discuss.  深度学习为什么减少了feature engineering的">
+<meta property="og:type" content="article">
 <meta property="og:title" content="PW&#39;s notes">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/index.html">
 <meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Practical Lessons from Developing a Large-Scale Recommender System at Zalando#推荐引擎/论文 阅读笔记首先介绍工业推荐系统需要考虑的和一些经验认识,其次介绍三种推荐场景进行数据建模,然后介绍使用的LTR,然后介绍系统架构以及如何实现那些考虑的discuss.  深度学习为什么减少了feature engineering的">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/CE65EAAC-C22F-47A2-A5A8-4A3B31DE2651.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/52003311-8363-435E-8590-02513C252299.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/DFCB8E1E-DBEC-42B7-B1BB-209FB6019BFC.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/9C47CEAB-812B-48B3-BE10-91F923ADB05E.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/EF78FC3F-541C-403E-BB6F-5B08497591ED.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/131B6B29-5AB5-4933-AC22-ACB7B56E0618.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/DCE9C00A-0168-409E-A6F8-DA06C999A6CB.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/828ABDFC-9474-46D2-8B51-1718EAC11820.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/A758A44B-8432-40DB-8266-68152977B1F5.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/EC6158D9-149C-4241-A2AB-49953DDB17B0.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/67B0A5FB-5D64-4414-865A-4600D7E6D1E7.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/CB4D795B-4116-438C-813D-2F0CA0559866.png">
+<meta property="og:updated_time" content="2018-03-06T02:23:13.273Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Practical Lessons from Developing a Large-Scale Recommender System at Zalando#推荐引擎/论文 阅读笔记首先介绍工业推荐系统需要考虑的和一些经验认识,其次介绍三种推荐场景进行数据建模,然后介绍使用的LTR,然后介绍系统架构以及如何实现那些考虑的discuss.  深度学习为什么减少了feature engineering的">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/05/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/CE65EAAC-C22F-47A2-A5A8-4A3B31DE2651.png">
 
 
 
@@ -115,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/"/>
 
 
 
 
 
-  <title>PW's notes</title>
+  <title> | PW's notes</title>
   
 
 
@@ -140,8 +157,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -214,9 +230,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -246,9 +262,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/" itemprop="url">未命名</a></h1>
+          <h1 class="post-title" itemprop="name headline"></h1>
         
 
         <div class="post-meta">
@@ -298,9 +312,7 @@
       
 
       
-        
-          
-            <h1 id="Practical-Lessons-from-Developing-a-Large-Scale-Recommender-System-at-Zalando"><a href="#Practical-Lessons-from-Developing-a-Large-Scale-Recommender-System-at-Zalando" class="headerlink" title="Practical Lessons from Developing a Large-Scale Recommender System at Zalando"></a>Practical Lessons from Developing a Large-Scale Recommender System at Zalando</h1><p>#推荐引擎/论文</p>
+        <h1 id="Practical-Lessons-from-Developing-a-Large-Scale-Recommender-System-at-Zalando"><a href="#Practical-Lessons-from-Developing-a-Large-Scale-Recommender-System-at-Zalando" class="headerlink" title="Practical Lessons from Developing a Large-Scale Recommender System at Zalando"></a>Practical Lessons from Developing a Large-Scale Recommender System at Zalando</h1><p>#推荐引擎/论文</p>
 <h2 id="阅读笔记"><a href="#阅读笔记" class="headerlink" title="阅读笔记"></a>阅读笔记</h2><p>首先介绍工业推荐系统需要考虑的和一些经验认识,其次介绍三种推荐场景进行数据建模,然后介绍使用的LTR,然后介绍系统架构以及如何实现那些考虑的discuss.</p>
 <ol>
 <li>深度学习为什么减少了feature engineering的工作?</li>
@@ -343,8 +355,6 @@
 <p>第四节介绍系统结构……….工程,介绍offline,然后online,然后讨论如何满足operational concern 逐点.</p>
 <p>第五节说实验.</p>
 
-          
-        
       
     </div>
     
@@ -361,12 +371,12 @@
       
 
       
+      
+      
 
       
 
       
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -376,10 +386,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -387,6 +398,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -407,8 +422,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -450,6 +474,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Practical-Lessons-from-Developing-a-Large-Scale-Recommender-System-at-Zalando"><span class="nav-number">1.</span> <span class="nav-text">Practical Lessons from Developing a Large-Scale Recommender System at Zalando</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#阅读笔记"><span class="nav-number">1.1.</span> <span class="nav-text">阅读笔记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#框架"><span class="nav-number">1.2.</span> <span class="nav-text">框架</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -583,6 +623,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
