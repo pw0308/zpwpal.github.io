@@ -79,13 +79,45 @@
 
 
 
-<meta property="og:type" content="website">
+<meta name="description" content="Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model#推荐引擎/论文 两种比CF更成功的算法是:lantent factor model,直接描述建模用户和物品,neighborhood model,分析物品和用户间的相似度.这篇文章中把两种方法结合了起来. CF不要求建立直接的prof">
+<meta property="og:type" content="article">
 <meta property="og:title" content="PW&#39;s notes">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://yoursite.com/2017/11/21/Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model/index.html">
 <meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model#推荐引擎/论文 两种比CF更成功的算法是:lantent factor model,直接描述建模用户和物品,neighborhood model,分析物品和用户间的相似度.这篇文章中把两种方法结合了起来. CF不要求建立直接的prof">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2017.18.27.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2015.20.50_500x64.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2015.33.10_300x85.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2015.42.12_100x40.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2015.43.08_500x94.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2015.42.12_100x40.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2016.22.39_300x53.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2017.19.04_280x45.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2016.37.28_550x59.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2016.47.13_600x242.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2017.21.42_500x207.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2017.28.06_700x133.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-22%2016.36.19_800x294.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/221606434003637.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-22%2016.36.19_800x294.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/221615127911560.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2018.53.30.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/v2-c02a2c9763f7ca5251fa65aa1545f068_hd.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/v2-4d8dff4dcfb91d219db2275e8f35c37d_hd.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2019.15.27_1000x535_700x374.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152830491-483972933.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152830882-2079662941.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152831304-1115331484.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152832116-913915795.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152832976-1194312513.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152833913-400276838.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152834319-926047921.png">
+<meta property="og:updated_time" content="2018-03-06T03:09:59.742Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model#推荐引擎/论文 两种比CF更成功的算法是:lantent factor model,直接描述建模用户和物品,neighborhood model,分析物品和用户间的相似度.这篇文章中把两种方法结合了起来. CF不要求建立直接的prof">
+<meta name="twitter:image" content="http://yoursite.com/2017/11/21/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2017.18.27.png">
 
 
 
@@ -115,13 +147,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/21/Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model/"/>
 
 
 
 
 
-  <title>PW's notes</title>
+  <title> | PW's notes</title>
   
 
 
@@ -140,8 +172,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -214,137 +245,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/07/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="PW">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="PW's notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/07/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-07T23:42:06+08:00">
-                2018-03-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
 
   
 
@@ -374,9 +277,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/21/Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model/" itemprop="url">未命名</a></h1>
+          <h1 class="post-title" itemprop="name headline"></h1>
         
 
         <div class="post-meta">
@@ -426,9 +327,7 @@
       
 
       
-        
-          
-            <h1 id="Factorization-Meets-the-Neighborhood-a-Multifaceted-Collaborative-Filtering-Model"><a href="#Factorization-Meets-the-Neighborhood-a-Multifaceted-Collaborative-Filtering-Model" class="headerlink" title="Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model"></a>Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model</h1><p>#推荐引擎/论文</p>
+        <h1 id="Factorization-Meets-the-Neighborhood-a-Multifaceted-Collaborative-Filtering-Model"><a href="#Factorization-Meets-the-Neighborhood-a-Multifaceted-Collaborative-Filtering-Model" class="headerlink" title="Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model"></a>Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model</h1><p>#推荐引擎/论文</p>
 <p>两种比CF更成功的算法是:lantent factor model,直接描述建模用户和物品,neighborhood model,分析物品和用户间的相似度.这篇文章中把两种方法结合了起来.</p>
 <p>CF不要求建立直接的profile,不需要领域知识,也就避免了need for extensive data collection.直接使用行为也可能发现建模方法不能发现的复杂的,意想不到的模式.CF需要比较item和user.有两种方法能促进这种比较:<strong>the neighborhood approach and latent factor models.</strong></p>
 <p>邻居模型一般依照用户对物品A的评分来推断其对和A相似的物品B的评分.所以做的就是来直接判定<strong>物品和物品</strong>的相似度.隐因子模型,比如SVD,把用户和物品转换到<strong>相同的隐因子空间</strong>,让他们thus直接能比较.这些隐因子有些能看出其可解释性,有些就完全没得解释了.</p>
@@ -480,8 +379,6 @@
 <p>在推荐领域,我认为,由于对应着矩阵<strong>隐含的信息</strong>,所以做一个奇异值分解,得到三个矩阵,把左边两个矩阵当做U代表用户,把右边一个当做V代表物品即可.我们要做的不是丢什么奇异值.而是从中窥探<strong>隐因子</strong>的含义并模拟A.当然,也可以丢弃不重要的隐因子.</p>
 <p><img src="Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152830491-483972933.png" alt=""><br><img src="Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152830882-2079662941.png" alt=""><br><img src="Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152831304-1115331484.png" alt=""><br><img src="Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152832116-913915795.png" alt=""><br><img src="Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152832976-1194312513.png" alt=""><br><img src="Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152833913-400276838.png" alt=""><br><img src="Factorization%20Meets%20the%20Neighborhood:%20a%20Multifaceted%20Collaborative%20Filtering%20Model/999009-20161206152834319-926047921.png" alt=""></p>
 
-          
-        
       
     </div>
     
@@ -498,12 +395,28 @@
       
 
       
+      
+      
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/07/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
 
       
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -513,10 +426,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -524,6 +438,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -544,8 +462,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -587,6 +514,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Factorization-Meets-the-Neighborhood-a-Multifaceted-Collaborative-Filtering-Model"><span class="nav-number">1.</span> <span class="nav-text">Factorization Meets the Neighborhood: a Multifaceted Collaborative Filtering Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PRELIMINARIES"><span class="nav-number">1.1.</span> <span class="nav-text">PRELIMINARIES</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Baseline-estimates"><span class="nav-number">1.1.1.</span> <span class="nav-text">Baseline estimates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Neighborhood-models"><span class="nav-number">1.1.2.</span> <span class="nav-text">Neighborhood models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Latent-factor-models"><span class="nav-number">1.1.3.</span> <span class="nav-text">Latent factor models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Implicit-feedback"><span class="nav-number">1.1.4.</span> <span class="nav-text">Implicit feedback</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LATENT-FACTOR-MODELS-REVISITED"><span class="nav-number">1.2.</span> <span class="nav-text">LATENT FACTOR MODELS REVISITED</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#把SVD-结合邻居影响"><span class="nav-number">1.3.</span> <span class="nav-text">把SVD++结合邻居影响.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展"><span class="nav-number">1.4.</span> <span class="nav-text">拓展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SVD的几何解释"><span class="nav-number">1.4.1.</span> <span class="nav-text">SVD的几何解释:</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -720,6 +663,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
