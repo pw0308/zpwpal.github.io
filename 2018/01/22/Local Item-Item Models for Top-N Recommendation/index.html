@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Local Item-Item Models for Top-N Recommendation  优化还是没理解透,需要再看看SLIM的论文  #推荐引擎/论文 下一步根据librec的收录找论文看,这篇文章的引用也很不错,以了解topn问题和评分预测问题的区别  local item-item models isitemitem models capturing similarities in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/22/Local Item-Item Models for Top-N Recommendation/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Local Item-Item Models for Top-N Recommendation  优化还是没理解透,需要再看看SLIM的论文  #推荐引擎/论文 下一步根据librec的收录找论文看,这篇文章的引用也很不错,以了解topn问题和评分预测问题的区别  local item-item models isitemitem models capturing similarities in">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/12481F7D-68AD-49ED-B23C-4224986AA3BD.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/91B7D729-E027-4381-958C-36AC42D6432B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/B41074B0-D889-444D-9AF0-08688D8D1323.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/026F8E3C-65C2-458F-95AE-CE1634C34353.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/7E844368-63D3-4F86-8E75-25E357B2D25F.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/C8B8A50C-EA16-4D60-83FD-3E668D5B680C.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/C1B383C6-47A8-4338-8FF8-AAA33737FFC4.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/26839026-9D15-41A2-B8D4-0CD331C13DED.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/B3EA7B8A-C403-4FE5-B25D-7CD41590E4D3.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/E11A1940-62A9-41E4-A268-737AAA07DEF3.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/0F11C71D-5CC7-4AAF-B894-5A556E362E56.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/4AAE219A-F57E-4403-BEE8-AC7BBA17623A.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/4AAE219A-F57E-4403-BEE8-AC7BBA17623A.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/9434019D-B75B-4733-B869-E0F6A7FBA6CE.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/998EFC32-D86E-4D81-8269-C6A956CE325B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/32A1D797-BAF4-4F4E-A150-48F8318BA0DA.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/1A5A8E35-8494-4798-A308-25C7B3EAB0C1.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/9F92C1B1-8DA4-47E9-87E0-94A1ED50239B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/DC46DA16-2CD3-4CD2-9218-D56A9F783E47.png">
+<meta property="og:updated_time" content="2018-01-22T12:05:33.549Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Local Item-Item Models for Top-N Recommendation  优化还是没理解透,需要再看看SLIM的论文  #推荐引擎/论文 下一步根据librec的收录找论文看,这篇文章的引用也很不错,以了解topn问题和评分预测问题的区别  local item-item models isitemitem models capturing similarities in">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/22/Local%20Item-Item%20Models%20for%20Top-N%20Recommendation/12481F7D-68AD-49ED-B23C-4224986AA3BD.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/22/Local Item-Item Models for Top-N Recommendation/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/22/Local Item-Item Models for Top-N Recommendation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-22T16:26:51+08:00">
+                2018-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Local-Item-Item-Models-for-Top-N-Recommendation"><a href="#Local-Item-Item-Models-for-Top-N-Recommendation" class="headerlink" title="Local Item-Item Models for Top-N Recommendation"></a>Local Item-Item Models for Top-N Recommendation</h1><ul>
+<li style="list-style: none"><input type="checkbox"> 优化还是没理解透,需要再看看SLIM的论文</li>
+</ul>
+<p>#推荐引擎/论文</p>
+<p>下一步根据librec的收录找论文看,<strong>这篇文章的引用也很不错,以了解topn问题和评分预测问题的区别</strong></p>
+<blockquote>
+<p>local item-item models isitemitem models capturing similarities in user subsets.  </p>
+</blockquote>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>基于SLIM（Sparse Lenear Methods）的item-based方法对topN推荐表现出非常好的性能;但是其把所有用户归为一个单一的模型。而我们认为,并不是所有的用户都以相同的方式行事,而是存在志趣相投的用户的子集。通过对这些用户子集使用不同的item-item model，我们可以捕获他们偏好的差异，这可以提高topN推荐的性能。</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><hr>
+<p>从网上购物网站到视频门户，Top-N推荐系统[3]无处不在。 他们向用户提供他们可能感兴趣的N个项目的排名列表，以鼓励观看和购买。</p>
+<p>时间已经证明,LFM方法解决评分预测问题是很好的,而普通CF对于解决topN问题表现得更好.而基于item的,比如KNN方法和SLIM,是比基于用户的topN推荐方法更有效的.</p>
+<p>但是，基于项目的方法的缺点是仅为所有用户取做::单个模型::。 在许多情况下，用户行为存在差异，单一模式无法捕捉到。 例如，::对于特定用户子集可能有一对非常相似的项目::，(比如红花会和lamar对于hiphop用户群相似,但是对于中国音乐用户群却不想死.)而对于另一个用户子集则相似度较低。 通过使用全局模型，这些项目之间的相似性往往会趋于一些平均值; 从而::失去了其在第一个用户子集的高度相关性::。</p>
+<p>在本文中，我们提出了一个扩展SLIM模型的前N推荐方法，以捕获不同用户子集之间偏好的差异。 我们称之为GLSLIM,其可以::自动识别用户子集::,这是通过求解一个联合优化问题来完成的.实现表明,比竞争方法性能提升了17%.</p>
+<h2 id="NOTATION"><a href="#NOTATION" class="headerlink" title="NOTATION"></a>NOTATION</h2><hr>
+<p>矩阵采用大写,向量采用小写,对于矩阵A,其第i行表示为<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/12481F7D-68AD-49ED-B23C-4224986AA3BD.png" alt="">,第j列表示为<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/91B7D729-E027-4381-958C-36AC42D6432B.png" alt="">.”~”表示预测值.<br>假设有n个用户,m个物品. R(n*m)代表了user-item implicit feedback matrix,表示item是否被用户purchased/viewed/rated.<br>u表示一个用户,i表示一个物品,如果用户u对物品i有隐式反馈,那么rui=1,否则=0.R的非0项我们使用”rating”来表示,进而有”rated items”和”unrated items”.使用<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/B41074B0-D889-444D-9AF0-08688D8D1323.png" alt="">表示用户u的rated items集合.使用<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/026F8E3C-65C2-458F-95AE-CE1634C34353.png" alt="">表示Hadamart product(对应位置元素相乘的矩阵乘法).</p>
+<h2 id="RELATED-WORK"><a href="#RELATED-WORK" class="headerlink" title="RELATED WORK"></a>RELATED WORK</h2><hr>
+<p>SLIM，这是第一个::使用统计学习::来计算item-item relationship的方法，并被证明是最好的方法之一.SLIM估计一个稀疏的m×m的::aggregation coeﬃcient matrix S::.对于u unrated的i的recommendation score被计算为::a sparse aggregation of all the user’s past rated items::</p>
+<blockquote>
+<p><img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/7E844368-63D3-4F86-8E75-25E357B2D25F.png" alt="">……(1)<br>也就是R属于用户u的那一行* coeﬃcient矩阵S的属于物品i的列. 而S是通过求解下面优化问题来估计:<br><img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/C8B8A50C-EA16-4D60-83FD-3E668D5B680C.png" alt="">………(2)  </p>
+</blockquote>
+<p>β和λ是正则化参数.在约束中,使用非负性约束使得估矢量估计中coeffect都是正数。 s ii = 0约束确保在计算项目的权重时，不会使用该项目本身.</p>
+<p>有些工作中已经提出了估计多个::局部模型::的想法。其通过对item-wise的rating matrix进行聚类,并且对每个聚类使用KNN协同过滤来为每个聚类生成separate local model. 另外一个工作中,使用不同的CF方法对用户-物品进行co-cluster.一个ui pair的评分是从具有largest weight for the user的subgroup中选取的.</p>
+<p>我们的GLSLIM有如下特点:</p>
+<ol>
+<li>在上述所有的工作中，只考虑局部模型; 而::GLSLIM也计算全局模型，并为每个用户确定全局和本地信息之间的相互作用的个性化因素。::</li>
+<li>用户到subset的分配会更新,使得local model更好</li>
+</ol>
+<h2 id="PROPOSED-APPROACH"><a href="#PROPOSED-APPROACH" class="headerlink" title="PROPOSED APPROACH"></a>PROPOSED APPROACH</h2><hr>
+<h3 id="MOTIVATION"><a href="#MOTIVATION" class="headerlink" title="MOTIVATION"></a>MOTIVATION</h3><p>全球物品项目模型可能不足以捕捉一组用户的偏好，特别是当存在具有多样化并且有时是相反偏好的用户子集时。最重要的这::捕捉了不同用户集的不同喜好::</p>
+<p>需要明确,用户子集间要有common rated items, local模型才会有提升(不同用户子集中的ii相似度不同)(left),不然会和全局模型产生一样的结果(right),像下图的结构<br><img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/C1B383C6-47A8-4338-8FF8-AAA33737FFC4.png" alt=""><br>c和i的相似度在A中和在B中是不同的(在B中是0,因为B中用户对i就没有行为,于是i的行为向量就是0向量,内积计算出来是0).</p>
+<h3 id="OVERVIEW"><a href="#OVERVIEW" class="headerlink" title="OVERVIEW"></a>OVERVIEW</h3><p>我们有特定user subset的model和一个全局model, ::These models are jointly optimized along with computing the user assignments for them.::我们使用SLIM来训练模型,于是,我们会估计一个全局的item-item coefficient矩阵S, k个local的item-item coefficient矩阵<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/26839026-9D15-41A2-B8D4-0CD331C13DED.png" alt="">,k是subset(聚类)数,而<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/B3EA7B8A-C403-4FE5-B25D-7CD41590E4D3.png" alt="">是subset索引.</p>
+<p>对于属于pu子集的用户u,对i的rating是根据如下的prediction rule:</p>
+<blockquote>
+<p><img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/E11A1940-62A9-41E4-A268-737AAA07DEF3.png" alt=""><br>sli代表的是用户评分过的l物品和目标item i的全局相似度,而<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/0F11C71D-5CC7-4AAF-B894-5A556E362E56.png" alt="">就是其局部相似度,而gu是personalized weight per user,控制全局和局部两部分的interplay,它位于区间[0，1]中，其中0表示推荐仅受局部模型影响，1表示用户只使用全局模型。(注意,和传统itemCF相比,没有乘以对u对l的rating,因为都是1).</p>
+</blockquote>
+<p>为了执行对用户u的前N个推荐，我们用等式3计算每个未分类项目i的估计额定值。然后，我们对这些值进行排序，并向用户推荐具有最高评价的前N个项目。</p>
+<h3 id="Estimating-the-item-item-models"><a href="#Estimating-the-item-item-models" class="headerlink" title="Estimating the item-item models"></a>Estimating the item-item models</h3><p>我们首先使用某种聚类算法来把用户聚类(比如CLUTO),或者随机聚类,并且对所有用户设定gu=0.5,我们保持g和g’,是n维向量,分别表示所有用户的gu和(1-gu).</p>
+<p>当把用户assign到k个subset的时候,我们把R矩阵split到k个training matrix <img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/4AAE219A-F57E-4403-BEE8-AC7BBA17623A.png" alt="">,并且每个矩阵还是保持n*m大小,取值的方式是,如果u属于pu子集,那么<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/4AAE219A-F57E-4403-BEE8-AC7BBA17623A.png" alt="">的这一行就是R中这一行,否则是empty.当估计本地模型<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/9434019D-B75B-4733-B869-E0F6A7FBA6CE.png" alt="">的时候,只有R中对应的行们<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/998EFC32-D86E-4D81-8269-C6A956CE325B.png" alt="">会被使用.</p>
+<p>和SLIM一样,coefficient矩阵可以按列计算,这允许不同列可以并行来估计,为了估计S的第i列以及<img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/32A1D797-BAF4-4F4E-A150-48F8318BA0DA.png" alt="">的第i列,我们解下面的目标函数</p>
+<blockquote>
+<p><img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/1A5A8E35-8494-4798-A308-25C7B3EAB0C1.png" alt=""><br>ri是R的第i列(也就是属于物品i的一列)而β和λ分别是l2正则项和l1正则项(控制S模型的稀疏度),g和l分别代表global model的和local model的. (约束的含义是coefficient&gt;=0,且和自己的coefficient==0(否则一个item会把自己推荐出去))</p>
+</blockquote>
+<p>通过为全局和局部稀疏系数矩阵::提供不同的正则化参数::，就可以控制这两个组成部分中的哪一个将在推荐中扮演更重要的角色。而上式的优化问题可以用::坐标下降法和软阈值法来求解::[9]。</p>
+<h3 id="Finding-the-optimal-assignment-of-users-to-subsets"><a href="#Finding-the-optimal-assignment-of-users-to-subsets" class="headerlink" title="Finding the optimal assignment of users to subsets"></a>Finding the optimal assignment of users to subsets</h3><p>在估计了局部模型（和全局模型）之后，GLSLIM将它们<strong>固定</strong>并进行第二部分优化：::更新用户子集::。在这样做的同时，也将确定personalized权重。我们把这个过程称为”reﬁnement”</p>
+<p>具体来说，GLSLIM会尝试将每个用户分配给每个可能的cluster,，同时计算用户分配给该集群的权重gu。 然后，对于每个聚类pu和用户u，分别计算训练误差。误差最小的cluster就是用户将分配到的cluster。 如果训练误差没有差异，或者没有训练误差较小的聚类，则用户u<strong>保持在初始聚类</strong>。The training error is computed for both the user’s rated and unrated items.</p>
+<p>为了计算个性化的权重gu，我们对 属于子集pu的用户u按prediction rule对所有item计算预测评分并最小化square error,令square error的导数为0,我们可以知道<br><img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/9F92C1B1-8DA4-47E9-87E0-94A1ED50239B.png" alt=""></p>
+<p>总的GLSLIM算法可以总结为:<br><img src="/2018/01/22/Local Item-Item Models for Top-N Recommendation/DC46DA16-2CD3-4CD2-9218-D56A9F783E47.png" alt=""></p>
+<ol>
+<li>1,2初始化.</li>
+<li>3~12循环,(知道变换cluster的用户&lt;1%为止)<ol>
+<li>按最优化问题求解S和Spu.</li>
+<li>为所有用户所有集群<ol>
+<li>计算gu for pu(每个用户在每个集群里都有一个gu)</li>
+<li>计算trainning error</li>
+<li>重新把用户分配到合适的集群pu,并且更新gu到用户所在cluster中的那个gu.</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>在试验阶段,我们看到的结果是:PureSVD最次,BMR-MF和SLIM不相上下,GLSLIM最好.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/22/上下文推荐系统/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Local-Item-Item-Models-for-Top-N-Recommendation"><span class="nav-number">1.</span> <span class="nav-text">Local Item-Item Models for Top-N Recommendation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ABSTRACT"><span class="nav-number">1.1.</span> <span class="nav-text">ABSTRACT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NOTATION"><span class="nav-number">1.3.</span> <span class="nav-text">NOTATION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RELATED-WORK"><span class="nav-number">1.4.</span> <span class="nav-text">RELATED WORK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PROPOSED-APPROACH"><span class="nav-number">1.5.</span> <span class="nav-text">PROPOSED APPROACH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MOTIVATION"><span class="nav-number">1.5.1.</span> <span class="nav-text">MOTIVATION</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OVERVIEW"><span class="nav-number">1.5.2.</span> <span class="nav-text">OVERVIEW</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Estimating-the-item-item-models"><span class="nav-number">1.5.3.</span> <span class="nav-text">Estimating the item-item models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Finding-the-optimal-assignment-of-users-to-subsets"><span class="nav-number">1.5.4.</span> <span class="nav-text">Finding the optimal assignment of users to subsets</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

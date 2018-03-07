@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="今日头条推荐详解#推荐引擎/论文 ::主要介绍今日头条推荐系统概览以及内容分析、用户标签、评估分析，内容安全等原理。:: 概览本质是解决三种特征的匹配问题y=F(xi,xu,xc)  内容特征 用户特征,包括::兴趣标签::,职业,年龄,性别等等…总之就是动态画像+静态画像 环境特征:时间,地点,设备等等….  前面提到的公式y = F(Xi ,Xu ,Xc)，是一个很经典的监督学习问题。可实现的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/17/今日头条推荐详解/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="今日头条推荐详解#推荐引擎/论文 ::主要介绍今日头条推荐系统概览以及内容分析、用户标签、评估分析，内容安全等原理。:: 概览本质是解决三种特征的匹配问题y=F(xi,xu,xc)  内容特征 用户特征,包括::兴趣标签::,职业,年龄,性别等等…总之就是动态画像+静态画像 环境特征:时间,地点,设备等等….  前面提到的公式y = F(Xi ,Xu ,Xc)，是一个很经典的监督学习问题。可实现的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/5936000249cf2a9275f0.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/59340005abb4a45cf02c.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/593900019ec5491e09ba.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/8yitwoytgmtnd168.jpeg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/593500054d52b679a646.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/59390001a2892dd9254d.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/5935000550a189635540.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/59340005b1576ced60f1.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/59340005b1c095914cdc.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/593600025096875e450e.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/59390001a5378c52f1c1.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/5935000553e66b76f797.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/59340005b39b10af62d7.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/593a0001a47f266e3a03.jpg">
+<meta property="og:updated_time" content="2018-01-17T08:51:21.363Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="今日头条推荐详解#推荐引擎/论文 ::主要介绍今日头条推荐系统概览以及内容分析、用户标签、评估分析，内容安全等原理。:: 概览本质是解决三种特征的匹配问题y=F(xi,xu,xc)  内容特征 用户特征,包括::兴趣标签::,职业,年龄,性别等等…总之就是动态画像+静态画像 环境特征:时间,地点,设备等等….  前面提到的公式y = F(Xi ,Xu ,Xc)，是一个很经典的监督学习问题。可实现的">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/17/今日头条推荐详解/5936000249cf2a9275f0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/17/今日头条推荐详解/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/17/今日头条推荐详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-17T10:48:00+08:00">
+                2018-01-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="今日头条推荐详解"><a href="#今日头条推荐详解" class="headerlink" title="今日头条推荐详解"></a>今日头条推荐详解</h1><p>#推荐引擎/论文</p>
+<p>::主要介绍今日头条推荐系统概览以及内容分析、用户标签、评估分析，内容安全等原理。::</p>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>本质是解决三种特征的匹配问题y=F(xi,xu,xc)</p>
+<ul>
+<li>内容特征</li>
+<li>用户特征,包括::兴趣标签::,职业,年龄,性别等等…总之就是动态画像+静态画像</li>
+<li>环境特征:时间,地点,设备等等….</li>
+</ul>
+<p><img src="/2018/01/17/今日头条推荐详解/5936000249cf2a9275f0.jpg" alt=""><br>前面提到的公式y = F(Xi ,Xu ,Xc)，是一个很经典的监督学习问题。可实现的方法有很多，比如传统的协同过滤模型，监督学习算法Logistic Regression模型，基于深度学习的模型，Factorization Machine和GBDT等。<br>现在很流行将::LR和DNN结合::，前几年Facebook也将LR和GBDT算法做结合。</p>
+<p>上面说了模型,下面说模型主要用的特征,当然,还是那三大类特征,从另外一个角度来看,有4类特征对推荐影响很大<br><img src="/2018/01/17/今日头条推荐详解/59340005abb4a45cf02c.jpg" alt=""></p>
+<ul>
+<li>相关性特征，就是评<strong>估内容的属性和与用户是否匹配</strong>,会有一个相似度值</li>
+<li>热度特征。包括全局热度、分类热度，主题热度，以及关键词热度等。内容热度信息在大的推荐系统特别在<strong>用户冷启动</strong>的时候非常有效。</li>
+<li>环境特征，包括地理位置、时间。这些既是bias特征</li>
+<li>协同特征，它可以在部分程度上帮助解决所谓算法越推越窄的问题。协同特征并非考虑用户已有历史。而是通过用户行为分析不同用户间相似性，比如点击相似、兴趣分类相似、主题相似、兴趣词相似，甚至向量相似，从而扩展模型的探索能力。</li>
+</ul>
+<p>下面说训练模型<br><img src="/2018/01/17/今日头条推荐详解/593900019ec5491e09ba.jpg" alt=""><br>我们线上目前::基于storm集群实时处理样本数据::，包括点击、展现、收藏、分享等动作类型。::模型参数服务器::是内部开发的一套高性能的系统，因为头条数据规模增长太快，类似的开源系统稳定性和性能无法满足.</p>
+<p>整体的训练过程是线::上服务器记录实时特征::，导入到Kafka文件队列中，然后进一步导入Storm集群消费Kafka数据，客户端回传推荐的label::构造训练样本::，随后根据最新样本进行在线训练更新模型参数，最终线上模型得到更新。</p>
+<p>但是,item非常大的时候,推荐系统不可能所有内容全部由模型预估。所以需要设计一些::召回策略::，每次推荐时从海量内容中筛选出千级别的内容库。召回策略最重要的要求是性能要极致(这个我们靠离线计算可以做到),意思就是,::先赶紧地召回一批,然后模型去预估到底推荐哪些..::<br><img src="/2018/01/17/今日头条推荐详解/8yitwoytgmtnd168.jpeg" alt=""><br><img src="/2018/01/17/今日头条推荐详解/593500054d52b679a646.jpg" alt=""><br>召回策略种类有很多，我们主要用的是倒排的思路。离线维护一个倒排，这个倒排的key可以是分类，topic，实体，来源等，排序考虑热度、新鲜度、动作等。线上召回可以迅速从倒排中根据用户兴趣标签对内容做截断，高效的从很大的内容库中筛选比较靠谱的一小部分内容。意思就是一个根据新内容的实时的::tag_item_rec_list::,::对用户和内容都分析,挖掘标签::</p>
+<blockquote>
+<p>他为什么要做这么做?我觉得,他维护倒排,主要还是因为其物品实时更新太快了…不断有东西给加进来  </p>
+</blockquote>
+<h2 id="item分析"><a href="#item分析" class="headerlink" title="item分析"></a>item分析</h2><p>item分析在推荐系统中一个很重要的::作用是用户兴趣建模::.却使用到了高深的NLP技术.下面是一个item的分析结果<br><img src="/2018/01/17/今日头条推荐详解/59390001a2892dd9254d.jpg" alt=""><br><img src="/2018/01/17/今日头条推荐详解/5935000550a189635540.jpg" alt=""><br><img src="/2018/01/17/今日头条推荐详解/59340005b1576ced60f1.jpg" alt=""><br>今日头条推荐系统的::线上分类采用典型的层次化文本分类算法::。最上面Root，下面第一层的分类是像科技、体育、财经、娱乐，体育这样的大类，再下面细分足球、篮球、乒乓球、网球、田径、游泳…，足球再细分国际足球、中国足球，中国足球又细分中甲、中超、国家队…，相比单独的分类器，利用层次化文本分类算法能更好地解决数据倾斜的问题。有一些例外是，如果要提高召回，可以看到我们连接了一些飞线。这套架构通用，但根据不同的问题难度，每个元分类器可以异构，像有些分类SVM效果很好，有些要结合CNN，有些要结合RNN再处理一下。<br><img src="/2018/01/17/今日头条推荐详解/59340005b1c095914cdc.jpg" alt=""><br>上图是一个::实体词识别算法::的case。基于分词结果和词性标注选取候选，期间可能需要根据知识库做一些拼接，有些实体是几个词的组合，要确定哪几个词结合在一起能映射实体的描述。如果结果映射多个实体还要通过词向量、topic分布甚至词频本身等去歧，最后计算一个相关性模型</p>
+<p>其实这种对资讯类业务更加重要,如果考虑呼叫中心,其实item(坐席)无法进行这样分析,只能进行行为分析..</p>
+<h2 id="用户标签"><a href="#用户标签" class="headerlink" title="用户标签"></a>用户标签</h2><p><img src="/2018/01/17/今日头条推荐详解/593600025096875e450e.jpg" alt=""><br>可以看出,第一类是动态的,第二类一般是静态的,当然,如果没提供也可以去预估..第三类当然是动态的了.</p>
+<p><img src="/2018/01/17/今日头条推荐详解/59390001a5378c52f1c1.jpg" alt=""><br>最简单的是”view”标签,处理策略包括</p>
+<ol>
+<li>过滤噪声。通过停留时间短的点击，过滤标题党</li>
+<li>热点惩罚。对用户在一些热门文章（如前段时间PG One的新闻）上的动作做降权处理。</li>
+<li>时间衰减。用户兴趣会发生偏移，因此策略更偏向新的用户行为。因此，随着用户动作的增加，老的特征权重会随时间衰减，新动作贡献的特征权重会更大。</li>
+<li>惩罚展现。如果一篇推荐给用户的文章没有被点击，相关特征（类别，关键词，来源）权重会被惩罚。(这个反馈收集对引擎有点难..)</li>
+</ol>
+<p>用户标签怎么计算?第一种方案是离线计算<br><img src="/2018/01/17/今日头条推荐详解/5935000553e66b76f797.jpg" alt=""><br>可以看出其实是全量更新的..映射到我们的系统里..</p>
+<ol>
+<li>每天取过去一天的log数据,分析有哪些用户</li>
+<li>取过去两个月这些用户的数据</li>
+<li>交给离线计算来挖掘标签,一个任务做统计,一个打标签.</li>
+<li>存入Hbase,线上就读这个…(在线调用这个作为特征去精排?)<br><img src="/2018/01/17/今日头条推荐详解/59340005b39b10af62d7.jpg" alt=""><br>反正一个是<strong>性能</strong>,一个是<strong>效果</strong>的问题..</li>
+</ol>
+<p>第二种方案是近线计算方案<br><img src="/2018/01/17/今日头条推荐详解/593a0001a47f266e3a03.jpg" alt=""><br>映射进来就是</p>
+<ul>
+<li>上传日志的时候触发近线计算,计算标签也是流程之一</li>
+<li>这种近线计算任务采用spark streaming就是了,(或者三次日志上传触发更新一次)或者独立做一个tag系统,用消息组件就是了</li>
+<li>近线任务读取离线的基本tag,更新之,存入之…</li>
+</ul>
+<p>当然,tag定义需要人工指定…</p>
+<p>当然,离线还是可以计算一些基本基本稳定的信息的.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/16/GBDT在CTR中的运用/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#今日头条推荐详解"><span class="nav-number">1.</span> <span class="nav-text">今日头条推荐详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概览"><span class="nav-number">1.1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#item分析"><span class="nav-number">1.2.</span> <span class="nav-text">item分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户标签"><span class="nav-number">1.3.</span> <span class="nav-text">用户标签</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

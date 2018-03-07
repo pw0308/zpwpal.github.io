@@ -314,19 +314,19 @@
 <li>cost and <em>complexity</em> of the involved maintenance;</li>
 <li>capability of capitalizing on pre-existing signal and effctively integrating newly available data sources.</li>
 </ol>
-<p>对详情页推荐,有<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/CE65EAAC-C22F-47A2-A5A8-4A3B31DE2651.png" alt=""><br>外层函数表示scoring function,内层函数表示特征工程f(<em>interaction function</em>),f建模了一些两个物品的<strong>交互特征</strong>,比如颜色相同不相同什么,有关无关的属性都可以丢给interaction function也无妨</p>
-<p>对首页推荐,有<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/52003311-8363-435E-8590-02513C252299.png" alt=""><br>不同的是interaction function包含的是用户u,比如ij是不是ui最喜欢的牌子.</p>
-<p>再一个复杂点就是personlized详情页推荐,有<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/DFCB8E1E-DBEC-42B7-B1BB-209FB6019BFC.png" alt=""><br>对interaction function,最简单的建模就是把前两种情况给连接起来,当然还得一些<em>设计三元的特征更好</em></p>
+<p>对详情页推荐,有<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/CE65EAAC-C22F-47A2-A5A8-4A3B31DE2651.png" alt=""><br>外层函数表示scoring function,内层函数表示特征工程f(<em>interaction function</em>),f建模了一些两个物品的<strong>交互特征</strong>,比如颜色相同不相同什么,有关无关的属性都可以丢给interaction function也无妨</p>
+<p>对首页推荐,有<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/52003311-8363-435E-8590-02513C252299.png" alt=""><br>不同的是interaction function包含的是用户u,比如ij是不是ui最喜欢的牌子.</p>
+<p>再一个复杂点就是personlized详情页推荐,有<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/DFCB8E1E-DBEC-42B7-B1BB-209FB6019BFC.png" alt=""><br>对interaction function,最简单的建模就是把前两种情况给连接起来,当然还得一些<em>设计三元的特征更好</em></p>
 <p>对于L2R,当然有pointwise,pairwise和listwise方法了; Linear or logistic regression are examples of scoring functions used in pointwise methods; <strong>RankSVM,RankBoost,RankLR</strong>等就pairwise,Listwise的方法有<strong>ListNet,AdaRank</strong>等等,再比如就是ElasticRank…</p>
-<p>我们的训练集X中有很多pairwise的样本(xi+,xi-),表示xi+应该排在前面;若对于首页推荐来说,这样的样本实际上就是<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/9C47CEAB-812B-48B3-BE10-91F923ADB05E.png" alt=""><br>通过explicit/implicit方法来获取这些样本(<strong>如何获取我们可以深入</strong>).对训练pair, ranking loss定义为<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/EF78FC3F-541C-403E-BB6F-5B08497591ED.png" alt=""><br>φ就是scoring funciton, e是为了松弛(其实是提高了要求),这其实就是hinge loss.含义是如果xi-的打分比xi+还高(表示错误了)那么loss就会&gt;0..其实,logistic loss也是可以的<img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/131B6B29-5AB5-4933-AC22-ACB7B56E0618.png" alt="">.</p>
-<p>通过最小化损失,就能优化scoring function中的参数了,通过SGD方法就行,scoring函数可以是线性的,多层感知机等等形式只要好计算gradients,假设有<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/DCE9C00A-0168-409E-A6F8-DA06C999A6CB.png" alt=""><br>φ是线性的,可以保持l(),也就是φ的复合与转换依然是凸的,这<strong>对purpose of parameter optimization是有帮助的.</strong></p>
-<p>为了模型参数的sparsity,引入l1,并且根据large-scale setting的建议引入l2,于是整个的loss函数就是<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/828ABDFC-9474-46D2-8B51-1718EAC11820.png" alt=""><br>目标也就是<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/A758A44B-8432-40DB-8266-68152977B1F5.png" alt=""><br>使用了spark进行计算,这样就轻松地在整个dataset中计算和sum up起l*的梯度..另外,还有个剪枝,比如在每k个梯度循环就简单地设置θ个参数的值为0,这样的目的是加强sparsity..</p>
-<p>系统架构由offline jobs和online service组成,<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/EC6158D9-149C-4241-A2AB-49953DDB17B0.png" alt=""><br>也就是从log提取history,进而做feature extraction,进而丢给LTR这三步,计算就是用spark了.</p>
+<p>我们的训练集X中有很多pairwise的样本(xi+,xi-),表示xi+应该排在前面;若对于首页推荐来说,这样的样本实际上就是<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/9C47CEAB-812B-48B3-BE10-91F923ADB05E.png" alt=""><br>通过explicit/implicit方法来获取这些样本(<strong>如何获取我们可以深入</strong>).对训练pair, ranking loss定义为<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/EF78FC3F-541C-403E-BB6F-5B08497591ED.png" alt=""><br>φ就是scoring funciton, e是为了松弛(其实是提高了要求),这其实就是hinge loss.含义是如果xi-的打分比xi+还高(表示错误了)那么loss就会&gt;0..其实,logistic loss也是可以的<img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/131B6B29-5AB5-4933-AC22-ACB7B56E0618.png" alt="">.</p>
+<p>通过最小化损失,就能优化scoring function中的参数了,通过SGD方法就行,scoring函数可以是线性的,多层感知机等等形式只要好计算gradients,假设有<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/DCE9C00A-0168-409E-A6F8-DA06C999A6CB.png" alt=""><br>φ是线性的,可以保持l(),也就是φ的复合与转换依然是凸的,这<strong>对purpose of parameter optimization是有帮助的.</strong></p>
+<p>为了模型参数的sparsity,引入l1,并且根据large-scale setting的建议引入l2,于是整个的loss函数就是<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/828ABDFC-9474-46D2-8B51-1718EAC11820.png" alt=""><br>目标也就是<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/A758A44B-8432-40DB-8266-68152977B1F5.png" alt=""><br>使用了spark进行计算,这样就轻松地在整个dataset中计算和sum up起l*的梯度..另外,还有个剪枝,比如在每k个梯度循环就简单地设置θ个参数的值为0,这样的目的是加强sparsity..</p>
+<p>系统架构由offline jobs和online service组成,<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/EC6158D9-149C-4241-A2AB-49953DDB17B0.png" alt=""><br>也就是从log提取history,进而做feature extraction,进而丢给LTR这三步,计算就是用spark了.</p>
 <p>首先需要aggregate一个用户的所有actions,我们必须做<strong>pre-aggregation</strong>以避免每次需要一个用户的action都要re-aggregation</p>
 <p>从aggregated actions中,我们可以提取一系列动态的物品特征,比如点击次数,购买次数等;(我们也可以从非aggregated数据中做,但是aggregated后有利于我们去除一些噪声点,比如机器人操作)</p>
 <p>另一方面,从aggregated actions中提取广泛的<strong>用户属性</strong>，例如用户上次在店铺中活跃的时间，如何根据不同的产品品牌分配用户选择，或者购买商品的价格分布。用户特征提取也可以利用已经计算的文章特征。例如，如果我们想要衡量用户购买受产品流行度的影响，那么对于每次购买，我们需要检查相应产品在购买时的流行度.</p>
 <p>对于L2R job,每个场景要分别计算(首页,详情页…),另外,整个offline过程<strong>大约一天一次以吸收新actions</strong></p>
-<p>在线框架如下,提供RESTful API,目标还是尽量快地提供服务.<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/67B0A5FB-5D64-4414-865A-4600D7E6D1E7.png" alt=""><br>使用solr来index和读取feature以给LTR模型计算,solr的master-slave结构待研究,另外,Caching一些物品feature在servlet里也可以加速响应的(caching最受欢迎的哪些物品可以达到最好的cache命中率)..</p>
+<p>在线框架如下,提供RESTful API,目标还是尽量快地提供服务.<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/67B0A5FB-5D64-4414-865A-4600D7E6D1E7.png" alt=""><br>使用solr来index和读取feature以给LTR模型计算,solr的master-slave结构待研究,另外,Caching一些物品feature在servlet里也可以加速响应的(caching最受欢迎的哪些物品可以达到最好的cache命中率)..</p>
 <p>现在讨论如何满足operational concern.</p>
 <ol>
 <li>我们的模型而言,对于不同的场景上下文,我们只需要改变的是interaction function..使其作为一个单独的component,这不影响别的component.</li>
@@ -336,7 +336,7 @@
 <p>做实验,对于购物网站,比较的最可靠方法是比较其点击率,转化率,number of sales等等..我们首先是利用离线实验比较,选出一些算法来在线上再AB测试做实验..</p>
 <p>用户在会话内点击（或购买）的所有文章都被标记为相关项目，即作为排名/推荐算法应在其他任何项目之上排名/推荐的项目。并且比较不同算法对相关项目产生的位置来进行比较,采用NDCG指标.</p>
 <p>开始我们仅仅使用CF分数作为特征,加几个交叉特征来作为LTR模型,与CF比较;性能是有提升的,可以注意到,为了更好地性能改进,乱丢特征还是不够的,其实是需要extensive feature selection.加入WordVec文章嵌入表示之后的版本有更好.</p>
-<p>使用LTR#1和CF做AB测试,使用CTR和转化率CR作为指标.<br><img src="Practical%20Lessons%20from%20Developing%20a%20Large-Scale%20Recommender%20System%20at%20Zalando/CB4D795B-4116-438C-813D-2F0CA0559866.png" alt=""><br>反正要么有提升,要么也不会变差…所以已经投入了生产,其核心是<strong>拓展了CF提供的信号…</strong></p>
+<p>使用LTR#1和CF做AB测试,使用CTR和转化率CR作为指标.<br><img src="/2018/03/05/Practical Lessons from Developing a Large-Scale Recommender System at Zalando/CB4D795B-4116-438C-813D-2F0CA0559866.png" alt=""><br>反正要么有提升,要么也不会变差…所以已经投入了生产,其核心是<strong>拓展了CF提供的信号…</strong></p>
 <h2 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h2><p>介绍部分,大略介绍自己的网站,然后介绍商业价值目标,然后介绍自己使用了L2R,有什么好处…</p>
 <p>第二节介绍使用场景与建立的数学模型(简简单单).</p>
 <p>第三节介绍LTR模型,首先介绍相关ltr工作,然后介绍自己使用的Ranking Loss Minimization方法,涉及了一些数学了……….算法</p>
@@ -377,9 +377,1201 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/02/线性模型的类别不平衡问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/02/线性模型的类别不平衡问题/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-02T00:35:30+08:00">
+                2018-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="线性模型的类别不平衡问题"><a href="#线性模型的类别不平衡问题" class="headerlink" title="线性模型的类别不平衡问题"></a>线性模型的类别不平衡问题</h1><p>#推荐引擎/论文</p>
+<p>比如,我们训练集有998个正例,2个反例,那么只需要一个永远预测正例的学习器,在训练集上就有%99.8的精度,但是这毫无意义.</p>
+<p>假定+少,有m+个;-多,有m-个.以逻辑回归为例,我们一般有<br><img src="/2018/02/02/线性模型的类别不平衡问题/9A90A016-2974-4B2E-A01F-0DD7A4233EEE.png" alt="">(也就是In(y/1-y)&gt;0的时候)……(1)<br>我们的观测几率是m+/m-,所以此时我们应调整阈值,<br><img src="/2018/02/02/线性模型的类别不平衡问题/153CF006-3EE9-4DC6-B9BE-187DAE38661F.png" alt="">……(2)<br>实际上就是采用如下的公式进行判断(::再缩放::)<br><img src="/2018/02/02/线性模型的类别不平衡问题/CE2F0991-C824-4083-803B-B764CCF26D25.png" alt="">……(3)<br>得出原始的y,然后乘上观测几率,然后看新的y’是否符合(1)式即可.”再缩放”也是”代价敏感学习”的基础.在代价敏感学习中将式(3.48) 中的 m-/m+ 用 cost+/cos- 代替即可,其中 cost+ 是将正例误分为反倒的代价cost-是将反例误分为正例的代价.</p>
+<p>上面的方法很简单,但是实际上需假设”训练集是真是样本总体的无偏采样”,这个往往不成立.所以我们有两种采样方法</p>
+<ul>
+<li>undersampling欠采样:删除一些较多类的样本</li>
+<li>oversampling过采样:增加一些较少类的样本</li>
+</ul>
+<p>欠采样法时间开销通常较小,因为训练集变小了.过采样法::不能简单地对初始正例样本进行重复采样,，否则会招致严重的过拟合::.有代表性算法SMOTE通过对训练集里的少数类进行差值来增加样本.(当然,也可以与业务结合,把什么什么当做较少类样本,通过重定义较少类样本的定义进而过采样,不过这就和业务紧密相关了.比如说推荐系统里,推荐列表里click之前的物品都可以当做”负反馈”)</p>
+<ol>
+<li>添加元数据..ok</li>
+<li>试着搜索一篇论文import看看..ok,原数据也添加了,以后就用这个</li>
+<li>检查bear里读过的都在不…..ok</li>
+<li>分collection…..</li>
+<li>标read…</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/01/Improving Pairwise Learning for Item Recommendation from Implicit Feedback/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/01/Improving Pairwise Learning for Item Recommendation from Implicit Feedback/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-01T13:15:03+08:00">
+                2018-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Improving-Pairwise-Learning-for-Item-Recommendation-from-Implicit-Feedback"><a href="#Improving-Pairwise-Learning-for-Item-Recommendation-from-Implicit-Feedback" class="headerlink" title="Improving Pairwise Learning for Item Recommendation from Implicit Feedback"></a>Improving Pairwise Learning for Item Recommendation from Implicit Feedback</h1><p>#推荐引擎/论文</p>
+<ul>
+<li style="list-style: none"><input type="checkbox"> 通过这篇文章我们正好可以看看pairwise是怎么用的<br>范围&lt;<pairwise ltr="">&gt;<br>出来AoBPR</pairwise></li>
+</ul>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>Pairwise算法是从隐式反馈中学习推荐系统的流行方法.学习常是基于SGD with uniformly drawn pairs.本文中,我们讨论了这种SGD学习算法的收敛速度,如果item流行度有一个长尾分布,那么算法的收敛性将显著slow down. 我们进而::提出一个non-uniform item sampler来解决这个问题::.采样是基于context的,并oversamples informative pairs以加速收敛.另外,我们提出的方法可以应用到很多推荐系统,::大大提高算法收敛性而不影响预测质量或迭代时间.::</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/30/List-wise learning to rank with matrix factorization for collaborative filtering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/30/List-wise learning to rank with matrix factorization for collaborative filtering/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-30T17:34:27+08:00">
+                2018-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="List-wise-learning-to-rank-with-matrix-factorization-for-collaborative-filtering"><a href="#List-wise-learning-to-rank-with-matrix-factorization-for-collaborative-filtering" class="headerlink" title="List-wise learning to rank with matrix factorization for collaborative filtering"></a>List-wise learning to rank with matrix factorization for collaborative filtering</h1><p>#推荐引擎/论文</p>
+<p>范围:&lt;&lt;MF, listwise LTR&gt;&gt;<br>在librec里被称为ListwiseMF</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>本文针对协同过滤提出了一种排序方法.将list-wise LTR与MF结合.物品排序列表的产生,是基于最小化::MF ranking model产生的output lists与training list之间的uncertainty::.本模型复杂度较低,与observed ratings成线性关系.实验还与比如CoFiRank这样的流行的collaborative ranking方法来比较.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/30/Fast matrix factorization for online recommendation with implicit feedback/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/30/Fast matrix factorization for online recommendation with implicit feedback/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-30T17:33:45+08:00">
+                2018-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Fast-matrix-factorization-for-online-recommendation-with-implicit-feedback"><a href="#Fast-matrix-factorization-for-online-recommendation-with-implicit-feedback" class="headerlink" title="Fast matrix factorization for online recommendation with implicit feedback"></a>Fast matrix factorization for online recommendation with implicit feedback</h1><p>#推荐引擎/论文</p>
+<p>范围是&lt;&lt;隐式反馈,MF方法&gt;&gt;</p>
+<p>在librec里称为eALS,16年,用于ranking</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>本文对::基于隐式反馈的MF方法::的性能和效率做出改进.现在基于隐式反馈的MF work有两个问题</p>
+<ol>
+<li>由于大量unseen feedback,大多数现有工作 assign a <strong>uniform</strong> weight to the missing data,来降低计算复杂度.但是这种<strong>uniform</strong>假设不现实.</li>
+<li>为离线设计,不能跟上dynamic nature of online data.</li>
+</ol>
+<p>而我们</p>
+<ol>
+<li>基于item流行度来给missing data赋予权值(<strong>注意alsRank里也有相似思想</strong>).然后这种不同意的权重对学习效率带来挑战.于是,我们设计了一种基于element-wise ALS的技术来优化模型.</li>
+<li>我们基于(1)提的策略,设计了一个增量更新策略,能对新反馈即时刷新MF模型,实验表明性能也更好.开源代码在此<a href="https://github.com/hexiangnan/sigir16-eals" target="_blank" rel="noopener">github</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/30/Collaborative Ranking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/30/Collaborative Ranking/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-30T17:21:35+08:00">
+                2018-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Collaborative-Ranking"><a href="#Collaborative-Ranking" class="headerlink" title="Collaborative Ranking"></a>Collaborative Ranking</h1><p>#推荐引擎/论文</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>本文::建议使用ranking指标=&gt;NDCG::来作为更好的评估指标.借鉴LTR思想,::提出了近似优化NDCG的新模型::.我们的模型是MF的variant,不过,我们还::learn the features associated with the users and the items for the ranking task::. 实验证明了我们模型的accuracy, efficiency和benefits of learning features for ranking.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/30/TFMAP optimizing MAP for top-n context-aware recommendation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/30/TFMAP optimizing MAP for top-n context-aware recommendation/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-30T16:20:37+08:00">
+                2018-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="TFMAP-optimizing-MAP-for-top-n-context-aware-recommendation"><a href="#TFMAP-optimizing-MAP-for-top-n-context-aware-recommendation" class="headerlink" title="TFMAP: optimizing MAP for top-n context-aware recommendation"></a>TFMAP: optimizing MAP for top-n context-aware recommendation</h1><p>#推荐引擎/论文</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<blockquote>
+<p>tackle the problem of top-N context-aware recommendation for implicit feedback scenarios  </p>
+<p>CF模型之前没有专注于top-n任务就不说了,之前的context-aware模型也仅仅是在explict data上,我们提出TFMAP来直接最大化Mean Average Precision,TFMAP使用::张量分解::来模拟含有上下文信息的隐式反馈数据.</p>
+</blockquote>
+<p>并且,直接优化MAP很复杂,我们提出了一个快速算法,利用MAP的几个固有属性来提高学习效果,保证其scalability.实验表明,也是优于state of art算法的.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/分类算法中各种损失函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/29/分类算法中各种损失函数/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-29T17:35:54+08:00">
+                2018-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="分类算法中各种损失函数"><a href="#分类算法中各种损失函数" class="headerlink" title="分类算法中各种损失函数"></a>分类算法中各种损失函数</h1><p>#推荐引擎/论文</p>
+<h2 id="preface"><a href="#preface" class="headerlink" title="preface"></a>preface</h2><p><img src="/2018/01/29/分类算法中各种损失函数/A7857CED-BE50-4C1F-92D0-F5217BEBD083.png" alt=""><br>具有如下的约束和定义<br><img src="/2018/01/29/分类算法中各种损失函数/C62D5CF6-CF2C-437A-95A1-CFCBAB08A1A2.png" alt=""></p>
+<h3 id="0-1-Loss"><a href="#0-1-Loss" class="headerlink" title="0-1 Loss"></a>0-1 Loss</h3><p>其实就是分类错误次数,你去降低分类错误次数,这很合理,其通用形式是<br><img src="/2018/01/29/分类算法中各种损失函数/B1AD3F4A-8253-47BD-BB82-8BAC87F44BE8.png" alt=""><br>但是你就是不好在工程上到底怎么去优化这个玩意儿…但0-1 loss不是凸函数，直接优化困难，一般都用单调连续凸函数逼近0-1 loss。</p>
+<h3 id="Hinge-Loss-SVM-soft-margin"><a href="#Hinge-Loss-SVM-soft-margin" class="headerlink" title="Hinge Loss(SVM, soft margin)"></a>Hinge Loss(SVM, soft margin)</h3><p>这是对于分类问题,t=+-1(真实label),并且有一个classfier score y(输出实数值), y的hinge loss的通用形式是<br><img src="/2018/01/29/分类算法中各种损失函数/11927EF0-656C-4379-B530-CE74AFFC76B5.png" alt=""><br>写开就是<br><img src="/2018/01/29/分类算法中各种损失函数/F76F9D53-2D81-4759-843F-757A6F27A46A.png" alt=""><br>(分类标准是y&gt;0就分+1,y&lt;0就分-1),<br>在SVM中,<br><img src="/2018/01/29/分类算法中各种损失函数/4FA46DBB-4A41-4534-B70A-EC51FA1D7649.png" alt=""><br>也就是1-xxx&lt;=0,于是loss是0,否则loss不是0,并且loss随着y的差异越大而越大.</p>
+<h3 id="Log-Loss"><a href="#Log-Loss" class="headerlink" title="Log Loss"></a>Log Loss</h3><p>通用的形式是:<br><img src="/2018/01/29/分类算法中各种损失函数/C415CD9B-2776-4371-8CDF-9AE382D7614F.png" alt=""><br>又有下面的分析,h()y即m<br><img src="/2018/01/29/分类算法中各种损失函数/83F8202D-72BA-4647-BC12-1EEFFF9FD13A.png" alt=""><br>其中令线性部分得到y,sigmoid=g,那么h(x)是g(f(x)).逻辑回归的优化目标函数是::交叉熵::(交叉的是真实分布y和预测分布y^,最下化交叉熵也就是使得两个分布接近喽)<br>实际上上面的可以写成这个形式<br><img src="/2018/01/29/分类算法中各种损失函数/88837687-2A9E-446C-A7B5-31B0C7BC73D9.png" alt=""><br>也就是log loss的形式</p>
+<h3 id="指数Loss"><a href="#指数Loss" class="headerlink" title="指数Loss"></a>指数Loss</h3><p>其通用形式是<br><img src="/2018/01/29/分类算法中各种损失函数/83A81E1B-0516-47F3-984D-D4C515BFBDA7.png" alt=""><br><img src="/2018/01/29/分类算法中各种损失函数/54F73346-0362-465C-8FA3-F5126F6FF594.png" alt=""><br>这常用在boosting中,<strong>指数误差始终&gt; 0，但是确保越接近正确的结果误差越小，反之越大</strong>其实binomial deviance loss跟这个也类似</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/cliMFlearning to maximize reciprocal rank with collaborative less-is-more filtering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/29/cliMFlearning to maximize reciprocal rank with collaborative less-is-more filtering/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-29T13:00:47+08:00">
+                2018-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="cliMF-learning-to-maximize-reciprocal-rank-with-collaborative-less-is-more-filtering"><a href="#cliMF-learning-to-maximize-reciprocal-rank-with-collaborative-less-is-more-filtering" class="headerlink" title="cliMF:learning to maximize reciprocal rank with collaborative less-is-more filtering"></a>cliMF:learning to maximize reciprocal rank with collaborative less-is-more filtering</h1><p>#推荐引擎/论文</p>
+<p>2012</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>我们推荐问题的数据是1/0的relavence数据.过去的CF问题要么没解决binary数据的tank问题,要么没专门研究提升top-k任务.我们提出cliMF(Collaborative Less-is-More Filtering),模型参数通过::直接最大化Mean Reciprocal Rank::来学习(这是著名的信息检索指标).我们通过introducing a lower bound of the smoothed reciprocal rank metric来使得模型具有线性计算复杂度.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/27/Alternating Least Squares for Personalized Ranking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/27/Alternating Least Squares for Personalized Ranking/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-27T13:45:11+08:00">
+                2018-01-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Alternating-Least-Squares-for-Personalized-Ranking"><a href="#Alternating-Least-Squares-for-Personalized-Ranking" class="headerlink" title="Alternating Least Squares for Personalized Ranking"></a>Alternating Least Squares for Personalized Ranking</h1><p>#推荐引擎/论文</p>
+<p>RankALS还是采用了MF但是是以最小化rank loss为目标的模型<br>主要是改进了koren的implicitALS,使用rank目标函数</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>首先,本文研究的是::隐式反馈::,系统间接推断用户偏好.处理隐式反馈的一种方法是使::ranking目标函数最小化::,但是在隐式反馈时,就naive地去最小化之是<strong>昂贵</strong>的,一般通过trade-off,通过<strong>sampling the objective function</strong>牺牲一些排序精度来提高效率. 本文提出了::直接最小化ranking目标函数::的方法,no sampling. 实验证明,我们的方法在ErrorRate，ARP和Recall等评估指标方面优于其它 implicit feedback recommenders(::也许因为是直接优化目标函数::)</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><hr>
+<p>对于隐式反馈的系统来说,A signiﬁcant part of the information is contained in the absence of events, therefore the system h<strong>as to consider each user–item pair.</strong>本文讨论隐式反馈的variant.::而我们的RankALS方法显示性能比使用了sampling的ranking方法是要效果更好.::</p>
+<p>下文首先介绍符号,后面介绍相关的implicitALS,其启发我们做了RankALS,第4节介绍了RankALS; 首先给出了它的主要思想及其有利的计算性质，然后给出了具有解释的伪代码。 最后讨实施在两个公开可用的大规模数据集上,与其他方法的对比实验。</p>
+<h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><hr>
+<p>U,I代表用户和物品数,<em>U</em>和<em>I</em>代表用户,物品集.u,i表示用户和物品的index. implicit rating表示为rui,预测值是r^ui. implicit ratings储存在矩阵R中.</p>
+<p>T代表提供了::positive:: feedback的(u,i)对集合. 规定有negative feedback和positive feedback两种,负面的,r=0,正面的,r为某实数. 我们还假设用户最多对一个i提供一次正反馈.</p>
+<p>|T|表示正反馈数目,Iu表示u提供了positive反馈的物品们,Ui表示对i提供了正反馈的用户们.zu表示=|Iu|,表示用户提供了正反馈的物品数目.</p>
+<p>tr(X)表示矩阵的trace,1表示全1矩阵. X[s]表示行在s集合中的那些行组成的X的子矩阵.x[s]就对应表示那些subvector,x[s1,s2]表示行在s1,列在s2的组成的子矩阵.</p>
+<h2 id="OBJECTIVE-FUNCTIONS"><a href="#OBJECTIVE-FUNCTIONS" class="headerlink" title="OBJECTIVE FUNCTIONS"></a>OBJECTIVE FUNCTIONS</h2><hr>
+<p>这里分prediction和ranking任务来分.</p>
+<h3 id="prediciton"><a href="#prediciton" class="headerlink" title="prediciton"></a>prediciton</h3><p>对prediciton任务(隐式反馈下),从koren的论文里知道,目标函数有下面形式<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/EB1AC97D-CB3E-457C-8D8F-D638A2915C4F.png" alt=""><br>cui表示我们惩罚ui上预测error的程度(可信度越高越需要惩罚,因为需要预测得越准,可信度不高的不用太惩罚,因为最后有error也还好,因为原本数据本身就不可信(比如没评分你就当当别人是负反馈)).目标函数是取最小化weighted square error.</p>
+<p>标准的cui选择是,对(u,i)∈T,取1,否则取0.这意味着目标函数只包含T个项。 在::隐式反馈的情况下，这种简化是不合理的，因为有重要信息被包含在absence of positive feedback内::。所以在隐式反馈的情况下会把c当做::可信度::,对T内的(u,i)取c+,否则取c-. 我们把这种情况下的目标函数记作fi()(i for implicit),所以目标函数包括U*I个项目了.这考虑得更全面.通常,c+&gt;&gt;c-.当然,我们::没有直接的负反馈::,一般需要按情况采样.</p>
+<h3 id="Ranking"><a href="#Ranking" class="headerlink" title="Ranking"></a>Ranking</h3><p>一般的目标函数形式是<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/B889DA18-4A65-4273-8D09-A80CBDBEB919.png" alt=""><br>cui和sj是参数.sj的含义是第j个物品的importance.函数包含T*I项目. cui的取值是c ui=0 if rui=0, and 1 otherwise. cui的作用是选出T(positive feedback)中的(u,i)对.</p>
+<h2 id="RELATED-WORK"><a href="#RELATED-WORK" class="headerlink" title="RELATED WORK"></a>RELATED WORK</h2><hr>
+<p>处理隐式反馈的最早的解决方案之一是Hu等人的ImplicitALS(也就是koren的implicit论文),该算法由矩阵分解模型，基于prediction based目标函数和交替最小二乘（ALS）优化器组成.然后还有一些work来优化implicitALS.(但是是prediction based)</p>
+<p>KDD的比赛中发现,ranking-based方法能高效地处理基于implicit feedback的大规模问题.一个解决方法是使用ranking based 目标函数,使用SGD在a sampled approximation of the objective function上优化.</p>
+<p>另一种基于ranking的隐式反馈方法是BPR,使用bootstrapping based SGD训练</p>
+<p>而::我们,首先,ranking-based,然后implicit feedback,最后不approximate the original objective function,使用ALS直接优化.::</p>
+<h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><hr>
+<p>不妨看一下implicitALS的做法.其基于MF,得到pu和qi向量,也就是参数,F是隐因子个数. 令P和Q表示隐因子矩阵,目标函数是fi().目标是使得<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/6AE30563-01D6-46D2-A420-A0EA4E439092.png" alt="">以最小化weighted square error.其算法可以简要描述如下:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/A88F8A4F-5D68-4520-8F6B-71BAF8368CFC.png" alt=""><br>其ALS可以高效地计算,让我们看看为什么.让我们重写fi()对pu的导数:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/C8275145-0FB6-4FD5-9A9F-2F1C8F565B84.png" alt=""><br>可以看出,Au和bu都和p无关而和q有关,只要q固定,就能求出Au,bu. 进而,令pu=<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/A0EA7162-CEFB-4081-BFCB-CE1F40167ACF.png" alt="">这不就让导数为0了嘛.</p>
+<p>由于cui的存在,使得A和b还是用户相关的.接下来我们要提炼一下.</p>
+<p>而我们还可以将bu的范围简化在<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/51E18A92-4D4A-4007-B417-A05096FD8A5B.png" alt="">因为对其他的u,前面的系数是0; 另外,Au可以分为user dependent和dependent两部分:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/D9B94A25-2796-408D-84E7-047FF951C155.png" alt=""><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/F61A1588-9886-421F-816C-BF3CA89C7C25.png" alt=""><br>于是,对<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/A0EA7162-CEFB-4081-BFCB-CE1F40167ACF.png" alt="">的估计可以在<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/5120FD8E-80B4-4868-84D3-D4B7FCB15D36.png" alt="">时间内完成.(independent是TF^2, dependent部分是F3,并且由于每个User的都要算所有是UF^3)</p>
+<p>对Item qu也做一样的事儿,于是可以知道one traning step的时间是O(TF^2+(U+I)F ^3).</p>
+<p>ImplicitALS的一个很好的特性是，它不能用近似来代替目标函数，正如其他方法经常做的那样。 它通过应用数学简化来实现加速。</p>
+<h2 id="ALS-FOR-RANKING"><a href="#ALS-FOR-RANKING" class="headerlink" title="ALS FOR RANKING"></a>ALS FOR RANKING</h2><hr>
+<p>我们提出rankALS,其prediction rule还是<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/6FE2C40A-1D3D-4FFB-92B5-DBA4E9671E35.png" alt="">,但是目标函数是ranking objective function fr().</p>
+<p>ranking目标函数如之前讨论的,包含T*I项.我们首先重写fr()的对用户向量pu的导数<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/71593B7D-7ACB-42B8-AE21-02329CBA2805.png" alt=""><br>通过展开inner term来吧偏导数变为了8个double sums.这种改写偏导的::好处是计算<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/D67BB1BE-3B42-4254-B0AA-D8636BFAD995.png" alt=""><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/C6BDDE22-973C-4724-A8C5-8670652190F9.png" alt="">for all u,可以在<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/90BF61A0-E830-4ACA-A2AF-4BC743AA45E0.png" alt="">完成.::注意,其实这些项里,除了<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/6668F59B-3384-46BD-B7DF-690071E8B114.png" alt="">,其他的还是用户相关的,但是为了简便没标subscript.</p>
+<p>对qi的导数还是这样弄.见论文吧.这预示着基于MF的最小化fr()的ALS可以高效实现.ALS的两主要步骤是评估导数,然后设置其为0. 第一步::通过重写导数可以加速计算::,而第二步是解决线性系统这是比较cheap的.</p>
+<p>我们可以在算法2中看看ALS的伪代码<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/8A2CCABE-2D9A-4BBF-9C56-9C0D0EC5D54C.png" alt=""><br>让我们解析一下这个.</p>
+<ol>
+<li>首先初始化Q,并且由于1是一直恒定的,所以提前计算</li>
+<li>总共有E次循环,每次循环包含一个P-step和Q-step.</li>
+<li>在P-step中,::先计算user-independent的A-这种::,然后为每个用户u,计算相关的r-,b-,r^,q-,A-等等..因为有依赖关系,所以谁先计算谁后计算这也是有讲究的,可以节省计算量.计算出来后可以计算最优的pu=M^-1y.(需要求逆矩阵)</li>
+<li>在Q-step中也做类似P-step的事儿.</li>
+</ol>
+<p>这个算法里有如下的超参数:</p>
+<ul>
+<li>E,循环数</li>
+<li><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/54FB3690-E0DA-427A-9CA5-C442A06B5F64.png" alt="">,初始化Q采用的数字range.</li>
+<li>s, item对目标函数的重要性,我们尝试了两种配置,产生两种variant.<ul>
+<li>si=1,等权重,s.w=no</li>
+<li>si=|Ui|,流行物品高权重,s.w=yes</li>
+</ul>
+</li>
+</ul>
+<p>P步骤中计算量最大的部分是计算A-和更新Pu。 计算所有用户的A-和Pu分别花费O（TF^2）和O（UF^3）时间。对Q步骤的分析类似.于是,一次大循环的总时间是<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/0C8D62CE-8BF2-4A1E-9843-EC864F87C04F.png" alt=""><br>这和implicitALS是一样的.</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><hr>
+<p>数据集是雅虎music和Netflix数据集.其中,雅虎音乐有评分就是positive implicit feedback, netflix对评分为5的当做positive implicit feedback(设1),其余设0.</p>
+<p>做对比的有下面几种方法:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/F738115B-6853-428E-BCC3-701FB87C69B7.png" alt=""></p>
+<p>评价指标有下面三种:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/222306D7-388F-4C8A-8E42-E2C62B737B68.png" alt=""><br>其中ERRORRATE意思是,对用户推荐top<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/04B44F15-E121-480D-B8BB-1EA2DCB6DB3F.png" alt="">,然后计算Iu+(提供了positive反馈)不在之中的概率.ARP是Iu+的物品在所有物品I的排序中的平均位置.<br>对prediction任务fi()的c取c+=100,c-=1.</p>
+<p><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/1329096C-D3C4-4EA8-9579-B1534B0E0ECF.png" alt=""><br>夏敏再给出随着隐因子个数而变化的各个算法性能<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/4FC940CC-07CB-448E-806A-5F68C5CE59AD.png" alt=""></p>
+<p>并且,时间数据表明<strong>RankALS训练速度比RankSGD要慢不少,但是性能还是好一些</strong>.再说了,<strong>SGD方法还需要学习率这样的超参数</strong>….</p>
+<p>rankSGD在librec里也是实现了…</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -423,7 +1615,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">69</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

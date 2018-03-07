@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Slim: Sparse linear methods for top-n recommender systems2011数据集上测试了0/1数据集和rating数据集学的是物品间作用关系的向量 #推荐引擎/论文 ABSTRACT 提出一种新的SLIM方法,该方法通过aggeregate用户购买/评分档案来生成top n推荐.通过解决一个1范式和2范式正则化的优化问题来生辰过了一个::稀疏的聚合c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Slim: Sparse linear methods for top-n recommender systems2011数据集上测试了0/1数据集和rating数据集学的是物品间作用关系的向量 #推荐引擎/论文 ABSTRACT 提出一种新的SLIM方法,该方法通过aggeregate用户购买/评分档案来生成top n推荐.通过解决一个1范式和2范式正则化的优化问题来生辰过了一个::稀疏的聚合c">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/328D1526-9591-4A78-99C2-EA7A0141637E.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/0CE10767-BFAF-4D23-9BFD-BF558A935C80.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/06457A82-F833-419E-B214-8E5143F40757.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/C67D633D-8EE2-44C5-A447-929FD3434553.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/6976354E-87BF-4DE8-A067-5C8F2CF0EB06.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/FF40C549-30FE-4B07-BCA0-AA00C4BD8DC0.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/EE6328B9-B8CA-43C4-8414-412615501A6D.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/0EB70C70-D398-404A-9A25-2FE7B1534E77.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/D2CF2E33-98EA-4A2F-ABE2-9575D6FE6123.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/7AFB5611-A74F-48AB-87BD-C7427AF9A126.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/CA7F14EB-E4B1-49E9-A5B2-44FB35DCC27A.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/E26F52FF-F6E0-4F5D-A770-6AF17341777D.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/26CE3DE4-F61C-4F7C-8EC9-5D57357FA2C8.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/Coordinate_descent.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/Nonsmooth.jpg">
+<meta property="og:updated_time" content="2018-01-28T07:48:07.444Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Slim: Sparse linear methods for top-n recommender systems2011数据集上测试了0/1数据集和rating数据集学的是物品间作用关系的向量 #推荐引擎/论文 ABSTRACT 提出一种新的SLIM方法,该方法通过aggeregate用户购买/评分档案来生成top n推荐.通过解决一个1范式和2范式正则化的优化问题来生辰过了一个::稀疏的聚合c">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/22/Slim%20Sparse%20linear%20methods%20for%20top-n%20recommender%20systems2011/328D1526-9591-4A78-99C2-EA7A0141637E.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-22T19:35:22+08:00">
+                2018-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Slim-Sparse-linear-methods-for-top-n-recommender-systems2011"><a href="#Slim-Sparse-linear-methods-for-top-n-recommender-systems2011" class="headerlink" title="Slim: Sparse linear methods for top-n recommender systems2011"></a>Slim: Sparse linear methods for top-n recommender systems2011</h1><p>数据集上测试了0/1数据集和rating数据集<br>学的是物品间作用关系的向量</p>
+<p>#推荐引擎/论文</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>提出一种新的SLIM方法,该方法通过aggeregate用户购买/评分档案来生成top n推荐.通过解决一个1范式和2范式正则化的优化问题来生辰过了一个::稀疏的聚合coefficient矩阵W(不需要对称)::.其稀疏性使得W产生推荐::又快又好::.</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><hr>
+<p>这里目标是:为用户推荐一个排序好的列表,以鼓励<strong>additional purchases</strong>.这就造就了top-n推荐系统的广泛运用.基于邻居的和基于模型的算法运用的最广泛,基于邻居的做推荐很快,但是牺牲了一些推荐质量,而基于模型的相反.</p>
+<p>SLIM学习一个稀疏的稀疏矩阵,Feature selection methods使得SLIM能显著减少学习稀疏矩阵所需的时间.此外,SLIM::可以从rating数据中学些top-n推荐::.</p>
+<h2 id="RELATED-WORK"><a href="#RELATED-WORK" class="headerlink" title="RELATED WORK"></a>RELATED WORK</h2><hr>
+<p>基于邻居的方法能快速生成推荐的一个原因就是item neighborhood is sparse(不需要考虑到所有item).由于其并不了解item本身的某些特性,导致精度有时低.</p>
+<p>Top N推荐也被视为ranking问题。 Rendle等人提出了一个贝叶斯个性化排序（BPR）标准，它是贝叶斯分析的最大后验估计量，用来衡量用户购买物品和其他物品的排名之间的差异。 BPR可以很好地用于项目knn方法（BPRkNN）和矩阵分解方法（BPRMF）,作为一般目标函数。</p>
+<h2 id="定义和符号"><a href="#定义和符号" class="headerlink" title="定义和符号"></a>定义和符号</h2><hr>
+<p>u代表用户,t代表物品.U和T代表全集,用户共m个,物品n个.m*n的行为矩阵记为A,元素为1或者某个正值,表示用户购买/评分了物品,否则值是0. aiT表示用户哪一行,aj表示武平那一列.</p>
+<h2 id="SPARSE-LINEAR-METHODS-FOR-Top-N-RECOMMENDATION"><a href="#SPARSE-LINEAR-METHODS-FOR-Top-N-RECOMMENDATION" class="headerlink" title="SPARSE LINEAR METHODS FOR Top-N RECOMMENDATION"></a>SPARSE LINEAR METHODS FOR Top-N RECOMMENDATION</h2><hr>
+<p>在SLIM方法中,用户ui对物品tj(未购买/评分)的计算方法是,对用户已经购买/评分过的物品的一个sparse aggregation:<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/328D1526-9591-4A78-99C2-EA7A0141637E.png" alt="">………(1)<br>也就是用户i的行为向量与物品j在W中的列向量的<strong>点积</strong>,这相当于去补全A矩阵.<br>aij是=0的(没购买过),wj的含义是稀疏矩阵中各个物品对j的作用构成的列向量.所以,整个模型可以表示为:<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/0CE10767-BFAF-4D23-9BFD-BF558A935C80.png" alt="">………(2)<br>其中A~的每一行<img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/06457A82-F833-419E-B214-8E5143F40757.png" alt="">就代表了u对所有物品的recommendation score.做推荐就是基于recommendation score,对没购买过的物品排序,得出N个就是.</p>
+<p>现在要看看如何学习W.我们知道(2)式,所以我们解下面的优化目标<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/C67D633D-8EE2-44C5-A447-929FD3434553.png" alt=""><br>对上面正则项的解释是:<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/6976354E-87BF-4DE8-A067-5C8F2CF0EB06.png" alt=""><br>(3)的第一项::说明了sparse linear model对训练数据fit得多好.::而约束表示W表示的是positive relations between items,并且自己和自己的作用是0, 这确保aij不被用来计算˜aij.</p>
+<p>我们使用l1正则项来使得学到的矩阵尽量稀疏(推荐的时候会更快).另外,矩阵的l2正则项(lF)描述了魔心更复杂度,避免过拟合.由于W中的列向量们是::独立::的,所以优化问题可以解耦成一组优化问题:<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/FF40C549-30FE-4B07-BCA0-AA00C4BD8DC0.png" alt="">……(4)<br>这使得W的每一列可以分别(::并行::)计算.这个优化可以使用::坐标下降法::或者soft thresholding法解决.</p>
+<p>方程4中wj的估计可以看作是正则化回归问题的解，其中A的第j列是作为A的剩余n-1列（自变量x）的函数估计的因变量y。 这个观点表明::特征选择方法::可以地被用于在计算wj之前,以减少自变量的数量,加速SLIM训练.我们的特征选择方法是,由于目标是学习线性模型来估计A的第j列（即aj），因此::与aj最相似的A中的列::可以用作选择的特征。</p>
+<p>复杂度上,为ui做推荐的复杂度是<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/EE6328B9-B8CA-43C4-8414-412615501A6D.png" alt=""><br>nai是A中用户行不为0元素个数(用户作用过的元素个数),nw是W中每列的平均不为0元素个数,Nlog(N)是为了排序取Top-n</p>
+<p>下面看看SLIM和MF的联系.可以把SLIM看做MF的特殊情况(A就是U,而W是V)<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/0EB70C70-D398-404A-9A25-2FE7B1534E77.png" alt="">……(5),MF的形式<br>对应MF,U和V都是in latent space,而在SLIM中,latent space就是item space.这样,SLIM不需要学习user表示,学习过程简化了,由于U,V一般维度不高,所以可能<strong>丢失某些有用的信息.</strong>对SLIM,由于用户信息在A中完全保留,SLIM应该是可以给出更好的推荐.并且U,V在MF中是密集的,推荐的时候计算起来相对慢一些.</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><hr>
+<p>总共8个数据集,第一类包含购买记录,第二类包含ratings数据.::我们应用了5次Leave-One-Out交叉验证来评估SLIM方法的性能。::,其中测试集中每个用户都会有一个relevant项目以计算hit与否,使用Hit Rate和Average Reciprocal Hit-Rank,我们对其的定义是<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/D2CF2E33-98EA-4A2F-ABE2-9575D6FE6123.png" alt=""><br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/7AFB5611-A74F-48AB-87BD-C7427AF9A126.png" alt=""><br>::users:: is the total number of users, and  ::hits:: is the number of users whose item in the testing set is recommendedin the size-N recommendation list.而ARHR考虑到了推荐位置,其中pi是被hit物品推荐的位置(可见,若所有hit都在1位置,那么ARHR值==HR值).</p>
+<p>实验结果也得分对01数据集和rating数据集..从实验结果上来,总结为</p>
+<ol>
+<li>效果上一般比其他方法都要好</li>
+<li>速度上比一般MF方法要好,比KNN稍逊,但是这取决于数据集,通过特征选择方法可以提升.</li>
+</ol>
+<p>SLIM对长尾分布效果如何?把实验集中去除短头再测,它说的结果也是得到的HR比其他算法要好.然后,对于N取值,当推荐较小数量的项目时，SLIM比其他方法产生更好。这表明SLIM倾向于将最相关的项目排在高于其他方法的位置。</p>
+<p><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/CA7F14EB-E4B1-49E9-A5B2-44FB35DCC27A.png" alt=""><br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/E26F52FF-F6E0-4F5D-A770-6AF17341777D.png" alt=""><br>-b代表使用的是binary data,-r代表使用的是ratings data.</p>
+<h2 id="坐标下降法"><a href="#坐标下降法" class="headerlink" title="坐标下降法"></a>坐标下降法</h2><hr>
+<p><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/26CE3DE4-F61C-4F7C-8EC9-5D57357FA2C8.png" alt=""><br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/Coordinate_descent.jpg" alt=""><br>对于非平滑函数，坐标下降法可能会遇到问题。下图展示了当函数等高线非平滑时，算法可能在非驻点中断执行。(沿着两个方向走都走不到下一点,只能在原本这点困住)<br><img src="/2018/01/22/Slim Sparse linear methods for top-n recommender systems2011/Nonsmooth.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/22/Local Item-Item Models for Top-N Recommendation/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/22/Factored item similarity models for top-n recommender systems(FISM)2013/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Slim-Sparse-linear-methods-for-top-n-recommender-systems2011"><span class="nav-number">1.</span> <span class="nav-text">Slim: Sparse linear methods for top-n recommender systems2011</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ABSTRACT"><span class="nav-number">1.1.</span> <span class="nav-text">ABSTRACT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#INTRODUCTION"><span class="nav-number">1.2.</span> <span class="nav-text">INTRODUCTION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RELATED-WORK"><span class="nav-number">1.3.</span> <span class="nav-text">RELATED WORK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义和符号"><span class="nav-number">1.4.</span> <span class="nav-text">定义和符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SPARSE-LINEAR-METHODS-FOR-Top-N-RECOMMENDATION"><span class="nav-number">1.5.</span> <span class="nav-text">SPARSE LINEAR METHODS FOR Top-N RECOMMENDATION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">1.6.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#坐标下降法"><span class="nav-number">1.7.</span> <span class="nav-text">坐标下降法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

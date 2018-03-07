@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Beyond collaborative ﬁltering: The list recommendation problem#推荐引擎/论文 ABSTRACT 传统的CF算法适用isolated (u,i)元组进行优化,没有考虑到::物品间的交互::,然而，在商业应用中，推荐的项目通常作为几个项目的有序列表而不是孤立的项目.物品间交互当然会对推荐列表的点击率CTR产生影响.大多CF方法也忽略了如:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Beyond collaborative ﬁltering: The list recommendation problem#推荐引擎/论文 ABSTRACT 传统的CF算法适用isolated (u,i)元组进行优化,没有考虑到::物品间的交互::,然而，在商业应用中，推荐的项目通常作为几个项目的有序列表而不是孤立的项目.物品间交互当然会对推荐列表的点击率CTR产生影响.大多CF方法也忽略了如:">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/20BE3405-F54F-40AA-AE9A-B81B2D904E42.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/A489E3E3-868D-4747-9944-720390639814.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/096DC257-6437-4FC1-9C4C-4D46EF4AB5D8.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/C9BBDAE7-1DAD-4B9E-8528-BC09BB7050AC.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/195D46A8-91F6-4278-AE7D-5084C32C71F2.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/AC4141E4-B84F-41EB-ACEB-2CB392DCFC20.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/0975243A-BB4B-4BE2-B707-58E875CF97AC.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/8E638A6B-3EFF-4603-B75F-C5A8E4BC3855.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/3AE12737-D249-47CA-A001-B9307F88AD9B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/332D2ADC-4D94-4241-8072-941568D33025.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/DED5AB0B-59AC-43B0-A042-B35573D96DDD.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/4ADA6E90-EDFC-4340-990E-DC7D024FE8E1.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/FFC9FA3B-792D-4235-847A-836C60586D35.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/680CE77D-EAC1-4FEF-8250-8AEBC9F8E852.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/DB9C42F1-2629-4679-A202-DB75FE257359.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/912D5F57-27AA-43AD-8A48-1C098A22390C.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/F945984F-1310-4D7B-8252-BCAF140E2C4E.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/56E51148-D463-490C-8031-238C40DF8275.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/912D5F57-27AA-43AD-8A48-1C098A22390C.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/48A88216-11B8-4759-BA4B-B998BFE601F2.png">
+<meta property="og:updated_time" content="2018-01-29T09:36:40.523Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Beyond collaborative ﬁltering: The list recommendation problem#推荐引擎/论文 ABSTRACT 传统的CF算法适用isolated (u,i)元组进行优化,没有考虑到::物品间的交互::,然而，在商业应用中，推荐的项目通常作为几个项目的有序列表而不是孤立的项目.物品间交互当然会对推荐列表的点击率CTR产生影响.大多CF方法也忽略了如:">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/27/Beyond%20collaborative%20ﬁltering%20The%20list%20recommendation%20problem/20BE3405-F54F-40AA-AE9A-B81B2D904E42.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-27T13:34:53+08:00">
+                2018-01-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Beyond-collaborative-ﬁltering-The-list-recommendation-problem"><a href="#Beyond-collaborative-ﬁltering-The-list-recommendation-problem" class="headerlink" title="Beyond collaborative ﬁltering: The list recommendation problem"></a>Beyond collaborative ﬁltering: The list recommendation problem</h1><p>#推荐引擎/论文</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>传统的CF算法适用isolated (u,i)元组进行优化,没有考虑到::物品间的交互::,然而，在商业应用中，推荐的项目通常作为几个项目的有序列表而不是孤立的项目.物品间交互当然会对推荐列表的点击率CTR产生影响.大多CF方法也忽略了如::点击倾向变化，项目疲劳::等额外因素.</p>
+<p>在这项工作中，我们介绍::列表推荐问题::,提出了一个新的::双层框架::，建立在现有的CF算法上，以::优化列表(某种排序)的点击概率::。我们的方法考虑了项目间的相互作用以及诸如项目疲劳，趋势模式，情景信息等附加信息。</p>
+<blockquote>
+<p>就是使用了多种特征,包括上面讲的这几点,来做排序,然后和常规的重排序相比有些创新之处. 注意优化的目标是”用户点击list中某一item的概率y^”  </p>
+</blockquote>
+<h2 id="INTRODUCTION-AND-MOTIVATION"><a href="#INTRODUCTION-AND-MOTIVATION" class="headerlink" title="INTRODUCTION AND MOTIVATION"></a>INTRODUCTION AND MOTIVATION</h2><hr>
+<p>尽管已经研究了隐式反馈,冷启动,rank optimization等问题,独立的(u,i)元素优化仍然是主流.List推荐问题可以定义如下:给定用户u,时刻t,目标是产生一个ordered personlized的包含K个物品的list<img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/20BE3405-F54F-40AA-AE9A-B81B2D904E42.png" alt="">,使得::用户点击lut中物品的概率最大化.::.(同样K个物品,排列不同,概率也不同).这个和LTR for collaborative ﬁltering也不同,LTR是训练pairwise关系,只关心(i,i)忽略了::物品间更深层交互::.</p>
+<blockquote>
+<p>换句话说,他就是觉得一般的LTR使用的特征不够  </p>
+</blockquote>
+<p>我们的研究有几个好地方</p>
+<ol>
+<li>lut的预期CTR依赖于diversity, item fatigue, contextual factors等而不仅仅是user-item ratings.(<strong>用的特征多</strong>)</li>
+<li>一般研究认为accuracy和diversity之间有trade-off,而我们::把diversity和accuracy一同优化.::(<strong>策略上,不一定点击率高的就推荐</strong>)</li>
+<li>协同过滤的许多排序方法尝试对整个目录进行排序，我们::只对提供给用户的K个项目列表进行优化。::,并且,不假设(排在前面的就比排在后面的好),而是根据项目间交互需学习最好的排序组合.</li>
+</ol>
+<p>我们假设已经有协同过滤(rating prediction)的实现,作为系统第一层,也作为我们系统第二层的feature输入,第二层使用不同的数据集(比如01binary数据),比如在[17]中,第二层也学习一个矩阵分解模型.</p>
+<p>终极目标是提升推荐列表的CTR. 基于我们的经验,CF在学习taste方面很有效但是对优化点击率没啥意思.这两层结构有效地从第一个数据集提取相关信息，以改善第二个数据集的预测。</p>
+<blockquote>
+<p>motivation就是觉得现有的模型挖掘交互关系还不够,我们挖一下就能有提升.  </p>
+</blockquote>
+<h2 id="RELATED-WORK"><a href="#RELATED-WORK" class="headerlink" title="RELATED WORK"></a>RELATED WORK</h2><hr>
+<p>List推荐问题与top-K优化有关,大多数工作借用了搜索问题的ranking技术,并且作为MF的拓展,::修改MF的损失函数来适应排序任务::.然而，在这种模式中，孤立的(u,i)元组相互排列，而不是将整个推荐列表视为优化的目标,还忽略了很多其他因素.另外,最好的推荐item应该放在第一个吗?比如垂直layout列表,放在中心可能更好.本文中,::在本文中，我们学习如何优化K个项目的有序组合，而无需对项目进行排序::</p>
+<p>更多的就不详写了.</p>
+<h2 id="DATASET"><a href="#DATASET" class="headerlink" title="DATASET"></a>DATASET</h2><hr>
+<p>第一层使用purchase data训练CF来预测ratings.第一层的预测作为第二层的特征.第二层使用clicks data(推荐列表有没有被点击). 在每次展示之前，两个列表(main dash 和recommendation dash)都会使用第一层的预测项目分数来刷新,在我们的方法中,现在使用::监督学习::的方法来进行刷新。<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/A489E3E3-868D-4747-9944-720390639814.png" alt=""></p>
+<p>一个展示就叫一次<strong>impression</strong>. main dash数据包括1406470用户的5339456次impression,10%作为测试集.recommendation dash有1423640用户的6319843次impression. 最后我们通过对导致了一个click的impression标1,否则表0来创造binary数据集.</p>
+<p>Main Dash是被动推荐,CTR通常很低,因此我们通过uniformly sampling the negative impressions for each user来创建一个平衡的数据集.而recommendation dash的CTR高一点,不需要数据集平衡,列表长度也不一样.</p>
+<h2 id="INSIGHTS"><a href="#INSIGHTS" class="headerlink" title="INSIGHTS"></a>INSIGHTS</h2><hr>
+<blockquote>
+<p>这里的东西还是有价值,这种分析就决定了在模型中需要使用哪些matters的特征  </p>
+</blockquote>
+<h3 id="Inter-item-Similarity-Interactions"><a href="#Inter-item-Similarity-Interactions" class="headerlink" title="Inter-item Similarity Interactions"></a>Inter-item Similarity Interactions</h3><p><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/096DC257-6437-4FC1-9C4C-4D46EF4AB5D8.png" alt=""><br>推荐一个大小为K的列表通常与Top-K项目的ranking非常不同。 一个关键的区别是::项目的相关性不是独立的::，多样性/相似性在确定列表的点击概率方面起着重要的作用。<br>对main dash中两个slot,上面那个的结果是,predicted 与CTR一般正相关,但是和本项目与下面项目的相关性没啥关系.对于下面的项目就不一样了.对高评分最好推荐相似的,对低评分,就最好推荐diversity(与上面项目相关).这也合理,因为用户通常先看上面项目,所以上面项目的CTR与下面项目无关,但是下面的与上面有关.</p>
+<blockquote>
+<p>意思就是top k里只要考虑每个项目的分数,谁该在前面谁在后面,但其实应该概率这些项目的相互作用,比如整体就这样排是不是好,对多样性,相似性又有什么影响.  </p>
+</blockquote>
+<h3 id="Item-Fatigue"><a href="#Item-Fatigue" class="headerlink" title="Item Fatigue"></a>Item Fatigue</h3><p>这和做生意的推荐系统有关,不过可以看看.意思就是,你老是展示同样的东西,在展示了一些次后,很可能用户看着就烦了,CTR就降低.<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/C9BBDAE7-1DAD-4B9E-8528-BC09BB7050AC.png" alt=""><br>上图的统计数据显示,The item-fatigue is not always inversely correlated with the click probability.对不同的推荐系统,甚至不同的用户物品,都::存在一个阈值::,超过这个值次数的impression会导致CTR下降.所以我们也是需要考虑这个因素的.</p>
+<h3 id="CTR-Variations-by-Time-of-Day"><a href="#CTR-Variations-by-Time-of-Day" class="headerlink" title="CTR Variations by Time of Day"></a>CTR Variations by Time of Day</h3><p><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/195D46A8-91F6-4278-AE7D-5084C32C71F2.png" alt=""><br>这个表说明的是在一天的6个时段(4小时一个)中,有多少用户在该时段拥有高CTR比例.说明::many users have one or more preferred time-slots in which their consumption of recommendations are considerably higher than in other time-slots::</p>
+<h2 id="METHODOLOGY"><a href="#METHODOLOGY" class="headerlink" title="METHODOLOGY"></a>METHODOLOGY</h2><hr>
+<p>第二层的目标就是优化recommendation list的CTR. 数据集中→impression被点击没可以打上0/1标签,我们使用一个context feature vector来表示一次impression:<img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/AC4141E4-B84F-41EB-ACEB-2CB392DCFC20.png" alt="">,u表示用户,l表示list, t表示时间.<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/0975243A-BB4B-4BE2-B707-58E875CF97AC.png" alt="">是标签,为1就是u在t时刻点击了l中某一item,否则y=-1;我们学习一个<img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/8E638A6B-3EFF-4603-B75F-C5A8E4BC3855.png" alt="">来预测y^∈[-1,+1].(二分类问题)</p>
+<p>模型上使用GBDT.选择GBDT的原因是其可以捕捉”complex feature interactions”以及” non-linearities with respect to the click probability”<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/3AE12737-D249-47CA-A001-B9307F88AD9B.png" alt=""><br>损失函数L是::binomial deviance loss function::,其形式是:<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/332D2ADC-4D94-4241-8072-941568D33025.png" alt=""><br>基学习器数量和叶子数通过交叉验证来选一个.</p>
+<p>下面需要做::特征提取::,看看x向量是怎么构成的.</p>
+<p>最开始的时候,我们首先把第一层预测得分称为ruj,表示u对list中j位置的item的predict rating.由于第一层召回的就是K个,于是我们前k个特征就是这些评分(顺序就是训练样本list的顺序):<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/DED5AB0B-59AC-43B0-A042-B35573D96DDD.png" alt=""><br>而现在,ruj是probabilities for the user to purchase the item,值是由对probabilistic矩阵分解得到的.[17]<a href="One-class collaborative ﬁltering with random graphs.">One-class collaborative ﬁltering with random graphs.</a></p>
+<p>对于Similarity/ Diversity Features,我们队item-to-item similarity进行建模,我们使用0/1数据上的Jaccard相似度,其中Ui表示买了i的人数.<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/4ADA6E90-EDFC-4340-990E-DC7D024FE8E1.png" alt=""><br>本来对于K而言,会有CK2个特征,但是通过特征选择我们发现,::采用list中相邻项目之间的相似度已经是足够的::.加上后的特征向量是这样<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/FFC9FA3B-792D-4235-847A-836C60586D35.png" alt=""></p>
+<p>对于Item Fatigue,我们一个特征是前几周中i被expose to u的次数,<img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/680CE77D-EAC1-4FEF-8250-8AEBC9F8E852.png" alt="">,另一个是上一次impression至今的时间(分钟).使用<img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/DB9C42F1-2629-4679-A202-DB75FE257359.png" alt="">表示.这两就有2K个feature.就接在刚才这个特征向量后面就好.</p>
+<p>对于Trendiness and Temporal Features,首先包括物品发布天数(一般越新越吸引人),其次包括是否周末的01指示feature,最后包括用户统计出来的六个时段特性(对用户最喜欢的时段打1)</p>
+<p>另外,还有User Features.包括用户购买物品的平均发布天数,用户买物品的价格和用户购买均价之差.</p>
+<p>注意,这些特征的排列位置都有讲究,符合训练样本的list中的顺序.</p>
+<p><strong>上线之后,应该就遍历各种排列方法,计算y^,listwise LTR应该也是这个意思</strong></p>
+<h2 id="List-Recommendation-Policy"><a href="#List-Recommendation-Policy" class="headerlink" title="List Recommendation Policy"></a>List Recommendation Policy</h2><hr>
+<p>我们并不把y^最高的展示出去,因为那样缺乏新颖性,导致fatigue,我们使用<img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/912D5F57-27AA-43AD-8A48-1C098A22390C.png" alt="">表示推荐策略,<img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/F945984F-1310-4D7B-8252-BCAF140E2C4E.png" alt="">表示u在t时刻被展示一个列表l的概率.这个概率能计算为<br><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/56E51148-D463-490C-8031-238C40DF8275.png" alt=""><br>The non-negative parameter α controls exploitation with α = 0 for uniform sampling and α → +∞ for maximal exploitation.</p>
+<p>不过这是有概率推荐不好的东西的,接下来还有改进,这个初始配方推断了许多未观察到的列表组合的预测。他的改进是融合之前的启发式策略,规定<img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/912D5F57-27AA-43AD-8A48-1C098A22390C.png" alt="">使用的策略只能是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">we constrain Φ to use similar heuristics as Π which will prevent it from extrapolating predictions over lists that were never observed in the past. We denote by L u ⊂ L the subset of lists that user u was exposed to by Π, and alter our deﬁnition of Φ to consider only lists in Lu as follows:</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/48A88216-11B8-4759-BA4B-B998BFE601F2.png" alt=""></p>
+<h2 id="研究"><a href="#研究" class="headerlink" title="研究"></a>研究</h2><hr>
+<ol>
+<li>其所说的item-item-relationship,我理解是::要注意推荐列表后面的item怎么样是和前面item有关的,而前面的一般和后面无关,当然,这跟layout有关.可以考虑进来.(呼叫中心中不要老揣测用户的同一心思,万一它不是要干这个呢,这要根据用户的历史行为来看(可以反映到recommendation score上))::</li>
+<li>关于这里的损失函数,参考<a href="bear://x-callback-url/open-note?id=9F4CFCBE-34D1-4CEB-A86F-A1F0064ED504-5950-0000836043C109C7" target="_blank" rel="noopener">各种损失函数</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/26/Past, Present, and Future of Recommender Systems An Industry Perspective/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/27/Alternating Least Squares for Personalized Ranking/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Beyond-collaborative-ﬁltering-The-list-recommendation-problem"><span class="nav-number">1.</span> <span class="nav-text">Beyond collaborative ﬁltering: The list recommendation problem</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ABSTRACT"><span class="nav-number">1.1.</span> <span class="nav-text">ABSTRACT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#INTRODUCTION-AND-MOTIVATION"><span class="nav-number">1.2.</span> <span class="nav-text">INTRODUCTION AND MOTIVATION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RELATED-WORK"><span class="nav-number">1.3.</span> <span class="nav-text">RELATED WORK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DATASET"><span class="nav-number">1.4.</span> <span class="nav-text">DATASET</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#INSIGHTS"><span class="nav-number">1.5.</span> <span class="nav-text">INSIGHTS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Inter-item-Similarity-Interactions"><span class="nav-number">1.5.1.</span> <span class="nav-text">Inter-item Similarity Interactions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Item-Fatigue"><span class="nav-number">1.5.2.</span> <span class="nav-text">Item Fatigue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CTR-Variations-by-Time-of-Day"><span class="nav-number">1.5.3.</span> <span class="nav-text">CTR Variations by Time of Day</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#METHODOLOGY"><span class="nav-number">1.6.</span> <span class="nav-text">METHODOLOGY</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List-Recommendation-Policy"><span class="nav-number">1.7.</span> <span class="nav-text">List Recommendation Policy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#研究"><span class="nav-number">1.8.</span> <span class="nav-text">研究</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

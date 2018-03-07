@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Deep Neural Networks for YouTube Recommendations#推荐引擎/论文 在本文中,首先，我们详细描述一个::深度候选生成模型::，然后描述一个单独的::深度排序模型::。 youtube推荐算法需要关注几个方面  规模:很多推荐算法在如此的规模上难以运行,需要Highly specialized distributed learning algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/22/Deep Neural Networks for YouTube Recommendations/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Deep Neural Networks for YouTube Recommendations#推荐引擎/论文 在本文中,首先，我们详细描述一个::深度候选生成模型::，然后描述一个单独的::深度排序模型::。 youtube推荐算法需要关注几个方面  规模:很多推荐算法在如此的规模上难以运行,需要Highly specialized distributed learning algorithm">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Deep%20Neural%20Networks%20for%20YouTube%20Recommendations/E810C952-1CED-46C7-91BC-BB7A77E38225.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Deep%20Neural%20Networks%20for%20YouTube%20Recommendations/57103E06-37C7-49D8-BFA8-1C27B0980C81.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Deep%20Neural%20Networks%20for%20YouTube%20Recommendations/BB87A64B-3DAD-4127-9165-D5A8873E60B5.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Deep%20Neural%20Networks%20for%20YouTube%20Recommendations/3259CBFB-E46B-42C4-9388-0A0AD11593B9.png">
+<meta property="og:updated_time" content="2018-01-22T06:57:53.419Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Deep Neural Networks for YouTube Recommendations#推荐引擎/论文 在本文中,首先，我们详细描述一个::深度候选生成模型::，然后描述一个单独的::深度排序模型::。 youtube推荐算法需要关注几个方面  规模:很多推荐算法在如此的规模上难以运行,需要Highly specialized distributed learning algorithm">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/22/Deep%20Neural%20Networks%20for%20YouTube%20Recommendations/E810C952-1CED-46C7-91BC-BB7A77E38225.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/22/Deep Neural Networks for YouTube Recommendations/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/22/Deep Neural Networks for YouTube Recommendations/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-22T12:23:10+08:00">
+                2018-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Deep-Neural-Networks-for-YouTube-Recommendations"><a href="#Deep-Neural-Networks-for-YouTube-Recommendations" class="headerlink" title="Deep Neural Networks for YouTube Recommendations"></a>Deep Neural Networks for YouTube Recommendations</h1><p>#推荐引擎/论文</p>
+<p>在本文中,首先，我们详细描述一个::深度候选生成模型::，然后描述一个单独的::深度排序模型::。</p>
+<p>youtube推荐算法需要关注几个方面</p>
+<ol>
+<li>规模:很多推荐算法在如此的规模上难以运行,需要<strong>Highly specialized distributed learning algorithms</strong></li>
+<li>新物品非常多,需要及时对新内容和用户新动作建模.</li>
+<li>只能获得有噪声的隐式反馈信号,算法应该对此具有鲁棒性</li>
+</ol>
+<h2 id="OverView"><a href="#OverView" class="headerlink" title="OverView"></a>OverView</h2><hr>
+<p><img src="/2018/01/22/Deep Neural Networks for YouTube Recommendations/E810C952-1CED-46C7-91BC-BB7A77E38225.png" alt=""><br>蓝色的是两个神经网络.第一个的输入是::用户YouTube活动历史中的事件,每个事件(用户U和上下文C的条件下,对用户在t时刻的一次观看wt)就是个样本呗::,输出是::从大型语料库中检索出的一小部分（数百个）视频::,这些检索出的视频通常::高度精确地与用户相关::.<br>The candidate generation network only provides broad personalization via <strong>collaborative ﬁltering</strong>. The similarity between users is expressed in terms of coarse features such as IDs of video watches, search query tokens and 人口学特征.</p>
+<p>排名模块会对每个video,建模丰富的用户物品特征,依照desired 目标函数对video打分,然后rank by score,把高分视频推荐给用户.</p>
+<p>在开发过程中，我们广泛使用了度量指标（::精度，召回率，ranking loss::等）来指导我们系统的迭代改进。</p>
+<h2 id="CANDIDATE-GENERATION-…"><a href="#CANDIDATE-GENERATION-…" class="headerlink" title="CANDIDATE GENERATION(….)"></a>CANDIDATE GENERATION(….)</h2><hr>
+<p>把问题看做一个extreme分类问题,可以描述为</p>
+<blockquote>
+<p>为用户U和上下文C的条件下,对用户在t时刻的一次观看wt,在语料库V的millions个类别i中进行分类,看wt属于哪一类(用户u看过一些视频后，我们需要预测用户下一个要看的视频是100万分类中的哪一个分类？)<br><img src="/2018/01/22/Deep Neural Networks for YouTube Recommendations/57103E06-37C7-49D8-BFA8-1C27B0980C81.png" alt="">…………(1)<br>从公式可以看出这是个使用了softmax输出层的多分类问题.softmax层的输入就是vi*u,其中u 代表::a high-dimensional“embedding”of the &lt;user,context&gt;::,vi是每个candidate video的embedding(提前根据video信息做好了). </p>
+</blockquote>
+<p>所以DNN的目标就是在用户信息和上下文信息为输入条件下::学习用户的embedding向量::,学到了u你就可以计算vi*u,于是就可以通过softmax输出(1)</p>
+<p>考虑训练数据,使用隐式反馈来训练这个,只取完成了观看的事件作为样本.一条训练数据可以描述为(u1,c1,5)(用户u1在上下文c1的情况下观看了类别为5的视频).</p>
+<p>在服务的时候,我们需要::计算最有可能的N个类（视频），以便选择前N个呈现给用户::。在数十毫秒的严格服务延迟下对数百万项目进行评分，::需要在类别数量上有近似线性时间的评分方案::。以前的YouTube系统依赖于::哈希::[24]，这里描述的分类器使用类似的方法。由于softmax输出层的校准可能性在服务时间是不需要的，因此::得分问题可以简化为点积空间中的最近邻点搜索::.(把user vector和video vector用某种计算快速地做类似KNN的计算就得到了候选集).</p>
+<h3 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h3><p><img src="/2018/01/22/Deep Neural Networks for YouTube Recommendations/BB87A64B-3DAD-4127-9165-D5A8873E60B5.png" alt=""><br>底层对video watches和search tokens(当然很稀疏)做embedding,也包括一些其他特征的embedding,形成一个::比较dense的特征向量::,代表(用户特征与上下文特征)</p>
+<h2 id="Ranking"><a href="#Ranking" class="headerlink" title="Ranking"></a>Ranking</h2><hr>
+<p>We use a deep neural network with similar architecture as candidate generation to assign an independent score to each video impression using logistic regression,并且测试指标是”a simple function of expected watch time per impression”</p>
+<p>此处的问题是,建模预计的观看时长,ReLu输出的自然也可以看做”精炼后的特征.”</p>
+<p>训练数据的选取上以有没有点击来划分正负样本，正样本根据播放时长进行加权，正样本的权重是播放时长 Ti，负样本权重是1.(其实也就是样本的回归值) 拟合逻辑回归的函数(Wx+b)就好,然后线上的时候根据e^(f)来预测观看时间,根据这个排名就好.<br><img src="/2018/01/22/Deep Neural Networks for YouTube Recommendations/3259CBFB-E46B-42C4-9388-0A0AD11593B9.png" alt=""><br>前面有<strong>复杂的特征工程</strong>…特征怎么选,有通用经验,当然也和业务相关..</p>
+<p>更细节的部分不探讨先.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/18/Ad Click Prediction a View from the Trenches/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/22/上下文推荐系统/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Deep-Neural-Networks-for-YouTube-Recommendations"><span class="nav-number">1.</span> <span class="nav-text">Deep Neural Networks for YouTube Recommendations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OverView"><span class="nav-number">1.1.</span> <span class="nav-text">OverView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CANDIDATE-GENERATION-…"><span class="nav-number">1.2.</span> <span class="nav-text">CANDIDATE GENERATION(….)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型结构"><span class="nav-number">1.2.1.</span> <span class="nav-text">模型结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ranking"><span class="nav-number">1.3.</span> <span class="nav-text">Ranking</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

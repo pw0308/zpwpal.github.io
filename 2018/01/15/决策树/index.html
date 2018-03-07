@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="决策树#推荐引擎/论文 GBDT(Gradient Boosting Decision Tree) 又叫 MART（Multiple Additive Regression Tree)，是一种迭代的决策树算法，该算法由多棵决策树组成，所有树的结论累加起来做最终答案。它在被提出之初就和SVM一起被认为是泛化能力较强的算法。 GBDT是一种回归树 GBDT的思想使其具有天然优势可以发现多种有区分性的特">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/15/决策树/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="决策树#推荐引擎/论文 GBDT(Gradient Boosting Decision Tree) 又叫 MART（Multiple Additive Regression Tree)，是一种迭代的决策树算法，该算法由多棵决策树组成，所有树的结论累加起来做最终答案。它在被提出之初就和SVM一起被认为是泛化能力较强的算法。 GBDT是一种回归树 GBDT的思想使其具有天然优势可以发现多种有区分性的特">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/决策树/B04B16CD-E09A-43E7-B999-D4E7A1F055E3.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/决策树/446468CF-EDCB-4FC8-9611-DED542E7C9CD.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/决策树/967544-4e70966cd8a4cdf9.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/决策树/967544-1502996028c98f08.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/决策树/967544-37a15b71dc6f6ca3.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/决策树/349DB282-6F49-4C36-85F2-0B6F0891E13F.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/决策树/F8686924-1A85-43BB-8B24-1E73136164D7.png">
+<meta property="og:updated_time" content="2018-01-15T11:39:00.944Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="决策树#推荐引擎/论文 GBDT(Gradient Boosting Decision Tree) 又叫 MART（Multiple Additive Regression Tree)，是一种迭代的决策树算法，该算法由多棵决策树组成，所有树的结论累加起来做最终答案。它在被提出之初就和SVM一起被认为是泛化能力较强的算法。 GBDT是一种回归树 GBDT的思想使其具有天然优势可以发现多种有区分性的特">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/15/决策树/B04B16CD-E09A-43E7-B999-D4E7A1F055E3.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/15/决策树/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/15/决策树/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T18:21:21+08:00">
+                2018-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h1><p>#推荐引擎/论文</p>
+<p>GBDT(Gradient Boosting Decision Tree) 又叫 MART（Multiple Additive Regression Tree)，是一种迭代的决策树算法，该算法由多棵决策树组成，所有树的结论累加起来做最终答案。它在被提出之初就和SVM一起被认为是泛化能力较强的算法。</p>
+<p>GBDT是一种<strong>回归树</strong></p>
+<p>GBDT的思想使其具有天然优势可以发现多种有区分性的特征以及特征组合。业界中，Facebook使用其来<strong>自动发现有效的特征、特征组合</strong>，来作为LR模型中的特征，以提高 CTR预估（Click-Through Rate Prediction）的准确性.</p>
+<h2 id="Regression-Decision-Tree：回归树"><a href="#Regression-Decision-Tree：回归树" class="headerlink" title="Regression Decision Tree：回归树"></a>Regression Decision Tree：回归树</h2><hr>
+<p>回归树总体流程类似于分类树，区别在于，<strong>回归树的每一个节点都会得一个预测值</strong>，以年龄为例，该预测值等于属于这个节点的所有人年龄的平均值。分枝时穷举每一个feature的每个阈值找最好的分割点，但<strong>衡量最好的标准不再是最大熵，而是最小化平方误差</strong>。也就是被预测出错的人数越多，错的越离谱，平方误差就越大，通过最小化平方误差能够找到最可靠的分枝依据。分枝直到每个叶子节点上人的年龄都唯一或者达到预设的终止条件(如叶子个数上限)，若最终叶子节点上人的年龄不唯一，则以该节点上所有人的平均年龄做为该叶子节点的预测年龄.</p>
+<p><img src="/2018/01/15/决策树/B04B16CD-E09A-43E7-B999-D4E7A1F055E3.png" alt=""></p>
+<h2 id="Boosting-Decision-Tree：提升决策树"><a href="#Boosting-Decision-Tree：提升决策树" class="headerlink" title="Boosting Decision Tree：提升决策树"></a>Boosting Decision Tree：提升决策树</h2><hr>
+<p>提升树是迭代多棵回归树来共同决策。当采用平方误差损失函数时，<strong>每一棵回归树学习的是之前所有树的结论和残差，拟合得到一个当前的残差回归树</strong>，<strong>残差的意义如公式：残差 = 真实值 - 预测值</strong> 。提升树即是整个迭代过程生成的回归树的累加。</p>
+<p>训练一个提升树模型来预测年龄. 训练集是4个人，A，B，C，D年龄分别是14，16，24，26。样本中有购物金额、上网时长、经常到百度知道提问等特征。提升树的过程如下：<br><img src="/2018/01/15/决策树/446468CF-EDCB-4FC8-9611-DED542E7C9CD.png" alt=""><br>那么你要预测年龄的话,对A(age14)来说,其购物金额&lt;1k,于是对第一颗树,预测值是15,然后对第二颗树,其不经常提问,所以预测值是-1…所以,<strong>预测值等于所有树值得累加</strong>,于是age(A)=14.</p>
+<p>所以做提升树的过程是.<br><img src="/2018/01/15/决策树/967544-4e70966cd8a4cdf9.png" alt=""><br>fi(x)代表前i棵决策树对样本x的预测值. 于是,(2)解释为,计算样本y值与前m-1棵树预测值的残差,然后拟合残差得到第m个决策树,<strong>然后,更新前m棵决策树对x的总预测值.</strong></p>
+<p>为什么要使用Boosting Tree? 答案是<strong>过拟合</strong>。过拟合是指为了让训练集精度更高，学到了很多”仅在训练集上成立的规律“，导致换一个数据集当前规律就不适用了(模型的方差更大)。也就是说,单一决策树可能要用到更多的feature,而boosting树一般分支涵括的feature更少,(模型更简单一点就不会那么过拟合).</p>
+<p> Boosting的最大好处在于，每一步的残差计算其实变相地增大了分错instance的权重，而已经分对的instance则都趋向于0。这样后面的树就能越来越专注那些前面被分错的instance。</p>
+<h2 id="GBDT-梯度提升决策树"><a href="#GBDT-梯度提升决策树" class="headerlink" title="GBDT 梯度提升决策树"></a>GBDT 梯度提升决策树</h2><hr>
+<p>梯度肯定是相对于损失函数而言的,使用不同的损失函数,其对自变量的梯度不同,以下给出几个常用的.<br><img src="/2018/01/15/决策树/967544-1502996028c98f08.png" alt=""><br>可以看见,如果使用<strong>MSE</strong>作为loss function,其对输入f(xi)的梯度就是<strong>残差</strong></p>
+<p>但对于一般的损失函数，往往每一步优化没那么容易，如上图中的绝对值损失函数和Huber损失函数。针对这一问题，Freidman提出了梯度提升算法：利用最速下降的近似方法，即利用损失函数的负梯度在当前模型的值，作为回归问题中提升树算法的残差的近似值，拟合一个回归树<br><img src="/2018/01/15/决策树/967544-37a15b71dc6f6ca3.png" alt=""></p>
+<ol>
+<li>初始化，估计使损失函数极小化的常数值，它是只有一个根节点的树，即ganma是一个常数值。</li>
+<li><ol>
+<li>计算损失函数的负梯度在当前模型的值，将它作为残差的估计</li>
+<li>估计回归树叶节点区域，以拟合残差的近似值</li>
+<li>利用线性搜索估计叶节点区域的值，使损失函数极小化</li>
+<li>更新回归树</li>
+</ol>
+</li>
+<li>得到输出的最终模型 f(x)<br>….看不明白</li>
+</ol>
+<p>GBDT几乎可用于所有回归问题（线性/非线性），相对logistic regression仅能用于线性回归，GBDT的适用面非常广。亦可用于二分类问题（设定阈值，大于阈值为正例，反之为负例）。</p>
+<h2 id="Tencent文章"><a href="#Tencent文章" class="headerlink" title="Tencent文章"></a>Tencent文章</h2><p>基于梯度提升算法的学习器叫做 GBM(Gradient Boosting Machine)。理论上，GBM 可以选择各种不同的学习算法作为基学习器。GBDT 实际上是 GBM 的一种情况。</p>
+<p><strong>为什么梯度提升方法倾向于选择决策树作为基学习器呢？</strong>(也就是 GB 为什么要和 DT 结合，形成 GBDT) 决策树可以认为是 if-then 规则的集合，易于理解，可解释性强，预测速度快。同时，决策树算法相比于其他的算法需要更少的特征工程，比如可以不用做特征标准化，可以很好的处理字段缺失的数据，也可以不用关心特征间是否相互依赖等。决策树能够自动组合多个特征。</p>
+<p>不过，单独使用决策树算法时，有容易过拟合缺点。所幸的是，通过各种方法，抑制决策树的复杂性，降低单颗决策树的拟合能力，再通过梯度提升的方法集成多个决策树，最终能够很好的解决过拟合的问题。由此可见，梯度提升方法和决策树学习算法可以互相取长补短，是一对完美的搭档。</p>
+<p>至于抑制单颗决策树的复杂度的方法有很多，比如限制树的最大深度、限制叶子节点的最少样本数量、限制节点分裂时的最少样本数量等等….</p>
+<p>GBDT 算法可以看成是由 K 棵树组成的加法模型：<br><img src="/2018/01/15/决策树/349DB282-6F49-4C36-85F2-0B6F0891E13F.png" alt=""></p>
+<p>如何来学习加法模型呢？<br>解这一优化问题，可以用前向分布算法（forward stagewise algorithm）。因为学习的是加法模型，如果能够从前往后，每一步只学习一个基函数及其系数（结构），逐步逼近优化目标函数，那么就可以简化复杂度。这一学习过程称之为 Boosting。具体地，我们从一个常量预测开始，每次学习一个新的函数，过程如下：</p>
+<p><img src="/2018/01/15/决策树/F8686924-1A85-43BB-8B24-1E73136164D7.png" alt=""><br>因此，<strong>使用平方损失函数时，GBDT 算法的每一步在生成决策树时只需要拟合前面的模型的残差。</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/15/Introduction to Restricted Boltzmann Machines/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/15/GDBT学习/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#决策树"><span class="nav-number">1.</span> <span class="nav-text">决策树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Regression-Decision-Tree：回归树"><span class="nav-number">1.1.</span> <span class="nav-text">Regression Decision Tree：回归树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Boosting-Decision-Tree：提升决策树"><span class="nav-number">1.2.</span> <span class="nav-text">Boosting Decision Tree：提升决策树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GBDT-梯度提升决策树"><span class="nav-number">1.3.</span> <span class="nav-text">GBDT 梯度提升决策树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tencent文章"><span class="nav-number">1.4.</span> <span class="nav-text">Tencent文章</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Collaborative Filtering for Implicit Feedback Datasets#推荐引擎/论文 采用的是有数值的隐数据 数值以行为不同而不同 然后有数值者标记为1 否则为0 在综合可信度 优化的时候综合标记和可信度优化 在这文章中,我们提出把数据当做indication of positive and negative preference,并给出不同的置信度,进而给">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Collaborative Filtering for Implicit Feedback Datasets#推荐引擎/论文 采用的是有数值的隐数据 数值以行为不同而不同 然后有数值者标记为1 否则为0 在综合可信度 优化的时候综合标记和可信度优化 在这文章中,我们提出把数据当做indication of positive and negative preference,并给出不同的置信度,进而给">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2014.53.32.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2014.54.11.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2014.58.54.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.38.30.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.39.36.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.46.34.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.50.14.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.30.58.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2016.03.03.png">
+<meta property="og:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2016.06.02.png">
+<meta property="og:updated_time" content="2018-01-30T17:44:28.484Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Collaborative Filtering for Implicit Feedback Datasets#推荐引擎/论文 采用的是有数值的隐数据 数值以行为不同而不同 然后有数值者标记为1 否则为0 在综合可信度 优化的时候综合标记和可信度优化 在这文章中,我们提出把数据当做indication of positive and negative preference,并给出不同的置信度,进而给">
+<meta name="twitter:image" content="http://yoursite.com/2017/11/29/Collaborative%20Filtering%20for%20Implicit%20Feedback%20Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2014.53.32.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-29T11:03:25+08:00">
+                2017-11-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Collaborative-Filtering-for-Implicit-Feedback-Datasets"><a href="#Collaborative-Filtering-for-Implicit-Feedback-Datasets" class="headerlink" title="Collaborative Filtering for Implicit Feedback Datasets"></a>Collaborative Filtering for Implicit Feedback Datasets</h1><p>#推荐引擎/论文</p>
+<p>采用的是有数值的隐数据 数值以行为不同而不同 然后有数值者标记为1 否则为0 在综合可信度 优化的时候综合标记和可信度优化</p>
+<p>在这文章中,我们提出把数据当做indication of positive and negative preference,并给出不同的<strong>置信度</strong>,进而给出一个因子模型.并且还建议了一种scalable optimizaion procedure,其和数据大小scales linearly. 最后,还给出了一种新颖的方式来解释因子模型给出的推荐.</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>一个隐式反馈:一个买了很多某作者书的人可能就喜欢这个作者,在此,buy就是隐式反馈.作为本文的例子,研究了一个TV show推荐,没有显式反馈,只能分析<strong>watching habit</strong>s of 匿名用户.隐式反馈的主要特征:</p>
+<ol>
+<li>无negative feedback.</li>
+<li>隐式反馈is inherently <strong>noisy</strong>.比如在电商中,”view”行为就不能说明啥.看一个节目看的久也可能是用户睡着了..</li>
+<li>numerical在显式反馈中表示喜好,而在隐式反馈中表示<strong>置信度</strong>.其表示了action的frequency,比如看show的时间,用户买一个东西的频率.大value并不就表示higher preference.比如用户最爱的电影他可能就只看一次,但是一个普通的series show他每周都要看.但是也是能说明置信度的:A one time event might be caused by various reasons that have nothing to do with user preferences. However, a recurring event is <strong>more likely(而非一定)</strong> to reﬂect the user opinion.</li>
+<li>对隐式反馈推荐系统的评估需要合适方法.</li>
+</ol>
+<h2 id="Preliminaries"><a href="#Preliminaries" class="headerlink" title="Preliminaries"></a>Preliminaries</h2><blockquote>
+<p>The input data associate users and items through <strong>rui</strong> values,称作<strong>observation</strong>.在显式数据集中可能是评分;隐式数据集中表示<strong>observations for user actions,</strong>比如看TV show的次数或者看网页的时间.0.7表示u看了70%的show,2表示完整看了两次.不同的数据里rui的含义不同  </p>
+</blockquote>
+<p>在隐式数据集中,”评分”矩阵中::每个值都是非空的::,没有action就是0.</p>
+<h2 id="Our-Model"><a href="#Our-Model" class="headerlink" title="Our Model."></a>Our Model.</h2><p>首先使用pui表示推测用户u喜欢不喜欢物品i.<br><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2014.53.32.png" alt=""><br>然后由于行为不一定代表喜欢,就给一个置信度,次数越多越可能说明喜欢<br><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2014.54.11.png" alt=""><br>α取40是一个经验.</p>
+<p>模型的目标是找到用户向量xu和物品向量yi来表示factors.然后用户对物品的preference就是内积.这很像一般隐因子模型,但是又两点大不同</p>
+<ul>
+<li>需要考虑置信度</li>
+<li>Optimization should account for all possible u, i pairs, rather than only those corresponding to observed data.<br>于是,我们最小化下面的损失函数以得到xu,yi<blockquote>
+<p><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2014.58.54.png" alt="">,注意置信度c  </p>
+</blockquote>
+</li>
+</ul>
+<p>由于矩阵无缺失值,这个函数将包含U*I项,这项也太多了,搞得随机梯度下降计算的太多了,所以推出下面的优化方法:</p>
+<p>当要么xu,要么yi是固定的时候,损失函数就是一个二次方程组了,最小值就能比较轻松地计算.这就引出了::ALS优化方法:::交替地计算xu和yi,每一步都能保证lower损失函数值.显式反馈也用这个,把unknown values就不管,处理的是稀疏矩阵.对隐式反馈矩阵就是稠密的了,并且有置信度.下面详细解释</p>
+<h3 id="ALS的优化过程"><a href="#ALS的优化过程" class="headerlink" title="ALS的优化过程"></a>ALS的优化过程</h3><blockquote>
+<p>n—&gt;物品数量  </p>
+</blockquote>
+<p>第一步,重新计算所有用户向量xu. 让我们把所有物品向量yi聚合成Y矩阵.首先计算YTY,时间是O(f^2<em>n).对**每个用户又定义n</em>n的对角矩阵Cu,其中Cii=cui<strong>;我们找到了一个xu的计算公式能最小化损失函数:<br><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.38.30.png" alt=""><br>I是单位矩阵.这个公式的瓶颈在于计算YTCuY,因为其和每个用户都有关,这计算量太大了.但是有一个事实:<br><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.39.36.png" alt=""><br>现在,YTY可以提前计算好,对所有用户都一样.而(Cu-I)是对角阵减一个单位阵(即减掉置信度中的1),其中顶多有nu个元素不为0(nu为是rui&gt;0(有过行为)的物品个数).类似的,Cu<em>p(u)也顶多是nu个不为0元素.于是,对每个用户,xu的重计算时间是O(f^2 </em>nu + f^3),其中f^3是求逆的时间.对所有用户就是<img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.46.34.png" alt="">where N is the overall number  of non-zero observations.可以看出,其对输入规模是</strong>线性的**,而Typical values of f lie between 20 and 200,也不是很大.</p>
+<p>第二步重计算物品向量yi.和重计算用户向量是<strong>对称</strong>的.在此贴一下论文:<br><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.50.14.png" alt=""></p>
+<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><ol>
+<li>可以设置pui的门槛,需要rui到达某个程度才pui=1.</li>
+<li>可以改变cui的计算公式:<blockquote>
+<p><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2015.30.58.png" alt="">  </p>
+</blockquote>
+</li>
+</ol>
+<h2 id="读完这篇后对SVDPP中隐式反馈部分的重新理解"><a href="#读完这篇后对SVDPP中隐式反馈部分的重新理解" class="headerlink" title="读完这篇后对SVDPP中隐式反馈部分的重新理解"></a>读完这篇后对SVDPP中隐式反馈部分的重新理解</h2><p><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2016.03.03.png" alt=""><br>观察SVD++的公式,yj是物品的另一个特征向量,而在公式中这个值是考虑用户提供过隐式反馈的物品j的yj之和.</p>
+<p>我们把”有过行为”看做一种隐式反馈.那么SVD++的公式意思是,由q,p预测用户对i的喜爱,但是还不够,还需要估算i和用户喜欢的那些j之间的preference度也加进来.**,其中|N(u)|^-0.5为了防止该项过大.</p>
+<blockquote>
+<p><img src="/2017/11/29/Collaborative Filtering for Implicit Feedback Datasets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-29%2016.06.02.png" alt=""><br>当然,这种隐式反馈取得比较简单….</p>
+</blockquote>
+<p>在Spark的实现中,提供过隐式反馈的物品|N(u)|取得就是<strong>打过分的物品总个数</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/28/基于内容/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/29/CTR与逻辑回归/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Collaborative-Filtering-for-Implicit-Feedback-Datasets"><span class="nav-number">1.</span> <span class="nav-text">Collaborative Filtering for Implicit Feedback Datasets</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Preliminaries"><span class="nav-number">1.2.</span> <span class="nav-text">Preliminaries</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Our-Model"><span class="nav-number">1.3.</span> <span class="nav-text">Our Model.</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ALS的优化过程"><span class="nav-number">1.3.1.</span> <span class="nav-text">ALS的优化过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进"><span class="nav-number">1.4.</span> <span class="nav-text">改进</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读完这篇后对SVDPP中隐式反馈部分的重新理解"><span class="nav-number">1.5.</span> <span class="nav-text">读完这篇后对SVDPP中隐式反馈部分的重新理解</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

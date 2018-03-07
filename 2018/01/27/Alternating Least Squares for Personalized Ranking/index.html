@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Alternating Least Squares for Personalized Ranking#推荐引擎/论文 RankALS还是采用了MF但是是以最小化rank loss为目标的模型主要是改进了koren的implicitALS,使用rank目标函数 ABSTRACT 首先,本文研究的是::隐式反馈::,系统间接推断用户偏好.处理隐式反馈的一种方法是使::ranking目标函数最小化::,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/27/Alternating Least Squares for Personalized Ranking/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Alternating Least Squares for Personalized Ranking#推荐引擎/论文 RankALS还是采用了MF但是是以最小化rank loss为目标的模型主要是改进了koren的implicitALS,使用rank目标函数 ABSTRACT 首先,本文研究的是::隐式反馈::,系统间接推断用户偏好.处理隐式反馈的一种方法是使::ranking目标函数最小化::,">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/EB1AC97D-CB3E-457C-8D8F-D638A2915C4F.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/B889DA18-4A65-4273-8D09-A80CBDBEB919.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/6AE30563-01D6-46D2-A420-A0EA4E439092.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/A88F8A4F-5D68-4520-8F6B-71BAF8368CFC.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/C8275145-0FB6-4FD5-9A9F-2F1C8F565B84.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/A0EA7162-CEFB-4081-BFCB-CE1F40167ACF.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/51E18A92-4D4A-4007-B417-A05096FD8A5B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/D9B94A25-2796-408D-84E7-047FF951C155.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/F61A1588-9886-421F-816C-BF3CA89C7C25.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/A0EA7162-CEFB-4081-BFCB-CE1F40167ACF.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/5120FD8E-80B4-4868-84D3-D4B7FCB15D36.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/6FE2C40A-1D3D-4FFB-92B5-DBA4E9671E35.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/71593B7D-7ACB-42B8-AE21-02329CBA2805.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/D67BB1BE-3B42-4254-B0AA-D8636BFAD995.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/C6BDDE22-973C-4724-A8C5-8670652190F9.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/90BF61A0-E830-4ACA-A2AF-4BC743AA45E0.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/6668F59B-3384-46BD-B7DF-690071E8B114.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/8A2CCABE-2D9A-4BBF-9C56-9C0D0EC5D54C.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/54FB3690-E0DA-427A-9CA5-C442A06B5F64.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/0C8D62CE-8BF2-4A1E-9843-EC864F87C04F.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/F738115B-6853-428E-BCC3-701FB87C69B7.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/222306D7-388F-4C8A-8E42-E2C62B737B68.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/04B44F15-E121-480D-B8BB-1EA2DCB6DB3F.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/1329096C-D3C4-4EA8-9579-B1534B0E0ECF.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/4FC940CC-07CB-448E-806A-5F68C5CE59AD.png">
+<meta property="og:updated_time" content="2018-01-31T08:21:29.561Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Alternating Least Squares for Personalized Ranking#推荐引擎/论文 RankALS还是采用了MF但是是以最小化rank loss为目标的模型主要是改进了koren的implicitALS,使用rank目标函数 ABSTRACT 首先,本文研究的是::隐式反馈::,系统间接推断用户偏好.处理隐式反馈的一种方法是使::ranking目标函数最小化::,">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/27/Alternating%20Least%20Squares%20for%20Personalized%20Ranking/EB1AC97D-CB3E-457C-8D8F-D638A2915C4F.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/27/Alternating Least Squares for Personalized Ranking/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/27/Alternating Least Squares for Personalized Ranking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-27T13:45:11+08:00">
+                2018-01-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Alternating-Least-Squares-for-Personalized-Ranking"><a href="#Alternating-Least-Squares-for-Personalized-Ranking" class="headerlink" title="Alternating Least Squares for Personalized Ranking"></a>Alternating Least Squares for Personalized Ranking</h1><p>#推荐引擎/论文</p>
+<p>RankALS还是采用了MF但是是以最小化rank loss为目标的模型<br>主要是改进了koren的implicitALS,使用rank目标函数</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>首先,本文研究的是::隐式反馈::,系统间接推断用户偏好.处理隐式反馈的一种方法是使::ranking目标函数最小化::,但是在隐式反馈时,就naive地去最小化之是<strong>昂贵</strong>的,一般通过trade-off,通过<strong>sampling the objective function</strong>牺牲一些排序精度来提高效率. 本文提出了::直接最小化ranking目标函数::的方法,no sampling. 实验证明,我们的方法在ErrorRate，ARP和Recall等评估指标方面优于其它 implicit feedback recommenders(::也许因为是直接优化目标函数::)</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><hr>
+<p>对于隐式反馈的系统来说,A signiﬁcant part of the information is contained in the absence of events, therefore the system h<strong>as to consider each user–item pair.</strong>本文讨论隐式反馈的variant.::而我们的RankALS方法显示性能比使用了sampling的ranking方法是要效果更好.::</p>
+<p>下文首先介绍符号,后面介绍相关的implicitALS,其启发我们做了RankALS,第4节介绍了RankALS; 首先给出了它的主要思想及其有利的计算性质，然后给出了具有解释的伪代码。 最后讨实施在两个公开可用的大规模数据集上,与其他方法的对比实验。</p>
+<h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><hr>
+<p>U,I代表用户和物品数,<em>U</em>和<em>I</em>代表用户,物品集.u,i表示用户和物品的index. implicit rating表示为rui,预测值是r^ui. implicit ratings储存在矩阵R中.</p>
+<p>T代表提供了::positive:: feedback的(u,i)对集合. 规定有negative feedback和positive feedback两种,负面的,r=0,正面的,r为某实数. 我们还假设用户最多对一个i提供一次正反馈.</p>
+<p>|T|表示正反馈数目,Iu表示u提供了positive反馈的物品们,Ui表示对i提供了正反馈的用户们.zu表示=|Iu|,表示用户提供了正反馈的物品数目.</p>
+<p>tr(X)表示矩阵的trace,1表示全1矩阵. X[s]表示行在s集合中的那些行组成的X的子矩阵.x[s]就对应表示那些subvector,x[s1,s2]表示行在s1,列在s2的组成的子矩阵.</p>
+<h2 id="OBJECTIVE-FUNCTIONS"><a href="#OBJECTIVE-FUNCTIONS" class="headerlink" title="OBJECTIVE FUNCTIONS"></a>OBJECTIVE FUNCTIONS</h2><hr>
+<p>这里分prediction和ranking任务来分.</p>
+<h3 id="prediciton"><a href="#prediciton" class="headerlink" title="prediciton"></a>prediciton</h3><p>对prediciton任务(隐式反馈下),从koren的论文里知道,目标函数有下面形式<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/EB1AC97D-CB3E-457C-8D8F-D638A2915C4F.png" alt=""><br>cui表示我们惩罚ui上预测error的程度(可信度越高越需要惩罚,因为需要预测得越准,可信度不高的不用太惩罚,因为最后有error也还好,因为原本数据本身就不可信(比如没评分你就当当别人是负反馈)).目标函数是取最小化weighted square error.</p>
+<p>标准的cui选择是,对(u,i)∈T,取1,否则取0.这意味着目标函数只包含T个项。 在::隐式反馈的情况下，这种简化是不合理的，因为有重要信息被包含在absence of positive feedback内::。所以在隐式反馈的情况下会把c当做::可信度::,对T内的(u,i)取c+,否则取c-. 我们把这种情况下的目标函数记作fi()(i for implicit),所以目标函数包括U*I个项目了.这考虑得更全面.通常,c+&gt;&gt;c-.当然,我们::没有直接的负反馈::,一般需要按情况采样.</p>
+<h3 id="Ranking"><a href="#Ranking" class="headerlink" title="Ranking"></a>Ranking</h3><p>一般的目标函数形式是<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/B889DA18-4A65-4273-8D09-A80CBDBEB919.png" alt=""><br>cui和sj是参数.sj的含义是第j个物品的importance.函数包含T*I项目. cui的取值是c ui=0 if rui=0, and 1 otherwise. cui的作用是选出T(positive feedback)中的(u,i)对.</p>
+<h2 id="RELATED-WORK"><a href="#RELATED-WORK" class="headerlink" title="RELATED WORK"></a>RELATED WORK</h2><hr>
+<p>处理隐式反馈的最早的解决方案之一是Hu等人的ImplicitALS(也就是koren的implicit论文),该算法由矩阵分解模型，基于prediction based目标函数和交替最小二乘（ALS）优化器组成.然后还有一些work来优化implicitALS.(但是是prediction based)</p>
+<p>KDD的比赛中发现,ranking-based方法能高效地处理基于implicit feedback的大规模问题.一个解决方法是使用ranking based 目标函数,使用SGD在a sampled approximation of the objective function上优化.</p>
+<p>另一种基于ranking的隐式反馈方法是BPR,使用bootstrapping based SGD训练</p>
+<p>而::我们,首先,ranking-based,然后implicit feedback,最后不approximate the original objective function,使用ALS直接优化.::</p>
+<h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><hr>
+<p>不妨看一下implicitALS的做法.其基于MF,得到pu和qi向量,也就是参数,F是隐因子个数. 令P和Q表示隐因子矩阵,目标函数是fi().目标是使得<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/6AE30563-01D6-46D2-A420-A0EA4E439092.png" alt="">以最小化weighted square error.其算法可以简要描述如下:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/A88F8A4F-5D68-4520-8F6B-71BAF8368CFC.png" alt=""><br>其ALS可以高效地计算,让我们看看为什么.让我们重写fi()对pu的导数:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/C8275145-0FB6-4FD5-9A9F-2F1C8F565B84.png" alt=""><br>可以看出,Au和bu都和p无关而和q有关,只要q固定,就能求出Au,bu. 进而,令pu=<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/A0EA7162-CEFB-4081-BFCB-CE1F40167ACF.png" alt="">这不就让导数为0了嘛.</p>
+<p>由于cui的存在,使得A和b还是用户相关的.接下来我们要提炼一下.</p>
+<p>而我们还可以将bu的范围简化在<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/51E18A92-4D4A-4007-B417-A05096FD8A5B.png" alt="">因为对其他的u,前面的系数是0; 另外,Au可以分为user dependent和dependent两部分:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/D9B94A25-2796-408D-84E7-047FF951C155.png" alt=""><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/F61A1588-9886-421F-816C-BF3CA89C7C25.png" alt=""><br>于是,对<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/A0EA7162-CEFB-4081-BFCB-CE1F40167ACF.png" alt="">的估计可以在<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/5120FD8E-80B4-4868-84D3-D4B7FCB15D36.png" alt="">时间内完成.(independent是TF^2, dependent部分是F3,并且由于每个User的都要算所有是UF^3)</p>
+<p>对Item qu也做一样的事儿,于是可以知道one traning step的时间是O(TF^2+(U+I)F ^3).</p>
+<p>ImplicitALS的一个很好的特性是，它不能用近似来代替目标函数，正如其他方法经常做的那样。 它通过应用数学简化来实现加速。</p>
+<h2 id="ALS-FOR-RANKING"><a href="#ALS-FOR-RANKING" class="headerlink" title="ALS FOR RANKING"></a>ALS FOR RANKING</h2><hr>
+<p>我们提出rankALS,其prediction rule还是<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/6FE2C40A-1D3D-4FFB-92B5-DBA4E9671E35.png" alt="">,但是目标函数是ranking objective function fr().</p>
+<p>ranking目标函数如之前讨论的,包含T*I项.我们首先重写fr()的对用户向量pu的导数<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/71593B7D-7ACB-42B8-AE21-02329CBA2805.png" alt=""><br>通过展开inner term来吧偏导数变为了8个double sums.这种改写偏导的::好处是计算<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/D67BB1BE-3B42-4254-B0AA-D8636BFAD995.png" alt=""><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/C6BDDE22-973C-4724-A8C5-8670652190F9.png" alt="">for all u,可以在<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/90BF61A0-E830-4ACA-A2AF-4BC743AA45E0.png" alt="">完成.::注意,其实这些项里,除了<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/6668F59B-3384-46BD-B7DF-690071E8B114.png" alt="">,其他的还是用户相关的,但是为了简便没标subscript.</p>
+<p>对qi的导数还是这样弄.见论文吧.这预示着基于MF的最小化fr()的ALS可以高效实现.ALS的两主要步骤是评估导数,然后设置其为0. 第一步::通过重写导数可以加速计算::,而第二步是解决线性系统这是比较cheap的.</p>
+<p>我们可以在算法2中看看ALS的伪代码<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/8A2CCABE-2D9A-4BBF-9C56-9C0D0EC5D54C.png" alt=""><br>让我们解析一下这个.</p>
+<ol>
+<li>首先初始化Q,并且由于1是一直恒定的,所以提前计算</li>
+<li>总共有E次循环,每次循环包含一个P-step和Q-step.</li>
+<li>在P-step中,::先计算user-independent的A-这种::,然后为每个用户u,计算相关的r-,b-,r^,q-,A-等等..因为有依赖关系,所以谁先计算谁后计算这也是有讲究的,可以节省计算量.计算出来后可以计算最优的pu=M^-1y.(需要求逆矩阵)</li>
+<li>在Q-step中也做类似P-step的事儿.</li>
+</ol>
+<p>这个算法里有如下的超参数:</p>
+<ul>
+<li>E,循环数</li>
+<li><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/54FB3690-E0DA-427A-9CA5-C442A06B5F64.png" alt="">,初始化Q采用的数字range.</li>
+<li>s, item对目标函数的重要性,我们尝试了两种配置,产生两种variant.<ul>
+<li>si=1,等权重,s.w=no</li>
+<li>si=|Ui|,流行物品高权重,s.w=yes</li>
+</ul>
+</li>
+</ul>
+<p>P步骤中计算量最大的部分是计算A-和更新Pu。 计算所有用户的A-和Pu分别花费O（TF^2）和O（UF^3）时间。对Q步骤的分析类似.于是,一次大循环的总时间是<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/0C8D62CE-8BF2-4A1E-9843-EC864F87C04F.png" alt=""><br>这和implicitALS是一样的.</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><hr>
+<p>数据集是雅虎music和Netflix数据集.其中,雅虎音乐有评分就是positive implicit feedback, netflix对评分为5的当做positive implicit feedback(设1),其余设0.</p>
+<p>做对比的有下面几种方法:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/F738115B-6853-428E-BCC3-701FB87C69B7.png" alt=""></p>
+<p>评价指标有下面三种:<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/222306D7-388F-4C8A-8E42-E2C62B737B68.png" alt=""><br>其中ERRORRATE意思是,对用户推荐top<img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/04B44F15-E121-480D-B8BB-1EA2DCB6DB3F.png" alt="">,然后计算Iu+(提供了positive反馈)不在之中的概率.ARP是Iu+的物品在所有物品I的排序中的平均位置.<br>对prediction任务fi()的c取c+=100,c-=1.</p>
+<p><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/1329096C-D3C4-4EA8-9579-B1534B0E0ECF.png" alt=""><br>夏敏再给出随着隐因子个数而变化的各个算法性能<br><img src="/2018/01/27/Alternating Least Squares for Personalized Ranking/4FC940CC-07CB-448E-806A-5F68C5CE59AD.png" alt=""></p>
+<p>并且,时间数据表明<strong>RankALS训练速度比RankSGD要慢不少,但是性能还是好一些</strong>.再说了,<strong>SGD方法还需要学习率这样的超参数</strong>….</p>
+<p>rankSGD在librec里也是实现了…</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/29/cliMFlearning to maximize reciprocal rank with collaborative less-is-more filtering/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Alternating-Least-Squares-for-Personalized-Ranking"><span class="nav-number">1.</span> <span class="nav-text">Alternating Least Squares for Personalized Ranking</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ABSTRACT"><span class="nav-number">1.1.</span> <span class="nav-text">ABSTRACT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#INTRODUCTION"><span class="nav-number">1.2.</span> <span class="nav-text">INTRODUCTION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#符号"><span class="nav-number">1.3.</span> <span class="nav-text">符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OBJECTIVE-FUNCTIONS"><span class="nav-number">1.4.</span> <span class="nav-text">OBJECTIVE FUNCTIONS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#prediciton"><span class="nav-number">1.4.1.</span> <span class="nav-text">prediciton</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ranking"><span class="nav-number">1.4.2.</span> <span class="nav-text">Ranking</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RELATED-WORK"><span class="nav-number">1.5.</span> <span class="nav-text">RELATED WORK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回顾"><span class="nav-number">1.6.</span> <span class="nav-text">回顾</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ALS-FOR-RANKING"><span class="nav-number">1.7.</span> <span class="nav-text">ALS FOR RANKING</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">1.8.</span> <span class="nav-text">实验</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

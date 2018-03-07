@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Introduction to Restricted Boltzmann Machines#推荐引擎/论文 限制玻尔兹曼机器本质上是执行因子分析(SVD++)的二进制版本。 （这是思考RBM的一种方式;当然还有其他方法，还有很多不同的方法来使用RBM，但是我将在这篇文章中采用这种方法）。不去预测用户对物品的评分,而是只是告诉你他们是否喜欢电影，而RBM将尝试发现可以解释这些电影选择激活(被喜欢)的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/15/Introduction to Restricted Boltzmann Machines/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Introduction to Restricted Boltzmann Machines#推荐引擎/论文 限制玻尔兹曼机器本质上是执行因子分析(SVD++)的二进制版本。 （这是思考RBM的一种方式;当然还有其他方法，还有很多不同的方法来使用RBM，但是我将在这篇文章中采用这种方法）。不去预测用户对物品的评分,而是只是告诉你他们是否喜欢电影，而RBM将尝试发现可以解释这些电影选择激活(被喜欢)的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/Introduction%20to%20Restricted%20Boltzmann%20Machines/DB8F97A3-5350-4488-BCCB-4DEC4F4E768D.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/Introduction%20to%20Restricted%20Boltzmann%20Machines/D1E0CAB3-6F14-4EA1-AA36-47A991DC0727.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/Introduction%20to%20Restricted%20Boltzmann%20Machines/E58CD472-FC2D-4A8B-BD6B-8500B48FDA9F.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/Introduction%20to%20Restricted%20Boltzmann%20Machines/6D463E8D-FE06-40A6-A22B-9D0C20F51BBA.png">
+<meta property="og:updated_time" content="2018-01-15T09:32:06.565Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Introduction to Restricted Boltzmann Machines#推荐引擎/论文 限制玻尔兹曼机器本质上是执行因子分析(SVD++)的二进制版本。 （这是思考RBM的一种方式;当然还有其他方法，还有很多不同的方法来使用RBM，但是我将在这篇文章中采用这种方法）。不去预测用户对物品的评分,而是只是告诉你他们是否喜欢电影，而RBM将尝试发现可以解释这些电影选择激活(被喜欢)的">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/15/Introduction%20to%20Restricted%20Boltzmann%20Machines/DB8F97A3-5350-4488-BCCB-4DEC4F4E768D.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/15/Introduction to Restricted Boltzmann Machines/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/15/Introduction to Restricted Boltzmann Machines/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T15:52:57+08:00">
+                2018-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Introduction-to-Restricted-Boltzmann-Machines"><a href="#Introduction-to-Restricted-Boltzmann-Machines" class="headerlink" title="Introduction to Restricted Boltzmann Machines"></a>Introduction to Restricted Boltzmann Machines</h1><p>#推荐引擎/论文</p>
+<p>限制玻尔兹曼机器本质上是执行因子分析(SVD++)的二进制版本。 （这是思考RBM的一种方式;当然还有其他方法，还有很多不同的方法来使用RBM，但是我将在这篇文章中采用这种方法）。不去预测用户对物品的评分,而是只是告诉你他们是否喜欢电影，而RBM将尝试发现可以解释这些电影选择<strong>激活(被喜欢)的潜在因素</strong>。</p>
+<p>从技术上讲，限制玻耳兹曼机是一个随机神经网络（<strong>随机意味着这些激活有一个概率因素</strong>).</p>
+<ul>
+<li>One layer of visible units (用户对电影的preferences,这是已知的)</li>
+<li>One layer of hidden units (the latent factors we try to learn)</li>
+<li>A bias unit(is a way of <strong>adjusting for the different inherent popularities of each movie</strong>)</li>
+</ul>
+<p>可视层和隐含层间元素是全相连的(反之也是), bias单元连接到所有可视单元和所有hidden单元.简单情况下,相同层间的元素就不相连.</p>
+<p>例如，假设我们有一组六部电影（哈利·波特，阿凡达，LOTR 3，角斗士，泰坦尼克号和闪光），我们要求用户告诉我们他们想看哪些。 如果我们想要学习两个潜在的电影偏好unit - 例如，我们六套电影中的两个自然组合看起来像<strong>幻想</strong>（包含哈利波特，阿凡达和LOTR 3）和<strong>奥斯卡获奖者</strong>（包含LOTR 3，角斗士 ，泰坦尼克号），所以我们可能希望我们的潜在单位符合这些类别, 那么其RBM就像下面所示.<br><img src="/2018/01/15/Introduction to Restricted Boltzmann Machines/DB8F97A3-5350-4488-BCCB-4DEC4F4E768D.png" alt=""></p>
+<h2 id="State-Activation"><a href="#State-Activation" class="headerlink" title="State Activation"></a>State Activation</h2><p>让我们看看在知道权值的情况下,如何计算unit i的激活状态.</p>
+<ol>
+<li>计算激活状态<img src="/2018/01/15/Introduction to Restricted Boltzmann Machines/D1E0CAB3-6F14-4EA1-AA36-47A991DC0727.png" alt="">,xj就是0或者1(相当于aggregateMessages)</li>
+<li>令p(i)=sigmoid(αi),于是你又可以把pi看做概率</li>
+<li>我们有p(i)概率turn on unit i, (1-p)的概率turn off it.(因为现实中你并不能依次完全推定)</li>
+<li>解释一下就是,units that are positively connected to each other try to get each other to share the same state (i.e., be both on or off), while units that are negatively connected to each other are enemies that prefer to be in different states</li>
+</ol>
+<p>由例子看的是,隐含节点表示了<em>fantasy</em>或者<em>Oscar winners</em>,那么:</p>
+<ul>
+<li>If Alice has told us her six binary preferences on our set of movies, six movies send messages to the hidden units,telling them to update themselves. </li>
+<li>同样的, if we know that one person likes SF/fantasy)(对应的隐因子turn on了),然后我们就可以ask the RBM which of the movie units that hidden unit turns on. 然后 the hidden units send messages to the movie units, telling them to update their states,然后那些fantasy电影就最可以被turn on(推荐)了…</li>
+</ul>
+<h2 id="学习权值"><a href="#学习权值" class="headerlink" title="学习权值"></a>学习权值</h2><ol>
+<li>首先有随机的权值参数什么的…. 取一个data</li>
+<li>从这个data上计算隐因子的<img src="/2018/01/15/Introduction to Restricted Boltzmann Machines/E58CD472-FC2D-4A8B-BD6B-8500B48FDA9F.png" alt="">,然后把隐因子的输出xj,按sigmoid(aj)的概率来设置.</li>
+<li>然后对每一条边eij,计算Positive(eij)=xi*xj…(看他们是不是都是turn on的)</li>
+<li>重建visible unit, 就是计算其ai,然后按概率计算其输出xi,然后利用xi再次计算隐因子…然后现在对每条边再计算Negative(eij)=xi*xj</li>
+<li>更新边eij的权值:<br><img src="/2018/01/15/Introduction to Restricted Boltzmann Machines/6D463E8D-FE06-40A6-A22B-9D0C20F51BBA.png" alt="">,L是学习率</li>
+<li>对所有条data训练上面的过程…..</li>
+<li>重复1~6,直到(error between the training examples and their reconstructions falls below some threshold)</li>
+</ol>
+<p>它的意义是什么呢?</p>
+<ol>
+<li>In the first phase, <strong>Positive(eij) measures the association between the ith and jth unit</strong> that we want the network to learn from our training examples;</li>
+<li>重建阶段,RBM根据对hidden unit的假设生成visible unit的状态,Negative measure了当没有unit fixed to训练数据时,网络本身产生的关联（或“白日梦”）。</li>
+<li>反正这就叫什么<strong>对比散度</strong>咯</li>
+</ol>
+<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><ul>
+<li>Above, Negative(eij)Negative(eij) was determined by taking the product of the iith and jjth units after reconstructing the visible units once and then updating the hidden units again. We could also take the product after some larger number of reconstructions (i.e., repeat updating the visible units, then the hidden units, then the visible units again, and so on); this is slower, but describes the network’s daydreams more accurately.</li>
+<li>Instead of using Positive(eij)=xi∗xjPositive(eij)=xi∗xj, where xixi and xjxj are binary 0 or 1 states, we could also let xixi and/or xjxj be activation probabilities. Similarly for Negative(eij)Negative(eij).</li>
+<li>We could penalize larger edge weights, in order to get a sparser or more regularized model.</li>
+<li>When updating edge weights, we could use a momentum factor: we would add to each edge a weighted sum of the current step as described above (i.e., L∗(Positive(eij)−Negative(eij)L∗(Positive(eij)−Negative(eij)) and the step previously taken.<br>I* nstead of using only one training example in each epoch, we could use batches of examples in each epoch, and only update the network’s weights after passing through all the examples in the batch. This can speed up the learning by taking advantage of fast matrix-multiplication algorithms.</li>
+</ul>
+<h2 id="…"><a href="#…" class="headerlink" title="…"></a>…</h2><p>这个玩意,你把hidden unit的个数小于visible unit的个数,映射之后不就相当于做了数据降维,特征提取嘛..这也跟SVD是一个意思…</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/15/一些网上的调研/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/15/决策树/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction-to-Restricted-Boltzmann-Machines"><span class="nav-number">1.</span> <span class="nav-text">Introduction to Restricted Boltzmann Machines</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#State-Activation"><span class="nav-number">1.1.</span> <span class="nav-text">State Activation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习权值"><span class="nav-number">1.2.</span> <span class="nav-text">学习权值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进"><span class="nav-number">1.3.</span> <span class="nav-text">改进</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#…"><span class="nav-number">1.4.</span> <span class="nav-text">…</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

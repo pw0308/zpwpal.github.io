@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)#推荐引擎/论文 该论文提出了NNCosNgbr和PureSVD(better),而且在rating(非01)数据集上,pureSVD做topn任务被证明比其他MF方法都更好. 评估方法 in &amp;lt;&amp;lt;推荐系统实践&amp;gt;&amp;gt; 最重要的指标一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)#推荐引擎/论文 该论文提出了NNCosNgbr和PureSVD(better),而且在rating(非01)数据集上,pureSVD做topn任务被证明比其他MF方法都更好. 评估方法 in &amp;lt;&amp;lt;推荐系统实践&amp;gt;&amp;gt; 最重要的指标一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+<meta property="og:updated_time" content="2018-01-25T12:06:37.947Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)#推荐引擎/论文 该论文提出了NNCosNgbr和PureSVD(better),而且在rating(非01)数据集上,pureSVD做topn任务被证明比其他MF方法都更好. 评估方法 in &amp;lt;&amp;lt;推荐系统实践&amp;gt;&amp;gt; 最重要的指标一">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/22/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-22T21:04:20+08:00">
+                2018-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Performance-of-Recommender-Algorithms-on-Top-N-Recommendation-Tasks-2010"><a href="#Performance-of-Recommender-Algorithms-on-Top-N-Recommendation-Tasks-2010" class="headerlink" title="Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)"></a>Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)</h1><p>#推荐引擎/论文</p>
+<p>该论文提出了NNCosNgbr和PureSVD(better),而且在rating(非01)数据集上,pureSVD做topn任务被证明比其他MF方法都更好.</p>
+<h2 id="评估方法-in-lt-lt-推荐系统实践-gt-gt"><a href="#评估方法-in-lt-lt-推荐系统实践-gt-gt" class="headerlink" title="评估方法 in &lt;&lt;推荐系统实践&gt;&gt;"></a>评估方法 in &lt;&lt;推荐系统实践&gt;&gt;</h2><hr>
+<p>最重要的指标一定是::accuracy::,没有之一,但是对于做生意而言,如果一个人本来就打算买A,你给他推荐,那并没有增加效益,所以,<strong>新颖和惊喜</strong>也很重要.下面分别说明各个指标.</p>
+<h4 id="准确度"><a href="#准确度" class="headerlink" title="准确度"></a>准确度</h4><p>对于不同的任务,准确度的计算不一样.对于::评分预测::任务,准确度一般通过RMSE或者MAE(平均绝对误差)计算.<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/63F8F5B8-84CC-4297-AA74-2A20DCB6541C.png)<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/11850AFC-8AAB-49BC-AF25-32918E0E0162.png)<br>对于::topn::推荐(因为有些物品,即使你会评高分,但是你看它的可能性也很小,所以topn其实更符合系统需求)来说,准确度一般通过precision/recall度量,令R是训练集上的推荐列表,而T是测试集上的推荐列表,那么有<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/9CA482D8-7648-4E55-AAFD-8E6C0B3483B6.png)<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/D00D4F0D-E6AD-484D-8CCD-8F4221766F44.png)<br>一般会取不同的推荐列表长度,绘制::precision/recall::曲线.</p>
+<p>另外有</p>
+<ul>
+<li>覆盖率:说明系统中的东西是不是都给出了推荐,另外,要细致分析长尾发掘能力,我们希望所有的物品出现在推荐中的次数差不多(不偏向热门).可以使用geni系数:<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/7966A492-3A7F-4D43-9A19-34E8000775BE.png),ij是按流行度p()排序的第j个物品.</li>
+<li>多样性:描述了推荐物品的不相似性,于是可以使用下面公式表示,其中s(i,j)表示i,j相似度<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/4CF32094-BAAD-4697-A955-9FAAF054904A.png)</li>
+<li>新颖性:推荐用户没听说过的物品..(可能还是其兴趣范围)</li>
+<li>惊喜性:推荐非用户兴趣但是用户用了又会说好的物品.</li>
+</ul>
+<p>一般来说,综合这么多指标之后,我们可以有一个::综合的优化目标:::<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/0A38BFCC-2F6D-4828-8EBC-CC3734704034.png)</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>有这样一种推荐系统,并不显示predicted value,而是只展示觉得你最感兴趣的那些物品,这种叫top-n推荐任务.其目标是::寻找最吸引用户的一些东西::.采用RMSE并不合适评估top-n task的性能,而precision/recall反而更合适. 实验表明,::照RMSE优化的模型,并不见得在topn任务中表现的好::,RMSE的提示并不见得就带来accuracy的提升.在评估前N推荐任务的推荐算法时，应仔细选择测试集，以避免将准确性度量偏向非个性化解决方案(因为一些热门物品会skew topn task的性能).</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><hr>
+<p>推荐系统的一个常见做法是通过诸如RMSE（均方根误差）之类的误差度量来评估其性能，该误差度量捕获实际评级与系统预测的评级之间的平均误差。 然而，在许多商业系统中，::只显示了“最佳赌注”的建议::在执行前N个推荐任务时，::不需要精确的评分计算::.对于RMSE误差表示,在topn问题中顶多serve as proxies of the true top-n experience.</p>
+<p>在这篇文章中,我们通过::准确性度量::来评估几种协同过滤算法在topN推荐任务时的性能。评估与RMSE度量在相同方法上的性能对比。贡献有三个方面：</p>
+<ol>
+<li>我们表明误差度量和准确性度量之间没有平凡的关系; </li>
+<li>我们建议仔细构建了测试集,以在准确性度量上降低bias; </li>
+<li>我们引入现有算法的新变体，以及其他使用的benifit，从而提高top-N性能。</li>
+</ol>
+<h2 id="TESTING-METHODOLOGY"><a href="#TESTING-METHODOLOGY" class="headerlink" title="TESTING METHODOLOGY"></a>TESTING METHODOLOGY</h2><hr>
+<p>对于每个数据集，已知评分被分成两个子集：训练集M和测试集T.::测试集T仅包含五星评分::。所以我们可以合理地说::T包含了与各个用户相关的项目::。对netflix和ml数据集都这样选取就是.</p>
+<blockquote>
+<p>模型评估与选择中用于评估测试的数据集常称为”验证集” (validation set).  </p>
+</blockquote>
+<p>为了测量recall和precision，我们首先使用M训练模型。然后，对于用户在T中的每个项目i(我们认为系统应该推荐出去的)：</p>
+<ol>
+<li>我们随机选择1000个用户未评分的项目。 我们假设他们中的大多数不会让用户感兴趣。</li>
+<li>我们预测测试项目i和另外1000个物品的评分。</li>
+<li>我们根据预测的评分,排列所有1001个物品，形成一个排名表。 设p表示该列表中测试项目i的排名。 最好的结果对应于测试项目i是p=1的情况。</li>
+<li>我们从列表中选出N个排名最高的项目，形成前N个推荐清单。 如果p≤N，我们有一个hit（即向用户推荐测试项目i).否则，我们有一个miss。 </li>
+</ol>
+<p>召回和准确度可以这么计算:<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/1080B1E5-EAD1-4194-BFA5-22646089C9EE.png)<br>where | T | 是测试集打下西。 请注意，因为1000个随机项与用户u无关的,所以这样是倾向于低估的召回率和准确度的真实值(因为实际中应该会一些有关,所以N中hit可能不止是1)。</p>
+<p>另外,在这项研究中，我们旨在::评估推荐算法在建议非流行项目中的准确性::。为此，将测试集T进一步划分为两个子集T(head)和T(long)，分别表示处于短头和处于长尾的物品.</p>
+<h2 id="NEIGHBORHOOD-ALGORITHMS"><a href="#NEIGHBORHOOD-ALGORITHMS" class="headerlink" title="NEIGHBORHOOD ALGORITHMS"></a>NEIGHBORHOOD ALGORITHMS</h2><hr>
+<p>非个性化推荐向任何用户呈现预定义的固定项目列表。::用作更复杂的个性化算法的基线。::<br>一个简单的办法是,推荐平均得分最高的前N项。无论u给出的评分如何，用户u对项目i的评分是为项目i的平均评分。另一种是推荐最热门(行为次数最多)</p>
+<p>ICF比UCF一般在RMSE上表现的更好,并且由于一般|U|&lt;&lt;|I|,其更好计算,并且由于会得出II相似度,对新数据(用户操作了另一个物品i0)的实时推荐也更好(推荐i0相似的物品).</p>
+<p>II相似度通常是在一个非常稀疏的数据集上，可能有一些项目对的支持不佳，导致不可靠的相似性度量。出于这样的原因，如果nij表示::共同评价者::的数量，并且sij表示项目i与项目j之间的相似度，则可以定义收缩相似度dij<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/08A0F7D9-2E60-4086-9DAB-E502D4F6E7AC.png)<br>λ1常取100,这样做可以使得common rater更多的sim值相对更大.</p>
+<p>进而,引入bias,也就是bui,<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-21%2017.18.27.png)<br>再引入KNN(计算rating的时候只考虑与i最靠近的k个物品,记作D,::消除噪声::),可以得到下面方法<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/21850181-1CDA-43F7-8A91-175ACE88855D.png)<br>这称为::CorNgbr.::,其中sij以pearson相关系数计算.</p>
+<p>注意到,上式子的分母让评分落到了一个区间里面,但是对top-n任务,这并没啥必要,我们可以消除分母,我们建议以下面方法计算预测值并排序<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/2D8A1B40-417B-42C8-AD45-B98A0DE0D867.png)<br>其中sij::取得最好accuracy的是使用cosine相似度::(Unlike Pearson correlation which is computed only on ratings shared by common raters, the cosine coeﬃcient between items i and j is computed over all ratings (taking missing values as zeroes)<br>这称作::NNCosNgbr::</p>
+<h2 id="LFM"><a href="#LFM" class="headerlink" title="LFM"></a>LFM</h2><hr>
+<p>公式是:<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/E337066D-B38E-4C78-9DFD-0A876A3DF04D.png)<br>对于missing value, 最近的研究通过适当的目标函数直接在已知评级上学习因子向量，并优化预测误差使其最小化。 所提出的目标函数通常是正则化的，以避免过度拟合,并应用梯度下降来使目标函数最小化。</p>
+<p>对topn任务,现在引入一种PureSVD,这更像SVD的形式,缺失值就当做0,我们使用真正的SVD分解方法拟合R<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/84DB24AD-24E1-491B-A3D5-7843CB5BDCF7.png)<br>U是n<em>f正交矩阵,q是m</em>f正交矩阵,而∑是一个f*f的对角阵(元素是f个singular value)</p>
+<p>让我们定义<img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/15FD1ED4-5573-4334-888A-C333AAC8651A.png),那么P的第u行就代表user factor pu, Q第i列就是item factor qi.<br>并且,根据矩阵运算关系,我们可以知道<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/8FB19931-A5D0-4736-8DB6-CB19986BDDFE.png),R是评分矩阵,这样就把<strong>用户特征作为了项目特征的组合</strong><br>所以我们可以把预测分公式写成:<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/EC769823-A528-408C-A926-720ECE050F38.png)……………(1)<br>这就是PureSVD.</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>按上面提到的试验方法做实验,设置不同的N(召回数)值, 比较6种算法(4种面向RMSE,2种新的),并且分别测试全测试集和长尾测试集,结果如下<br><img src="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/Performance%20of%20Recommender%20Algorithms%20on%20Top-N%20Recommendation%20Tasks(2010" alt="">/6F806520-DAE3-41BE-BFAB-D4981D4F52FD.png)<br>也就是说,PureSVD效果最好,不论是在哪种数据集上.不过,在NetFlix数据上的测试结果是::CorNgbr方法在发掘长尾的能力上表现很不错::</p>
+<p>在Movielens和Netflix数据集上，无论是否包含短头，PureSVD一直是表现最出色的，打败了更为详细和复杂的潜在因子模型。鉴于其简单性和RMSE优化方面的糟糕设计，我们并没有期待这一结果。事实上，我们认为这对于推荐系统的从业者来说是一个好消息，因为PureSVD结合了多种优势。首先，编码非常容易，::不需要调整学习常数，完全依赖现有的优化SVD包::。这在计算和在线模式下都具有良好的计算性能。</p>
+<p>当从业者使用PureSVD时，他们应该选择其维度，::同时考虑到latent factor影响长尾项目质量的数量远远高于短头。::</p>
+<h2 id="LAST"><a href="#LAST" class="headerlink" title="LAST"></a>LAST</h2><hr>
+<p>最后给出top-n问题的10种评估方法</p>
+<ol>
+<li>AUC(ROC下的面积)</li>
+<li>AveragePrecision</li>
+<li>AverageReciprocalHitRank</li>
+<li>Diversity</li>
+<li>HitRate </li>
+<li>IdealDCG</li>
+<li>Normalized</li>
+<li>Precision</li>
+<li>Recall</li>
+<li>REciprocalRank</li>
+</ol>
+<p>precision/recall曲线的判断:</p>
+<ol>
+<li>若一个学习器的 P-R 曲线被另一个学习器的曲线完全”包住”,则可断言后者的性能优于前者.</li>
+<li>如果两个学习器 的 P-R 曲线发生了交叉只能在具体的查准率或查全率条件下进行比较.</li>
+<li>硬要比,也有F1度量,参照&lt;&lt;机器学习&gt;&gt;</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/22/Factored item similarity models for top-n recommender systems(FISM)2013/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Performance-of-Recommender-Algorithms-on-Top-N-Recommendation-Tasks-2010"><span class="nav-number">1.</span> <span class="nav-text">Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#评估方法-in-lt-lt-推荐系统实践-gt-gt"><span class="nav-number">1.1.</span> <span class="nav-text">评估方法 in &lt;&lt;推荐系统实践&gt;&gt;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#准确度"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">准确度</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ABSTRACT"><span class="nav-number">1.2.</span> <span class="nav-text">ABSTRACT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.3.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TESTING-METHODOLOGY"><span class="nav-number">1.4.</span> <span class="nav-text">TESTING METHODOLOGY</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NEIGHBORHOOD-ALGORITHMS"><span class="nav-number">1.5.</span> <span class="nav-text">NEIGHBORHOOD ALGORITHMS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LFM"><span class="nav-number">1.6.</span> <span class="nav-text">LFM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">1.7.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LAST"><span class="nav-number">1.8.</span> <span class="nav-text">LAST</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

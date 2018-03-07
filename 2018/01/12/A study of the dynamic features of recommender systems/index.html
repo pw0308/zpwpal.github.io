@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="A study of the dynamic features of recommender systems#推荐引擎/论文 研究的主要是changing needs of user requirements as well as changes in the systems’ contents(各种变化的特征) IntroductionThis can be difﬁcult at times">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/12/A study of the dynamic features of recommender systems/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="A study of the dynamic features of recommender systems#推荐引擎/论文 研究的主要是changing needs of user requirements as well as changes in the systems’ contents(各种变化的特征) IntroductionThis can be difﬁcult at times">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/A%20study%20of%20the%20dynamic%20features%20of%20recommender%20systems/AB5FEFC8-8BC5-45CA-85ED-E4378B8B5B94.png">
+<meta property="og:updated_time" content="2018-01-15T07:24:04.181Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="A study of the dynamic features of recommender systems#推荐引擎/论文 研究的主要是changing needs of user requirements as well as changes in the systems’ contents(各种变化的特征) IntroductionThis can be difﬁcult at times">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/12/A%20study%20of%20the%20dynamic%20features%20of%20recommender%20systems/AB5FEFC8-8BC5-45CA-85ED-E4378B8B5B94.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/12/A study of the dynamic features of recommender systems/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/12/A study of the dynamic features of recommender systems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T15:47:29+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="A-study-of-the-dynamic-features-of-recommender-systems"><a href="#A-study-of-the-dynamic-features-of-recommender-systems" class="headerlink" title="A study of the dynamic features of recommender systems"></a>A study of the dynamic features of recommender systems</h1><p>#推荐引擎/论文</p>
+<p>研究的主要是<strong>changing needs of user requirements as well as changes in the systems’ contents(各种变化的特征)</strong></p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>This can be difﬁcult at times when <strong>little user data is available</strong> for inferring the user evolving needs as well as <strong>system keeps on evolving with time</strong>.静态用户配置文件无法判断用户在一段时间内的偏好，而这是目前推荐系统中普遍流行的方法.</p>
+<p>现有的动态从两方面下手:the temporal evolution is presented in terms of <strong>user preferences that evolve with time</strong> or the <strong>item contents that gets changed due to addition of new items or deletion of older items</strong>.而实际上,演化的问题还有多个因素,这让问题更复杂.因此，有必要将现有的二维框架扩展到多维因子分析模型（Adomavicius and Tuzhilin，2001）.</p>
+<p>在本文中，我们通过提出一个称为DRS的新的RS类别来描述RS中的动态概念.</p>
+<h2 id="Dynamic-recommender-systems"><a href="#Dynamic-recommender-systems" class="headerlink" title="Dynamic recommender systems"></a>Dynamic recommender systems</h2><p>动态RS是各种参数的组合,每个参数都可是开发独立系统的核心要素.DRS,可以关注用户面,系统面或者别的层面的(隐式,显式)变化,并调整推荐结果.</p>
+<p>把做推荐看做去找人咨询,那么这个被咨询人可能得懂心理学.人类的思想是非常复杂和难以解释的; 仍然有各种各样的<strong>人格属性</strong>，可以帮助揭示人类行为,然后可以在推荐系统中实施.  一种使推荐过程更加透明以及与现实生活建议类似的新颖方法应该总是考虑心理因素，如<strong>用户的信任和社交网络</strong></p>
+<p>系统方面也注册了一些内容方面的变化，经历了更新和演变的阶段。 这些变化也会影响提供给用户的推荐类型，并可以在RS中实现（Lathia et al。2009）</p>
+<p>然而，推荐系统行为的变化超越了时间因素，涉及到情境，新颖性，偶然性，实时动态性以及多样性。 这些<strong>参数</strong>中的每一个都有助于DRS的动态行为。 因为<strong>参与处理上述任何一个参数的推荐系统被称为DRS</strong>。</p>
+<h2 id="Classiﬁcation-of-dynamic-recommender-systems"><a href="#Classiﬁcation-of-dynamic-recommender-systems" class="headerlink" title="Classiﬁcation of dynamic recommender systems"></a>Classiﬁcation of dynamic recommender systems</h2><p>动态推荐系统还没有被建立为推荐系统研究的一个独立的领域。因此，这一领域的贡献分散在许多不同的领域，不同的问题正在被分类. 当对传统方法进行重新训练无法跟上用户偏好的变化速度时，时间维度和其他动态因素的包含变得重要. 在本文中,<strong>给出了一个全新的推荐系统分类</strong>，它们是动态的，并解决了这个问题。这个新的分类方案被用来解释DRSs的不同方面。</p>
+<p>分类所依据的参数迎合了推荐系统的动态特性。这些参数涵盖了研究领域中处理的推荐系统的各个维度，并且与整个系统在整个网络上的演变相互联系. 我们所确定的参数是:</p>
+<ol>
+<li>temporal context</li>
+<li>novelty</li>
+<li>serendipity惊喜性</li>
+<li>diversity多样性</li>
+<li>动态环境</li>
+</ol>
+<h3 id="Temporal-changes"><a href="#Temporal-changes" class="headerlink" title="Temporal changes"></a>Temporal changes</h3><p>Koren在他的研究中强调了RS（Koren 2009）中时间动态的影响。他强调需要在RS中包括时间变化来提高建议的准确性。他还提出了一个矩阵分解模型，它跟踪数据的整个寿命周期中的时间变化行为，从而利用所有相关的组件.</p>
+<p>Lathia等。 （2009）提供了一个不同的视角,这是系统的方法,他研究了<strong>每周重新训练CF算法</strong>的效果作为时间依赖预测问题，<strong>该技术基于到当前时间测量的性能临时调整KNN邻域的大小</strong>。(<strong>我们确实每周可以训练,这点可以考虑进来</strong>)</p>
+<p>如果在ctr重排序的过程中采取<strong>动态相关的特征??</strong></p>
+<p>Nathanson et al. (2007) that considers changes in user’s preferences with time when selecting the next item to recommend, r<strong>eordering them based on the most recent rating.</strong></p>
+<p> Lee and Park (2008). They combined the two dimensions involving <strong>product launch time</strong> , <strong>based on rating time</strong></p>
+<p>Chu 和Park提出了a feature-based machine learning approach to personalize recommendation of new items,This approach maintains proﬁles of content of interest and updates their temporal characteristics…..比如物品的流行度和新鲜度…</p>
+<p>Min and Han suggested a methodology that works at different stages of recommendation process for detecting user’s time-variant pattern in order to improve its performance.</p>
+<p> De Pessemier et al. (2010) presents an empirical evidence that <strong>older consumption data has a negative inﬂuence on the recommendation accuracy</strong> in case of consumer centric RS.</p>
+<h3 id="实时动态"><a href="#实时动态" class="headerlink" title="实时动态"></a>实时动态</h3><p>用户的选择依赖于许多容易随时变化的因素。因此，在线处理期间考虑到这种动态是必要的.</p>
+<p>Baraglia et al. (2004) implemented a RS that <strong>collapse the two phases (online and offline) into a single online phase</strong>. This component dynamically creates links to pages that are not yet visited by a user and might be of his potential interest.</p>
+<p>Chen和Han（2007）指出，在客户端创建私有动态用户配置文件（DUP）可以满足RS的隐私和准确性要求。他实施了一种名为CRESDUP的方法，收集，挖掘，发现商店并在客户端更新私人DUP.</p>
+<p>Chandramouli et al. (2011) emphasis the need of real time recommender system in the era of social networking where <strong>user is continuously updating his proﬁle by adding new items</strong> (e.g., newsposts,Facebookpostings). 因此，他们提出了StreamRec，这是一种推荐系统架构，它利用了将推荐系统建模为复杂事件处理（CEP）应用程序的流处理系统</p>
+<h3 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h3><p>许多研究人员正在阐述提供建议的context的重要性。诸如一天中的时间，夏季或冬季的各种背景特征，无论用户在寻找自己还是其他人在很大程度上影响用户的决定。</p>
+<p>. Gonzalez et al. (2007) provides a novel perspective to improve the performance of RS through embedding emotional context. 这种情绪信息是以增量方式获得的，以丰富日常生活中的建议。</p>
+<p>Woerndl和Groh（2007）描述了通过使用社交网络和<strong>用户的物理位置</strong>来处理上下文的不同方法。</p>
+<p><strong>所以,可以在呼叫中心推荐中考虑上下文信息,我觉得这是很有价值的</strong></p>
+<p>Said（2010）通过构建用于电影的上下文感知RS的概念架构来处理上下文识别的问题。 而且，<strong>Jancsary等人 （2010）假定用户对特定项目的偏好不仅取决于主题和命题内容，还取决于用户的当前上下文。</strong> 基于他的假设，他基于现实生活点击流和发布数据对上下文和非命题特征的优点进行了系统的评估。 在另一种方法中，Baltrunas等人 （2012）也提出了一个基于上下文的推荐系统，他们最近模拟了情境状况以收集这些特征对用户评分的影响。 根据收集到的数据以及建立系统的相关背景特征的重要性。</p>
+<p> Kahng等人 （2011）提出了一种新的方法，<strong>其将多个上下文特征并入到排名模型中</strong>，并且根据他们的排名赋予更多的权重。</p>
+<h3 id="Diversity"><a href="#Diversity" class="headerlink" title="Diversity"></a>Diversity</h3><p>多样性需要向用户呈现不同类型的推荐.虽然多样性的特征与准确性形成了鲜明的对比，但是许多研究者试图将两者协调起来.</p>
+<p><strong>breaking the barrier of similarity</strong></p>
+<p>齐格勒等。 （2005）提出了主题多样化，这是一种新颖的方法，旨在平衡和多样化个性化推荐列表，以反映用户的全部兴趣范围。这个程序对准确性有一定的不利影响.</p>
+<p>Kwon（2008）: 可以通过考虑rating variance来改善Top N项目选择的多样性,这可以与现有推荐技术结合使用的.此外，在这种方法中，用户可以通过一种adjusted raking and filtering combined approaches来控制推荐的准确性和多样性之间的平衡，并且根据用户筛选调整选择N个项目的条件的组合方法。</p>
+<p>另一位研究人员（Zhang和Hurley 2008; Zhang 2009）开发了一个模型来<strong>最大化检索列表的多样性</strong>，同时保持与用户查询足够的相似性作为<strong>二进制优化问题</strong>。 还提出了一个新的项目新颖性评估指标来比较结果。</p>
+<p> 最后，Lathia等。 （2010）也表明时间多样性是RS通过用户研究的一个重要方面。 他们还通过<strong>定义多样性指标来检验三个CF的多样性</strong>。 此外，它们提供了几种可用于改进建议多样性的方法。</p>
+<h3 id="Novelty"><a href="#Novelty" class="headerlink" title="Novelty"></a>Novelty</h3><p>经过一段时间后，那就通用流行的东西一再被推荐.用户想看点新东西.(这在<strong>呼叫中心并不是问题</strong>)</p>
+<p>Celma和Herrera（2008）提出了两种方法，以项目和以用户为中心来<strong>评估新颖推荐的质量</strong>。他们观察到，尽管CF比CBF推荐更加不novelty,但用户的感知质量更高。这是因为CF是偏向流行，影响新颖性和网络拓扑，而CBF根本不受影响。</p>
+<p>朴智林（2008）以全新的方式处理新奇的概念。他们试图研究推荐系统的<strong>长尾问题</strong>，其中长尾的许多项目只有少量的评级，因此很难在推荐系统中使用它们。他们很少被推荐，但是也有能力吸引用户…</p>
+<p>Abbassi等人 （2009）检查了推荐系统中过度专业化的情况，这是因为返回的项目与用户以前评估过的项目过于相似。 他们开发了一种<strong>算法之外的算法（OTB），试图识别用户曝光不足的区域，通过冒险帮助用户发现新的信息，同时保持高度的相关性</strong></p>
+<h3 id="Serendipity"><a href="#Serendipity" class="headerlink" title="Serendipity"></a>Serendipity</h3><p>偶然性是在<strong>寻找不相关的东西</strong>的同时，发现幸运的发现的倾向.</p>
+<p>Oku and Hattori (2011) propose a Fusion-based Recommender System which <strong>ﬁnds new serendipitous items that have mixed features of two user-input items,</strong> produced by mixing the two items together.</p>
+<h3 id="大表格"><a href="#大表格" class="headerlink" title="大表格"></a>大表格</h3><p><img src="/2018/01/12/A study of the dynamic features of recommender systems/AB5FEFC8-8BC5-45CA-85ED-E4378B8B5B94.png" alt=""></p>
+<ul>
+<li>Burke2010的论文说的就是制定评估指标来评估推荐过程的动态性….</li>
+<li>BUrke2007说的是伯克对混合推荐系统进行了详细的调查，他比较了这种系统发展的不同策.</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/04/优化Spark的笛卡尔积/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/12/FFM/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#A-study-of-the-dynamic-features-of-recommender-systems"><span class="nav-number">1.</span> <span class="nav-text">A study of the dynamic features of recommender systems</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamic-recommender-systems"><span class="nav-number">1.2.</span> <span class="nav-text">Dynamic recommender systems</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Classiﬁcation-of-dynamic-recommender-systems"><span class="nav-number">1.3.</span> <span class="nav-text">Classiﬁcation of dynamic recommender systems</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Temporal-changes"><span class="nav-number">1.3.1.</span> <span class="nav-text">Temporal changes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实时动态"><span class="nav-number">1.3.2.</span> <span class="nav-text">实时动态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context"><span class="nav-number">1.3.3.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Diversity"><span class="nav-number">1.3.4.</span> <span class="nav-text">Diversity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Novelty"><span class="nav-number">1.3.5.</span> <span class="nav-text">Novelty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Serendipity"><span class="nav-number">1.3.6.</span> <span class="nav-text">Serendipity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大表格"><span class="nav-number">1.3.7.</span> <span class="nav-text">大表格</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

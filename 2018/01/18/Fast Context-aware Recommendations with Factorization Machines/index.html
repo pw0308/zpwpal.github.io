@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Fast Context-aware Recommendations with Factorization Machines#推荐引擎/论文 面向rating prediction,数据就使用explicit这样的了,当然,也可以改造. Abstract 行为发生的situation是推荐系统的重要信息.Context-aware推荐系统考虑了这个.当前,从准确度上来看,最好的context-aw">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Fast Context-aware Recommendations with Factorization Machines#推荐引擎/论文 面向rating prediction,数据就使用explicit这样的了,当然,也可以改造. Abstract 行为发生的situation是推荐系统的重要信息.Context-aware推荐系统考虑了这个.当前,从准确度上来看,最好的context-aw">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/C7EBA6E2-8C0B-43CF-BE9D-73C03782B72A.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/0B59375F-D070-48DF-BEF2-C70FE6C33139.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/BF3C5109-5FAD-4865-A076-D4DCC89A3BD7.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/DEED3721-4AC2-4DC3-9EFE-8EDF56CA1AE3.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/4028A48D-24D8-40A1-B656-6E6C20770049.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/034EFF6F-B90B-40FF-8D46-64DD707EB403.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/008900C2-62C0-4736-9AE0-1CACE3E476A1.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/5DA9AE4F-45A3-439C-92A8-AA9507ED719B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/B2CA2E57-8032-4230-9BDE-04FBB0D218FF.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/3208EE4D-18B9-47EB-B308-558F74F975C1.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/224210FD-4425-4075-B1FD-44D6577DDD94.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/61903558-B2E0-4A88-87D2-CE183E250E7D.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/4FED5EE1-F44B-4140-BBF0-489B6CFC9A5A.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/6FF9DEF8-A67F-4FD3-83C9-9CA572921B79.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/44EB27BF-61DD-4012-9973-C2A55AB1B7DD.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/D7C18BF1-1766-4916-A8D9-3E39AB36AB8D.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/C5B5A08B-46EA-4F6E-AA66-F53A23298862.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/72A2096F-9CB2-431B-8203-4F5393C94A62.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/5C78DCFD-2AB1-4B09-9F65-DF786675E4B8.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/A8407B22-DB0F-4EA3-A45B-1097AE883793.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/2C4503EA-7865-4265-92D6-7E9DEE7428E4.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/F06690BA-8DA0-4C79-AD0D-C3A61F237B74.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/7BBC2EAF-9BB9-4720-8247-DC011BC143AC.png">
+<meta property="og:updated_time" content="2018-01-30T09:17:51.343Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Fast Context-aware Recommendations with Factorization Machines#推荐引擎/论文 面向rating prediction,数据就使用explicit这样的了,当然,也可以改造. Abstract 行为发生的situation是推荐系统的重要信息.Context-aware推荐系统考虑了这个.当前,从准确度上来看,最好的context-aw">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/18/Fast%20Context-aware%20Recommendations%20with%20Factorization%20Machines/C7EBA6E2-8C0B-43CF-BE9D-73C03782B72A.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-18T17:35:02+08:00">
+                2018-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Fast-Context-aware-Recommendations-with-Factorization-Machines"><a href="#Fast-Context-aware-Recommendations-with-Factorization-Machines" class="headerlink" title="Fast Context-aware Recommendations with Factorization Machines"></a>Fast Context-aware Recommendations with Factorization Machines</h1><p>#推荐引擎/论文</p>
+<p>面向rating prediction,数据就使用explicit这样的了,当然,也可以改造.</p>
+<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><hr>
+<p>行为发生的situation是推荐系统的重要信息.Context-aware推荐系统考虑了这个.当前,从准确度上来看,最好的context-aware评分预测方法是基于Tucker张量分解的<strong>Multiverse Recommendation</strong>.但是两个缺点</p>
+<ul>
+<li>模型复杂度对context遍历个数是指数的,对factorization是多项式的..</li>
+<li>只对离散型context变量起作用.</li>
+</ul>
+<p>我们使用FM来建模contextual info,并提供context-aware评分预测.并提供ALS的优化方法.</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><hr>
+<p>评分预测除了关于参与评级事件的实体的(谁,什么物品,评分数)数据之外，还可能有关于评级事件发生的情况的信息，例如，当前位置，时间，附近的人或用户的当前情绪。这种情景信息通常被称为情境。</p>
+<p>经典推荐系统方法不考虑上下文信息。一些方法执行数据的预处理或后处理以使标准方法具有情境(context)感知能力。虽然这种特殊的解决方案可能在实践中发挥作用，但它们有缺陷，即在这个过程中的所有步骤都需要supervision和fine-tuning。将各种输入数据整合到一个模型中的方法在这方面比较实用，理论上也比较优雅,比如目前在预测准确性方面最灵活和最强的方法是Multiverse推荐[5]，它依赖于Tucker分解，并允许使用任何categorical上下文。然而，对于真实世界的场景，其计算复杂度太高.</p>
+<p>在本文中，我们提出了一种基于因子分解机器（FM）的情境感知的评分预测器. FMs包括并可以模仿推荐系统中最成功的方法，包括矩阵分解,SVD ++,或PITF,。我们展示了FM如何应用于各种各样的上下文领域，包括categorical，set categorical或real-valued domains。</p>
+<p>此外我们提出了一种基于交替最小二乘（ALS）的新算法。 the complexity for one iteration of our ALS algorithm is in O(|S| m k) where |S| is the number of training examples.(k是分解维度,m是the number of modes/variables involved) 我们新的ALS算法相对于SGD的主要优点是::不需要确定学习率::。 这在实践中非常重要.</p>
+<h2 id="CONTEXT-AWARE-RATING-PREDICTION"><a href="#CONTEXT-AWARE-RATING-PREDICTION" class="headerlink" title="CONTEXT-AWARE RATING PREDICTION"></a>CONTEXT-AWARE RATING PREDICTION</h2><hr>
+<p>我们首先描述任务,然后,我们将展示如何将这个任务表示为矩阵极端稀疏时的,对实值特征向量的回归任务。</p>
+<p>评分预测可以看做在给定用户集<img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/C7EBA6E2-8C0B-43CF-BE9D-73C03782B72A.png" alt="">和item集<img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/0B59375F-D070-48DF-BEF2-C70FE6C33139.png" alt="">上的一个回归任务.y(u,i)代表u对i的评分,把所有<strong>已知</strong>的y(u,i)记作S.我们需要估计函数y<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/BF3C5109-5FAD-4865-A076-D4DCC89A3BD7.png" alt="">,以预测任何y(u,i).(item prediction又是另一种任务了,可以看做ranking)</p>
+<p>在情境感知推荐系统中，假设有一些附加信息可以影响评分行为,我们::把上下文变量表示为c ∈C::,那么可以举例,用户在评价一个项目（例如C = {happy，sad，…}）时所处的情绪，给出评分的时间 （例如C=R+），上次浏览的物品（例如C=P(I)）或位置（例如C=R^2）。</p>
+<p>包含了上下文的预测任务就是估计下面函数了<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/DEED3721-4AC2-4DC3-9EFE-8EDF56CA1AE3.png" alt=""></p>
+<h2 id="CONTEXT-AWARE-RATING-PREDICTION-WITH-FMS"><a href="#CONTEXT-AWARE-RATING-PREDICTION-WITH-FMS" class="headerlink" title="CONTEXT-AWARE RATING PREDICTION WITH FMS"></a>CONTEXT-AWARE RATING PREDICTION WITH FMS</h2><hr>
+<p>首先既然是回归任务,就用一下square loss,并且加入L2正则化项,那么FM的损失函数就是<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/4028A48D-24D8-40A1-B656-6E6C20770049.png" alt="">……….(0)<br>λ是针对参数θ的正则化超参数,在我们的实验中，我们使用：λ（w0）= 0，因为不需要调整全局偏差; 对于所有参数wi∈W其λ相同, 而对于所有参数vif∈V 其λ也都是相同的.</p>
+<p>让我们看看各种参数如何运用进来.</p>
+<ul>
+<li>Categorical domain:使用one-hot编码就行</li>
+<li>Categorical set domain:多值枚举型,那就使用多hot编码呗.(我们建议对非0的context向量z(zi是表示ci向量),将其::归一化::，使得所有向量总和为1.这确保了所有向量具有相同的权重，这通常是合意的)</li>
+<li>Real valued domains:直接使用就行</li>
+</ul>
+<p>总的来讲,样本的特征向量就是<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/034EFF6F-B90B-40FF-8D46-64DD707EB403.png" alt=""></p>
+<p>考虑到下图表示的特征<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/008900C2-62C0-4736-9AE0-1CACE3E476A1.png" alt=""><br>FM公式对这个问题可以重写为<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/5DA9AE4F-45A3-439C-92A8-AA9507ED719B.png" alt=""><br>和矩阵分解相比,看得出FM正好就包含了矩阵分解所需的&lt;Vi,Vu&gt;.此外，它::将所有context变量的所有配对相互作用因式分解::。言下,FM包含了矩阵分解模型</p>
+<h2 id="Fast-Learning-ALS"><a href="#Fast-Learning-ALS" class="headerlink" title="Fast Learning(ALS)"></a>Fast Learning(ALS)</h2><hr>
+<p>对任意需要学习的参数θ,我们都可以发现,y^公式可以看做θ的一个线性函数<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/B2CA2E57-8032-4230-9BDE-04FBB0D218FF.png" alt="">………..(1)<br>其中g()与h()是与θ无关的,比如</p>
+<ol>
+<li>当θ为w0<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/3208EE4D-18B9-47EB-B308-558F74F975C1.png" alt=""></li>
+<li>当θ为wl<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/224210FD-4425-4075-B1FD-44D6577DDD94.png" alt=""></li>
+<li>当θ为vlf<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/61903558-B2E0-4A88-87D2-CE183E250E7D.png" alt=""></li>
+</ol>
+<p>并且,与FM论文中给出的梯度对比<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/4FED5EE1-F44B-4140-BBF0-489B6CFC9A5A.png" alt=""><br>可以发现,不管θ是哪一种参数,h(x)其实就是y^上θ的梯度(当然了,你从线性角度来看,y=hx+g,y对x的导数不就是a嘛.)(所以::想要求复杂的g的时候你就可以用y-hx表示::)</p>
+<p>于是,对θ的最优解就是<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/6FF9DEF8-A67F-4FD3-83C9-9CA572921B79.png" alt="">…………(3)<br>::证明:::<br>    使用Loss,也就是(0)式对参数θ求导,并令导数为0(<strong>含义是使得y极小</strong>),只要把(1)式子代入,就有:<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/44EB27BF-61DD-4012-9973-C2A55AB1B7DD.png" alt=""><br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/D7C18BF1-1766-4916-A8D9-3E39AB36AB8D.png" alt=""></p>
+<p>所以,整个的ALS算法是:<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/C5B5A08B-46EA-4F6E-AA66-F53A23298862.png" alt=""></p>
+<ol>
+<li>初始化各个参数.其中向量参数使用符合0均值正态分布的小数字随机初始化</li>
+<li>对<strong>所有已知样本</strong>,提前计算error(预测-真实)和q(<img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/72A2096F-9CB2-431B-8203-4F5393C94A62.png" alt="">)</li>
+<li>开始主过程<ol>
+<li>按公式(3),代入w0的h()和g(), 更新w0(其中用到了e),并且更新error()……optimize ﬁrst lower interactions and then higher ones because for lower interactions more data is observed and thus their estimates are more reliable.</li>
+<li>按公式(3),代入wi的h()和g(), 更新所有一次项参数,并且再次更新error()</li>
+<li>按公式(3),代入wij的h()和g(),更新二次项参数,病根新error()和q().</li>
+</ol>
+</li>
+<li>循环一些次,直到到达停止条件结束</li>
+</ol>
+<blockquote>
+<p>ALS的思想体现在3里,对三种参数w0,wi,wij,求其最优值的时候都是固定其他参数来更新它.  </p>
+</blockquote>
+<p>做了一些pre-computation以加速计算,</p>
+<ol>
+<li>你想用公式(3),一个计算瓶颈就是为每一个训练样本计算<img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/5C78DCFD-2AB1-4B09-9F65-DF786675E4B8.png" alt="">,时间复杂度是<img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/A8407B22-DB0F-4EA3-A45B-1097AE883793.png" alt="">,但是如果我们提前计算好error<img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/2C4503EA-7865-4265-92D6-7E9DEE7428E4.png" alt="">,那么我们想要的就能表示为<img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/F06690BA-8DA0-4C79-AD0D-C3A61F237B74.png" alt="">,这样就每次计算时候只需要计算h(θ)就可以了…而这本来就要计算…</li>
+<li>现在计算复杂度只在于h（θ）函数的复杂性, 对于参数w 0和wi，h（θ）的复杂度是恒定的，但是对于二次参数，计算h包含了一个遍历所有变量的循环。…反正就又把h(θ)分解了,得到一个无关样本的,都需要计算的值..,看图吧,-项目是去除i==l的情况.<br><img src="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/7BBC2EAF-9BB9-4720-8247-DC011BC143AC.png" alt=""></li>
+</ol>
+<p>这两种优化,实际上思想就是::为所有样本都需要计算的一个复杂项a,分解出a=b+c,并且b对所有样本一样,于是就只需要计算不同的c::</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/17/今日头条推荐详解/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Fast-Context-aware-Recommendations-with-Factorization-Machines"><span class="nav-number">1.</span> <span class="nav-text">Fast Context-aware Recommendations with Factorization Machines</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Abstract"><span class="nav-number">1.1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.2.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CONTEXT-AWARE-RATING-PREDICTION"><span class="nav-number">1.3.</span> <span class="nav-text">CONTEXT-AWARE RATING PREDICTION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CONTEXT-AWARE-RATING-PREDICTION-WITH-FMS"><span class="nav-number">1.4.</span> <span class="nav-text">CONTEXT-AWARE RATING PREDICTION WITH FMS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fast-Learning-ALS"><span class="nav-number">1.5.</span> <span class="nav-text">Fast Learning(ALS)</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

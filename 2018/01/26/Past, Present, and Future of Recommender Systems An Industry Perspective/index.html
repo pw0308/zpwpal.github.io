@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Past, Present, and Future of Recommender Systems: An Industry Perspective#推荐引擎/论文 这篇文章就从工业界角度介绍了推荐系统的过去(netflix price中的lesson)现在(当前流行的方法)和未来.最后点出了一些再工业界看来可能很有意义的研究方向. 过去:NETFLIX PRICE Netflix Price比赛提">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/26/Past, Present, and Future of Recommender Systems An Industry Perspective/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Past, Present, and Future of Recommender Systems: An Industry Perspective#推荐引擎/论文 这篇文章就从工业界角度介绍了推荐系统的过去(netflix price中的lesson)现在(当前流行的方法)和未来.最后点出了一些再工业界看来可能很有意义的研究方向. 过去:NETFLIX PRICE Netflix Price比赛提">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/26/Past,%20Present,%20and%20Future%20of%20Recommender%20Systems%20An%20Industry%20Perspective/4552D3A3-EBB7-4DAA-B8B4-DE7946840FCB.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/26/Past,%20Present,%20and%20Future%20of%20Recommender%20Systems%20An%20Industry%20Perspective/743112C8-ED67-4F98-AD02-A48FBB06EAE7.png">
+<meta property="og:updated_time" content="2018-01-27T05:41:08.399Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Past, Present, and Future of Recommender Systems: An Industry Perspective#推荐引擎/论文 这篇文章就从工业界角度介绍了推荐系统的过去(netflix price中的lesson)现在(当前流行的方法)和未来.最后点出了一些再工业界看来可能很有意义的研究方向. 过去:NETFLIX PRICE Netflix Price比赛提">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/26/Past,%20Present,%20and%20Future%20of%20Recommender%20Systems%20An%20Industry%20Perspective/4552D3A3-EBB7-4DAA-B8B4-DE7946840FCB.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/26/Past, Present, and Future of Recommender Systems An Industry Perspective/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/26/Past, Present, and Future of Recommender Systems An Industry Perspective/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-26T14:12:15+08:00">
+                2018-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Past-Present-and-Future-of-Recommender-Systems-An-Industry-Perspective"><a href="#Past-Present-and-Future-of-Recommender-Systems-An-Industry-Perspective" class="headerlink" title="Past, Present, and Future of Recommender Systems: An Industry Perspective"></a>Past, Present, and Future of Recommender Systems: An Industry Perspective</h1><p>#推荐引擎/论文</p>
+<p>这篇文章就从工业界角度介绍了推荐系统的过去(netflix price中的lesson)现在(当前流行的方法)和未来.最后点出了一些再工业界看来可能很有意义的研究方向.</p>
+<h2 id="过去-NETFLIX-PRICE"><a href="#过去-NETFLIX-PRICE" class="headerlink" title="过去:NETFLIX PRICE"></a>过去:NETFLIX PRICE</h2><hr>
+<p>Netflix Price比赛提的比赛目标就是降低rating prediction之中的RMSE指标,大家都努力地来提升这一个指标,当然,这是简化了推荐系统,不过很多东西还是学得到.</p>
+<p>第一年过去后,胜者的方法是ensemble了107个方法,其中最有效的两个是:::SVD++和RBM::.不过问题是原本的代码写法不太能处理netflix工业化的这么大的数据集,并且没有设计新的评分来了怎么办;不过Netflix处理了这些问题,这两个算法就加入了生产环境.</p>
+<p>还有一些其他的收获,比如temporal dynamics是一个重要因素;另一个是rating数据中噪声其实很多;最终达到指标的获奖方法倒也还是一个综合方法.这说明,方法::做emsemble当然是很有效的::.但是,Netflix评估了其中的单个算法,并没有发现更好的单个方法.</p>
+<p><img src="/2018/01/26/Past, Present, and Future of Recommender Systems An Industry Perspective/4552D3A3-EBB7-4DAA-B8B4-DE7946840FCB.png" alt=""></p>
+<h2 id="现在-BEYOND-RATING-PREDICTION"><a href="#现在-BEYOND-RATING-PREDICTION" class="headerlink" title="现在:BEYOND RATING PREDICTION"></a>现在:BEYOND RATING PREDICTION</h2><hr>
+<p>这节介绍几个不同场景以及其带来的不同推荐问题.</p>
+<ul>
+<li>netflix现在的任务已经是流视频推荐,像youtube也是一样,推荐包括电影啊,TV show啊,直播视频啊这些,这就是<strong>视频推荐</strong>.</li>
+<li><strong>音乐推荐</strong>也是一个方面,比如Spotify, Pandora, EchoNest(结合了包括collaborative ﬁltering, meta data, audio signal analysis等多种方法)</li>
+<li>再一个就是<strong>e-commerce</strong>,比如Amazon(最开始使用的是itemCF),现在的场景包括首页,详情页等多种场景.还有eBay这种网站了.</li>
+<li>新闻推荐:比如Google News,这类推荐最大的挑战就是<strong>fressness</strong>还有diversity(there can be a large number of articles about the same topic),但是,其有<strong>使用NLP技术来创建features</strong>的优势.</li>
+<li>社交网络推荐:FB,TWITTER,Quora这种,主要问题是<strong>Who to Follow</strong>.<br>一些important issue是<em>scalability, business metrics, and integration of the system in the overall user experience</em>,一般使用::AB测试::进行比较</li>
+</ul>
+<p>显示rating既不是可以得到的唯一反馈也不是最好的反馈,隐式反馈更好获得,比如,在网页上你可以把用户浏览一个URL或者一个点击当做正反馈.比如BPR方法,使用隐式反馈来计算personal ranking.SVD++也结合了两种反馈,还有logistic ordinal regression(<em>Implicit feedback recommendation via implicit-to-explicit ordinal logistic regression mapping</em>)等等</p>
+<p>ranking也是个重要方法,Netflix按照用户最可能play的video排序建模,而FB来优化用户会觉得一个Feed有趣的概率来排序.这都是去学一个<img src="/2018/01/26/Past, Present, and Future of Recommender Systems An Industry Perspective/743112C8-ED67-4F98-AD02-A48FBB06EAE7.png" alt="">. 对于ranking函数而言,一个显然的基准是取optimize <strong>popularity</strong>,因为平均俩说,用户最可能喜欢很多别人都也喜欢的东西.然而,这跟personalization是相反的,其给每个用户都生成一样的列表.所以,首先,ranking函数的第一个目标是to be better than item popularity来适应用户的不同口味.</p>
+<p>一个明显的方式来实现这个(当rating data available)就是<strong>incorporate the predicted rating of each item</strong>,而不是使用物品的流行度或者rating on their own ,这样,我们学到的函数能balance these aspects.这是个例子,实际上item还会使用很多其他特征.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">One obvious way to approach this when rating data is available is to incorporate the predicted rating of each item. Rather than using either popularity or predicted rating on their own, we can learn to produce rankings that balance both of these aspects. This two-dimensional model is a basic example of a ranking function; real products use many other features.</span><br></pre></td></tr></table></figure></p>
+<p>传统的Pairwise LTR问题把ranking当做二分类问题,这个场景下,典型的LR,GBDT都是常用的模型,Pairwise函数的优化函数基于pairwise preferences,最小化<strong>number of inversions</strong>,<strong>BPR</strong>就是一个这样方法的例子. Listwise的方法也是可以用的,RankALS,其目标函数directly includes ranking optimization,使用ALS方法来优化.这些方法使用用于rank的信息检索指标来衡量rank的性能. 理想情况下,我们想直接使用这些指标,但是实际上不太好直接用,<strong>CliMF</strong>使用了目标函数的平滑版本来进行梯度下降.</p>
+<h2 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h2><hr>
+<p>这里着眼于对工业界很重要的但是研究得没那么好的方面.</p>
+<h3 id="Full-Page-Optimization"><a href="#Full-Page-Optimization" class="headerlink" title="Full Page Optimization"></a>Full Page Optimization</h3><p>尽管一维排名已经超出了评分预测的范围，并且可以进一步优化演示[23]，但是我们最感兴趣的是在整个页面上优化推荐体验。生成个性化和优化的完整页面非常复杂。在Netflix情景中，可用候选行的集合比单个项目的目录大得多，因为同一个项目可以包含在许多不同的行中，并且候选行的行列需要被选择和排列在一起。而且，在优化整个页面时，我们不仅优化了相关性，而且还考虑了多样性和新鲜度等其他方面。一个理想的全页面优化算法也可以通过理解用户的浏览或注意行为来个性化地将推荐与用户体验的其他元素混合在一起[15]。当用户的操作揭示他们当前的意图时，调整会话内的页面也可能是有用的。</p>
+<p>尽管这在文献中还不是一个常见的主题，但最近有几篇论文涉及页面优化领域。例如，[1]在涉及用户顺序点击模型的新闻环境中提出一种方法，并通过子模块功能促进多样性的相关模型。另一个例子是[30]，其中搜索结果页面上的元素布局是使用学习函数在页面元素和布局上执行的。</p>
+<h3 id="Personalizing-How-We-Recommend"><a href="#Personalizing-How-We-Recommend" class="headerlink" title="Personalizing How We Recommend"></a>Personalizing How We Recommend</h3><p>希望<strong>对不同的用户,使用的推荐方法也不同</strong>.推荐系统改进的另一个方向是个性化，不仅仅是我们推荐的内容，还有我们的建议。例如，许多推荐方法都有假设或参数来平衡要产生的系统的多样性，新颖性，知名度等。但是，不同的人在这些方面的理想水平上可能会有很大差异。在国际上进行推荐时，正如许多工业应用所需要的那样，这也意味着适当地适应不同文化和语言的需求和口味。另一个领域是个性化如何显示建议。对于一个给定的项目，它可以有多种选择，以及许多支持证据来帮助用户决定是否选择它。通过为特定用户提供最有用的信息来作出决定，有机会提出更加强大的建议。这不仅仅是从推荐算法本身生成解释，而是将呈现（图像，描述，元数据，与其他项目的连接等）的所有方面考虑为可以个性化的元素。在这个网络案例中，这可能意味着决定是否显示解释，评论，平均评分，播放预告片，演员信息等等，根据哪一个最有可能导致高质量的选择。进一步来说，推荐系统的整个交互范式可以是个性化的。</p>
+<h3 id="Indirect-Feedback"><a href="#Indirect-Feedback" class="headerlink" title="Indirect Feedback"></a>Indirect Feedback</h3><p><strong>比如推荐了却没点,这就是一种间接反馈</strong>虽然我们已经看到行业从明确的反馈转向隐式反馈，但大部分工作都集中在直接的反馈形式上：用户直接对项目进行操作。使用标准的隐式反馈的<strong>一个缺点是我们没有看到负面的反馈。数据是正面的或缺失的</strong>。缺失的数据包括用户明确选择忽略的两个项目，因为他们没有吸引力，项目是完美的建议，但从来没有提交给用户[26]。一个可以帮助的信息是知道项目是否显示给用户。这增加了非常有价值的信息，但稍微复杂了我们的建议问题的表述。诸如协作竞争过滤（CCF）[31]等方法可以使用这些信息，不仅可以模拟类似的用户和项目之间的协作，而且可以模拟用户关注的项目之间的竞争。与项目如何呈现有关的一个相关问题是所谓的位置偏差：在列表的第一个位置上呈现的项目比进一步下降的项目更容易被看到和选择[19]。因此，对因果关系的深入理解有很大的潜力来帮助推荐系统。</p>
+<p>当有人与涉及推荐的应用程序进行交互时，还收集了关于他们如何导航的许多其他间接形式的信息。另外，间接反馈与大量的上下文信息相关联。例如，在Netflix的情况下，用户对节目的偏好可能取决于诸如一天中的时间，星期几或观看设备之类的变量。在利用上下文的应用程序中有潜在的有效改进[8]。然而，间接的和上下文的变量代表了必须处理更多的数据，往往是嘈杂的，并创造了一个更高维的问题空间。</p>
+<h3 id="Value-aware-Recommendations"><a href="#Value-aware-Recommendations" class="headerlink" title="Value-aware Recommendations"></a>Value-aware Recommendations</h3><p>(<strong>不同物品推荐的价值其实不同</strong>)推荐系统社区传统上将推荐系统分为基于内容和协作过滤两种。如今，这两种技术都以不同的方式结合在一起。例如，基于内容的建议被用作冷启动的解决方案。然而，在这两种情况下，从内容中提取的数据或用户交互被用来优化同样的事情：用户使用推荐的概率。不幸的是，这个表述是<strong>基于所有内容具有相同价值的假设</strong>。但是，在许多应用中，情况并非如此。</p>
+<p>在电子商务中，有些商品可能对零售商有更高的利润率，同时给用户同样的满意度[32]。在媒体/新闻推荐中，我们可能会有一些内容非常相似，但质量差别很大。例如，Quora有兴趣推荐具有一定质量的项目，以便社会网络的规范以质量被重视的方式演变。大多数在线服务都会关注推荐长期保留的内容类型，而不是那些可能会增加短期点击量的内容，但可能不会导致长期的用户满意度。我们也可能要确保我们的算法不偏向某些用户，例如不加强偏见。因此，记住用户的价值也很重要。</p>
+<p>许多产品定义了额外的规则来过滤或推广那些被认为对上述维度有正面影响的内容。然而，显然需要提出算法来全面关心被推荐的项目的长期价值，以便给定用户参与的相似概率，该算法可以转向长期收益。我们把这个算法家族称为价值意识的建议。</p>
+<p>一个极端的和前瞻性的版本将是建议系统额外推荐什么新的项目或内容不应该创建，以满足缺失的需求，并增加最大的价值。公司已经在某种程度上评估项目。 Net fl ix使用数据来决定是否许可一个内容。 Quora使用作者创造高质量和引人入胜的答案的概率作为将问题发送给正确的人的方式。然而，在研究如何提出新项目会增加最大价值的建议方面，有很多潜在的影响。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/25/Local collaborative ranking/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/27/Beyond collaborative ﬁltering The list recommendation problem/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Past-Present-and-Future-of-Recommender-Systems-An-Industry-Perspective"><span class="nav-number">1.</span> <span class="nav-text">Past, Present, and Future of Recommender Systems: An Industry Perspective</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#过去-NETFLIX-PRICE"><span class="nav-number">1.1.</span> <span class="nav-text">过去:NETFLIX PRICE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#现在-BEYOND-RATING-PREDICTION"><span class="nav-number">1.2.</span> <span class="nav-text">现在:BEYOND RATING PREDICTION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#未来"><span class="nav-number">1.3.</span> <span class="nav-text">未来</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Full-Page-Optimization"><span class="nav-number">1.3.1.</span> <span class="nav-text">Full Page Optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Personalizing-How-We-Recommend"><span class="nav-number">1.3.2.</span> <span class="nav-text">Personalizing How We Recommend</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Indirect-Feedback"><span class="nav-number">1.3.3.</span> <span class="nav-text">Indirect Feedback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Value-aware-Recommendations"><span class="nav-number">1.3.4.</span> <span class="nav-text">Value-aware Recommendations</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

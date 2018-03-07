@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Field-aware Factorization Machines for CTR Prediction#推荐引擎/论文 每条数据都是以1,0为标签,我们要做的事是类似LR的,就是用的技术不一样. ABSTRACT 本文中我们建立了FFMs作为一种有效的方法来对包括CTR预测数据在内的大量::稀疏数据::进行::分类::。 首先,提出了训练FFM的高效实现。 然后,全面分析FFM,并与其他模型比">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/18/Field-aware Factorization Machines for CTR Prediction/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Field-aware Factorization Machines for CTR Prediction#推荐引擎/论文 每条数据都是以1,0为标签,我们要做的事是类似LR的,就是用的技术不一样. ABSTRACT 本文中我们建立了FFMs作为一种有效的方法来对包括CTR预测数据在内的大量::稀疏数据::进行::分类::。 首先,提出了训练FFM的高效实现。 然后,全面分析FFM,并与其他模型比">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/017AF03A-B021-4E6E-B6A6-9B1CB1B63CAF.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/F5130C88-40C6-45EE-BF0B-14C4FC47FFD8.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/4A4C2633-E2F5-49B5-AF44-F30C66C2A106.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/9AEA4B3F-9D3B-4E07-B32D-5F5AA466FA52.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/99A32351-255A-44B7-A41A-1137A59C7FC2.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/7F5563C3-0005-486B-8259-55464861E3AE.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/79E2B1AC-5DCE-486F-9082-8EC08898B35C.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/DFEBAF07-223E-4B47-92D1-CFF98F05CA40.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/D265B289-A599-41D7-B3FD-97CF03DD0394.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/EDA29CC1-5F68-4D98-8694-6DFBC686BCA9.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/30EE340D-9D2C-4F38-A3E3-2225D9C1252B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/A5C63DC4-981B-4998-BA8B-C7BBCB0EDD05.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/0DE1C564-65CE-4897-978D-373E4F1164D3.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/2A75B59F-DA42-4EAE-8C95-D6E743DC077C.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/3C7BF9D9-8481-4EF4-8719-A392A687F0A0.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/384982E5-1D30-44AA-88C8-66BFB9BF8D5C.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/B78ACB52-A161-4518-A4C8-75B2C26A16F0.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/29A3A1AF-E258-4FCE-B8AA-9D8BE17AA147.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/48EA0FE9-48EE-44D7-B40E-A8C322D79274.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/DA130343-A93E-4757-9640-63F60644B7AE.png">
+<meta property="og:updated_time" content="2018-01-22T08:31:03.888Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Field-aware Factorization Machines for CTR Prediction#推荐引擎/论文 每条数据都是以1,0为标签,我们要做的事是类似LR的,就是用的技术不一样. ABSTRACT 本文中我们建立了FFMs作为一种有效的方法来对包括CTR预测数据在内的大量::稀疏数据::进行::分类::。 首先,提出了训练FFM的高效实现。 然后,全面分析FFM,并与其他模型比">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/18/Field-aware%20Factorization%20Machines%20for%20CTR%20Prediction/017AF03A-B021-4E6E-B6A6-9B1CB1B63CAF.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/18/Field-aware Factorization Machines for CTR Prediction/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/18/Field-aware Factorization Machines for CTR Prediction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-18T17:35:49+08:00">
+                2018-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Field-aware-Factorization-Machines-for-CTR-Prediction"><a href="#Field-aware-Factorization-Machines-for-CTR-Prediction" class="headerlink" title="Field-aware Factorization Machines for CTR Prediction"></a>Field-aware Factorization Machines for CTR Prediction</h1><p>#推荐引擎/论文</p>
+<p>每条数据都是以1,0为标签,我们要做的事是类似LR的,就是用的技术不一样.</p>
+<h1 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h1><hr>
+<p>本文中我们建立了FFMs作为一种有效的方法来对包括CTR预测数据在内的大量::稀疏数据::进行::分类::。 首先,提出了训练FFM的高效实现。 然后,全面分析FFM,并与其他模型比较。 实验表明，FFM对于::某些分类问题::是非常有用的。</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><hr>
+<p>对CTR预测问题,LR可能是最广泛使用的模型,给定m个训练样本(y,x),x是n维向量,y是标签,LR模型w是求解下面问题得来的<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/017AF03A-B021-4E6E-B6A6-9B1CB1B63CAF.png" alt="">………(1)<br>其中<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/F5130C88-40C6-45EE-BF0B-14C4FC47FFD8.png" alt="">……….(2)<br>学习feature conjunctions的效果似乎是CTR预测的关键; 例如见下表,以更好地理解feature conjunctions。 来自Gucci的广告在Vogue上的点击率特别高。 然而，这些信息对于学习线性模型是不容易的，因为他们分别学习了两个权重Gucci和Vogue。<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/4A4C2633-E2F5-49B5-AF44-F30C66C2A106.png" alt=""><br>于是有了Poly2方法和<strong>FM方法</strong>. FM的一个变体称为::PITF::,其用于个性化的标签推荐。 在2012年有人提出了一个称为“::factor model::”的PITF的推广。 进而,把其field从user,item,tag三个扩展到更general的情况,就是FFM.</p>
+<h2 id="FFM"><a href="#FFM" class="headerlink" title="FFM"></a>FFM</h2><hr>
+<p>FFM的想法源于<strong>PITF [7]</strong>提出的带有个性化标签的推荐系统。在PITF中，他们假定三个可用字段，包括User，Item和Tag，并在单独的潜在空间中分解（User，Item），（User，Tag）和（Item，Tag）。由于::[7]针对的是推荐系统::，仅限于三个特定的领域（用户，项目和标签）. 本节我们提供关于实况报道预测的全面的FFM研究。对于大多数CTR数据集，如表1所示，“::features::”可以分成“::fields::”。在我们的例子中，ESPN，Vogue和NBC三个功能属于ﬁeld:发布商，FFM是利用这些信息的FM的变体。为了解释实况调查如何运作，我们考虑下面的新样本：<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/9AEA4B3F-9D3B-4E07-B32D-5F5AA466FA52.png" alt=""><br>在FM中，每个特征只有一个::隐向量::,在FFM中，每个特征都有::多个隐向量::。 根据其他feature的filed，其中之一是用来做内积。 在我们的例子中，φFFM（w，x）是<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/99A32351-255A-44B7-A41A-1137A59C7FC2.png" alt=""><br>我们看到要学习（ESPN，NIKE）的latent effect,，我们使用了<img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/7F5563C3-0005-486B-8259-55464861E3AE.png" alt="">,因为Nike属于Field A(Advertizer). 而要学习(EPSN, Male)的latent eﬀect,就使用<img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/79E2B1AC-5DCE-486F-9082-8EC08898B35C.png" alt="">因为Male属于Filed G(Gender),同时<img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/DFEBAF07-223E-4B47-92D1-CFF98F05CA40.png" alt="">也会用上,因为ESPN属于filed P(Publisher).</p>
+<p>于是数学上描述两个filed交互是:<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/D265B289-A599-41D7-B3FD-97CF03DD0394.png" alt="">……..(3)</p>
+<p>其中f1和f2分别是j1和j2的field。 如果f是field的数量，那么FFM的变量的数量是nfk(n是维度)，并且计算(3)的复杂度是<img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/EDA29CC1-5F68-4D98-8694-6DFBC686BCA9.png" alt="">(n-是值不为0的平均column树). 值得注意的是，在FFM中，因为每个潜在向量只需要学习对特定filed的效果，通常取的k值比FM中远小:<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/30EE340D-9D2C-4F38-A3E3-2225D9C1252B.png" alt=""></p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><hr>
+<p>除了φLM（w，x）被φFFM（w，x）代替之外，优化问题与（1）相同(<strong>是一个输出概率二分类的问题</strong>)。 我们使用SGD。优化过程如下.<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/A5C63DC4-981B-4998-BA8B-C7BBCB0EDD05.png" alt=""><br>…具体的解释看论文吧</p>
+<h2 id="Adding-Field-Information"><a href="#Adding-Field-Information" class="headerlink" title="Adding Field Information"></a>Adding Field Information</h2><hr>
+<p>这节讨论如何把filed info加入到数据上,实际上就是把数据格式做转换如下<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/0DE1C564-65CE-4897-978D-373E4F1164D3.png" alt="">==&gt;<img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/2A75B59F-DA42-4EAE-8C95-D6E743DC077C.png" alt=""><br>我们需要说明feature号,field号.</p>
+<ol>
+<li>Categorical Features<br>假设使用libsvm格式,那么使用one-hot,而且0值不储存,那么,既然一个field只能有一个1,那么就把数据里每个元素之前加上filed信息就好<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/3C7BF9D9-8481-4EF4-8719-A392A687F0A0.png" alt=""><br>符合field:feature号:value的格式</li>
+<li>Numerical Features<br>比如对下面论文是否被接受的数据做预测<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/384982E5-1D30-44AA-88C8-66BFB9BF8D5C.png" alt=""><br>你可以直接使用实数值<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/B78ACB52-A161-4518-A4C8-75B2C26A16F0.png" alt=""><br>也可以把::连续值离散化::,得到<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/29A3A1AF-E258-4FCE-B8AA-9D8BE17AA147.png" alt=""><br>就是不知道到底哪种离散化好,比如…we may transform 45.73 to “45.7,”“45,”“40,” or even “int(log(45.73)).</li>
+<li>Single-ﬁeld Features<br>对有些数据集,比如下面,一个特征就是一个field,这时候你弄个域没啥意义<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/48EA0FE9-48EE-44D7-B40E-A8C322D79274.png" alt=""></li>
+</ol>
+<p>找到的::真实CTR数据集::说明<br>Data fields</p>
+<ul>
+<li>Label - Target variable that indicates if an ad was clicked (1) or not (0).</li>
+<li>I1-I13 - A total of 13 columns of integer features (mostly count features).</li>
+<li>C1-C26 - A total of 26 columns of categorical features. The values of these features have been hashed onto 32 bits for anonymization purposes.<br><img src="/2018/01/18/Field-aware Factorization Machines for CTR Prediction/DA130343-A93E-4757-9640-63F60644B7AE.png" alt=""></li>
+</ul>
+<h2 id="Tag-Problem简介"><a href="#Tag-Problem简介" class="headerlink" title="Tag Problem简介"></a>Tag Problem简介</h2><hr>
+<p>Recommender systems can help to suggest a user the tags he might want to use for tagging a speciﬁc item</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/18/Fast Context-aware Recommendations with Factorization Machines/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/18/Ad Click Prediction a View from the Trenches/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Field-aware-Factorization-Machines-for-CTR-Prediction"><span class="nav-number">1.</span> <span class="nav-text">Field-aware Factorization Machines for CTR Prediction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ABSTRACT"><span class="nav-number">2.</span> <span class="nav-text">ABSTRACT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#INTRODUCTION"><span class="nav-number">2.1.</span> <span class="nav-text">INTRODUCTION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FFM"><span class="nav-number">2.2.</span> <span class="nav-text">FFM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">2.3.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-Field-Information"><span class="nav-number">2.4.</span> <span class="nav-text">Adding Field Information</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tag-Problem简介"><span class="nav-number">2.5.</span> <span class="nav-text">Tag Problem简介</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

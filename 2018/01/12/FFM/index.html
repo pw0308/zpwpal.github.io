@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="FFM#推荐引擎/论文 优秀在大数据以及特征稀疏的场景.旨在解决稀疏数据下的特征组合问题 当前比较流行的模型有:  人工特征工程 + LR(Logistic Regression)、 GBDT(Gradient Boosting Decision Tree) + LR[1][2][3]、 FM（Factorization Machine）[2][7] FFM（Field-aware Factori">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/12/FFM/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="FFM#推荐引擎/论文 优秀在大数据以及特征稀疏的场景.旨在解决稀疏数据下的特征组合问题 当前比较流行的模型有:  人工特征工程 + LR(Logistic Regression)、 GBDT(Gradient Boosting Decision Tree) + LR[1][2][3]、 FM（Factorization Machine）[2][7] FFM（Field-aware Factori">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/FFM/4BCFD27D-B369-46AA-9E7D-64DDB36DB307.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/FFM/0A507467-4BBE-4AEF-A0C7-D9BA31187832.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/FFM/E167C5E0-92FB-4376-BEC2-03D9004BDD2E.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/FFM/8D3555F0-EED3-4E7E-9977-BC27B60AE536.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/FFM/BB03726C-046A-4E39-A279-05D20820F3E7.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/FFM/830499CB-EEE6-48A2-BF19-9864DBC61660.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/FFM/8EF6162D-D0E3-4DB2-B3B6-1869355876FB.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/12/FFM/08ED3848-0AAD-459D-BCCB-988CA8F827AF.png">
+<meta property="og:updated_time" content="2018-01-18T06:21:19.192Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="FFM#推荐引擎/论文 优秀在大数据以及特征稀疏的场景.旨在解决稀疏数据下的特征组合问题 当前比较流行的模型有:  人工特征工程 + LR(Logistic Regression)、 GBDT(Gradient Boosting Decision Tree) + LR[1][2][3]、 FM（Factorization Machine）[2][7] FFM（Field-aware Factori">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/12/FFM/4BCFD27D-B369-46AA-9E7D-64DDB36DB307.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/12/FFM/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/12/FFM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T18:43:01+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="FFM"><a href="#FFM" class="headerlink" title="FFM"></a>FFM</h1><p>#推荐引擎/论文</p>
+<p>优秀在<strong>大数据</strong>以及<strong>特征稀疏</strong>的场景.旨在<strong>解决稀疏数据下的特征组合问题</strong></p>
+<p>当前比较流行的模型有:</p>
+<ol>
+<li>人工特征工程 + LR(Logistic Regression)、</li>
+<li>GBDT(Gradient Boosting Decision Tree) + LR[1][2][3]、</li>
+<li>FM（Factorization Machine）[2][7]</li>
+<li>FFM（Field-aware Factorization Machine）[9]模型</li>
+</ol>
+<p>首先,特征向量构建过程中使用<strong>one-hot</strong>导致特征稀疏,这使得特征和label的相关性不高.而可以发现的是,<strong>某些特征经过关联之后，与label之间的相关性就会提高</strong>。例如，“USA”与“Thanksgiving”、“China”与“Chinese New Year”这样的关联特征，对用户的点击有着正向的影响。也就是说,<strong>关联特征与lebel具有正相关性.</strong></p>
+<p>所以在线性模型(1)的基础上,加入<strong>组合特征</strong>,于是公式变为(2),当wij&gt;0则组合特征与label正相关,反之负相关.模型的参数是w0,多个wi,多个wij.</p>
+<blockquote>
+<p><img src="/2018/01/12/FFM/4BCFD27D-B369-46AA-9E7D-64DDB36DB307.png" alt="">……(1)<br><img src="/2018/01/12/FFM/0A507467-4BBE-4AEF-A0C7-D9BA31187832.png" alt="">……(2)  </p>
+</blockquote>
+<p>然而,训练(2)并不是那么简单,因为数据稀疏性普遍存在,你得当xi,xj都不为0都时候才提供了有效的训练数据,以探究(训练)xi与xj的关联关系(权值)wij. 那么,怎么办呢?</p>
+<p>你可以把所有参数wij组成一个矩阵W,且W是实对称矩阵. 根据数学理论,实对称矩阵就能分解为(3). 那么注意到,V的第j列就是j号特征的隐向量,于是根据矩阵运算,wij就等于<strong>Vi·Vj</strong>,即v的第i列与第j列的点积.</p>
+<blockquote>
+<p><img src="/2018/01/12/FFM/E167C5E0-92FB-4376-BEC2-03D9004BDD2E.png" alt="">……..(3)<br>于是,(2)式变化为(4)式<br><img src="/2018/01/12/FFM/8D3555F0-EED3-4E7E-9977-BC27B60AE536.png" alt="">……(4)  </p>
+</blockquote>
+<p>隐向量的长度为k. 根据(4),我们只需要解n(特征维度)个k维向量,共kn个二次项参数.而对二而言,这个数是n(n-1)/2个.于是二次项系数大大减少.并且xhxi的稀疏和xixj的稀疏也不再是相互独立的了,于是训练数据可以相互影响隐因子..因此我们可以在样本稀疏的情况下相对合理地估计FM的二次项参数.</p>
+<p>意思就是,所有xi非0的数据都可以训练Vi,进而训练xhxi和xjxj乃至更多组合特征的系数.</p>
+<p>显而易见，(4)是一个<strong>通用的拟合方程</strong>，可以采用不同的损失函数用于解决回归、二元分类等问题，比如可以采用<strong>MSE</strong>（Mean Square Error）损失函数来求解回归问题，也可以采用Hinge/Cross-Entropy损失来求解分类问题。</p>
+<p>当然,这也和线性模型一样,是一个回归的模型,如果要用于二分类,你还得把FM的输出z做一个sigmoid变换到y….</p>
+<p>解的过程中,(4)的组合项可以化简为:,FM的二次项可以化简，其复杂度可以优化到 <strong>O(kn)</strong></p>
+<blockquote>
+<p><img src="/2018/01/12/FFM/BB03726C-046A-4E39-A279-05D20820F3E7.png" alt="">…..(5)  </p>
+</blockquote>
+<p>利用随机梯度下降计算预测值对各个参数的梯度,是…<br><img src="/2018/01/12/FFM/830499CB-EEE6-48A2-BF19-9864DBC61660.png" alt="">……(6)</p>
+<p>其中，vj,fvj,f 是隐向量 vjvj 的第 ff 个元素。由于 ∑nj=1vj,fxj∑j=1nvj,fxj 只与 ff 有关，而与 ii 无关，在每次迭代过程中，只需计算一次所有 ff 的 ∑nj=1vj,fxj∑j=1nvj,fxj，就能够方便地得到所有 vi,fvi,f 的梯度。显然，计算所有 ff 的 ∑nj=1vj,fxj∑j=1nvj,fxj 的复杂度是 O(kn)O(kn)；已知 ∑nj=1vj,fxj∑j=1nvj,fxj 时，计算每个参数梯度的复杂度是 O(1)O(1)；得到梯度后，更新每个参数的复杂度是 O(1)O(1)；模型参数一共有 nk+n+1nk+n+1 个。因此，FM参数训练的复杂度也是 O(kn)O(kn)。综上可知，FM<strong>可以在线性时间训练和预测</strong>，是一种非常高效的模型。</p>
+<p>FM是一种比较灵活的模型，通过合适的特征变换方式，FM可以模拟二阶多项式核的SVM模型、MF模型、SVD++模型等[7]。…</p>
+<p>相比于推荐系统中矩阵分解模型,MF只有两类特征 u 和 i 的FM模型。对于FM而言，我们可以<strong>加任意多的特征</strong>，比如user的历史购买平均值，item的历史购买平均值等，但是MF只能局限在两类特征。SVD++与MF类似，在特征的扩展性上都不如FM，在此不再赘述。</p>
+<h2 id="FFM-1"><a href="#FFM-1" class="headerlink" title="FFM"></a>FFM</h2><p>通过引入field的概念，FFM把相同性质的特征归于同一个field。以上面的广告分类为例，“Day=26/11/15”、“Day=1/7/14”、“Day=19/2/15”这三个特征都是代表日期的，可以放到同一个field中。也就是把one-hot里的<strong>各个枚举值的集合</strong>当做一个Field. </p>
+<p>其公式变化为:</p>
+<blockquote>
+<p><img src="/2018/01/12/FFM/8EF6162D-D0E3-4DB2-B3B6-1869355876FB.png" alt="">…….(6)  </p>
+</blockquote>
+<p>可以看出,隐向量Vi变为了隐向量V(i,fj),解释如下:</p>
+<p>在FFM中，每一维特征 xi，针对其它特征的每一种field fj，都会学习一个隐向量V(i,fj)。 于是,本来对特征xi,其有一个本身隐向量Vi,但是现在,他有<strong>filed个数</strong>个隐向量,表示xi基于filed j的隐向量V(i,fj)…</p>
+<p>举个例子,也就是说，“Day=26/11/15”这个特征与“Country”特征和“Ad_type”特征进行关联的时候<strong>使用不同的隐向量(V(day,f(ad)和V(day,f(country))</strong>，<strong>就看和谁作组合特征就用谁那个field的隐向量</strong>这与“Country”和“Ad_type”的内在差异相符，也是FFM中“field-aware”的由来。</p>
+<p>假设样本的 nn 个特征属于 ff 个field，那么FFM的二次项有 nfnf个隐向量。而在FM模型中，每一维特征的隐向量只有一个。<strong>FM可以看作FFM的特例，是把所有特征都归属到一个field时的FFM模型</strong>。</p>
+<p>设隐向量长k,那么FM中二次项参数共nk,而FFM中是nfk…此外,由于隐向量与field相关，FFM二次项并不能够化简，其预测复杂度是 <strong>O(kn2)</strong>。</p>
+<p>求解和优化这里就不详细记录了,可以参考<a href="https://tech.meituan.com/deep-understanding-of-ffm-principles-and-practices.html" target="_blank" rel="noopener">美团FFM</a>.下面再形象地给一个例子.<br><img src="/2018/01/12/FFM/08ED3848-0AAD-459D-BCCB-988CA8F827AF.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/12/A study of the dynamic features of recommender systems/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/15/一些网上的调研/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#FFM"><span class="nav-number">1.</span> <span class="nav-text">FFM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FFM-1"><span class="nav-number">1.1.</span> <span class="nav-text">FFM</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

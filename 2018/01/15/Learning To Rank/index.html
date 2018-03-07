@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Learning To Rank#推荐引擎/论文 互联网搜索经历了三代的发展历程。 1. 第一代技术，将互联网网页看作文本，主要采用传统信息检索的方法。 2. 第二代技术，利用互联网的超文本结构，有效地计算网页的::相关度::与::重要度::，代表的算法有 PageRank 等。 3. 第三代技术，有效利用日志数据与**统计学习方法**，使网页相关度与重要度计算的精度有了进一步的提升，代表的方法包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/15/Learning To Rank/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Learning To Rank#推荐引擎/论文 互联网搜索经历了三代的发展历程。 1. 第一代技术，将互联网网页看作文本，主要采用传统信息检索的方法。 2. 第二代技术，利用互联网的超文本结构，有效地计算网页的::相关度::与::重要度::，代表的算法有 PageRank 等。 3. 第三代技术，有效利用日志数据与**统计学习方法**，使网页相关度与重要度计算的精度有了进一步的提升，代表的方法包">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/Learning%20To%20Rank/1347943194_4835.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/Learning%20To%20Rank/1347946810_5795.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/Learning%20To%20Rank/1347947868_9185.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/01/15/Learning%20To%20Rank/1347949724_3710.jpg">
+<meta property="og:updated_time" content="2018-01-17T02:43:17.317Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Learning To Rank#推荐引擎/论文 互联网搜索经历了三代的发展历程。 1. 第一代技术，将互联网网页看作文本，主要采用传统信息检索的方法。 2. 第二代技术，利用互联网的超文本结构，有效地计算网页的::相关度::与::重要度::，代表的算法有 PageRank 等。 3. 第三代技术，有效利用日志数据与**统计学习方法**，使网页相关度与重要度计算的精度有了进一步的提升，代表的方法包">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/15/Learning%20To%20Rank/1347943194_4835.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/15/Learning To Rank/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/15/Learning To Rank/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T21:25:36+08:00">
+                2018-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Learning-To-Rank"><a href="#Learning-To-Rank" class="headerlink" title="Learning To Rank"></a>Learning To Rank</h1><p>#推荐引擎/论文</p>
+<p>互联网搜索经历了三代的发展历程。</p>
+<pre><code>1. 第一代技术，将互联网网页看作文本，主要采用传统信息检索的方法。
+2. 第二代技术，利用互联网的超文本结构，有效地计算网页的::相关度::与::重要度::，代表的算法有 PageRank 等。
+3. 第三代技术，有效利用日志数据与**统计学习方法**，使网页相关度与重要度计算的精度有了进一步的提升，代表的方法包括排序学习、网页重要度学习、匹配学习、话题模型学习、查询语句转化学习。
+</code></pre><p>为什么现在才LTR?</p>
+<ol>
+<li>现在数据膨胀,对于某个网页进行<strong>排序需要考虑的因素越来越多</strong>，比如网页的pageRank值、查询和文档匹配的单词个数、网页URL链接地址长度等都对网页排名产生影响，Google目前的网页排序公式考虑200多种因子，此时机器学习的作用即可发挥出来.(以前特征少,没必要)</li>
+<li>对于有监督机器学习来说，首先需要<strong>大量的训练数据</strong>，在此基础上才可能自动学习排序模型. 一种方法是”用户发出一个查询，搜索引擎返回搜索结果，用户会点击其中某些网页,可以假设用户点击的网页是和用户查询更加相关的页面”.</li>
+</ol>
+<p>LTR作用过程的一个图:(可以任务对Q2,由于用户点击了Doc2所以Doc2最相关).<br><img src="/2018/01/15/Learning To Rank/1347943194_4835.jpg" alt=""><br>当然,训练数据(文档)进入系统是要用特征向量的,常用的特征包括</p>
+<ol>
+<li>查询词在文档中的词频信息 </li>
+<li>查询词的IDF信息</li>
+<li>文档长度</li>
+<li>网页的入链数量</li>
+<li>网页的出链数量</li>
+<li>网页的pageRank值</li>
+<li>网页的URL松度</li>
+<li>査询词的Proximity值：即在文档中多大的窗口内可以出现所有査询词。<br>文档于是就转化为了(特征x,打分y)的形式了…</li>
+</ol>
+<p>共三类学习方法:::Pointwise/Pairwise/Listwise::,Pointwise和Pairwise把排序问题转换成<strong>回归</strong>,<strong>分类</strong>或<strong>有序分类</strong>问题。Listwise把Query下整个搜索结果作为一个训练的实例。3种方法的区别主要体现在损失函数（Loss Function）上</p>
+<h4 id="Pointwise"><a href="#Pointwise" class="headerlink" title="Pointwise"></a>Pointwise</h4><p>下图是个例子,对于每个文档采用了3个特征： 査询与文档的Cosme相似性分值、査询词的Proximity值及页面的PageRank数值，而相关性判断是二元的，即要么相关要么不相关.<br><img src="/2018/01/15/Learning To Rank/1347946810_5795.jpg" alt=""><br>训练将训练下面的函数</p>
+<blockquote>
+<p> Score(Q, D)=a x CS+b x PM+cx PR+d<br>如果得分大于设定阀值，则叫以认为是相关的， 如果小于设定闽值则可以认为不相关.对于某个新的<strong>查询Q</strong>和文档D，系统首先获得其文档D对应的3个特征值，之后利用学习到的参数组合计算两者得分，当得分大于设定的闽值，即可判断文档是相关文档，否则判断为不相关文档。</p>
+</blockquote>
+<p>当然,这个函数和具体查询Q是相关的,不同Q的函数当然有异,这个方法仍然是<strong>计算查询和文档的相似度.</strong></p>
+<h4 id="PairWise"><a href="#PairWise" class="headerlink" title="PairWise"></a>PairWise</h4><p>单文档方法完全从单个文档的分类得分角度计算，没有考虑文档之间的顺序关系。文档对方法则将重点转向量对文档顺序关系是否合理进行判断.这种机器学习方法的训练过程和::训练目标是判断任意两个文档组成的文档对&lt;D0C1，D0C2&gt;是否满足顺序关系，即判断是否D0C1应该排在DOC2的前面::<br><img src="/2018/01/15/Learning To Rank/1347947868_9185.jpg" alt=""><br>具体的学习方法有很多，比如SVM Rank. Boosts、神经网络等都可以作为具体的学习方法</p>
+<p>这个方法问题是:<br>文档对方法只考虑了两个文档对的相对先后顺序，却没有考虑文档出现在搜索列表中的位置，排在搜索站果前列的文档更为重要，如果前列文档出现判断错误，代价明显高于排在后面的文档。</p>
+<h4 id="ListWise"><a href="#ListWise" class="headerlink" title="ListWise"></a>ListWise</h4><p>文档列表方法与上述两种表示方式不同，是将::每一个查询对应的所有搜索结果列表整体作为一个训练实例::</p>
+<p><img src="/2018/01/15/Learning To Rank/1347949724_3710.jpg" alt=""></p>
+<p>我们假设搜索结果集合包含A. B 和C 3个文档，搜索引擎要对搜索结果排序，而这3个文档的顺序共有6种排列组合方式:</p>
+<blockquote>
+<p> ABC, ACB, BAG, BCA, CAB和CBA,<br>对于某个评分函数F来说，对3个搜索结果文档的相关性打分，得到3个不同的相关度得分F(A)、 F(B)和F(C)， 根据这3个得分就可以::计算6种排列组合情况各自的概率值::。 不同的评分函数，其6种搜索结果排列组合的概率分布是不一样的。</p>
+</blockquote>
+<p>上图展示了一个具体的训练实例，即査询Q1及其对应的3个文档的得分情况，这个得分可以看做是标准答案。可以<strong>设想</strong>存在一个最优的评分函数g，对查询Q1来说，其打分结果是：A文档得6分，B文档得4分，C文档得3分，因为得分是人工打的，所以具体这个函数g是怎样的我们不清楚，我们的任务就是<strong>找到一个函数，使得函数对Q的搜索结果打分顺序和g()打分顺序尽可能相同</strong>。<br>既然人工打分 (虚拟的函数g) 已知，那么我们可以计算函数g对应的搜索结果排列组合概率分布，其具体分布情况如图中间的概率分布所示。<br>假设存在两个其他函数h和f，它们的计算方法已知，对应的对3个搜索结果的打分在图上可以看到，由打分结果也可以推出每个函数对应的搜索结果排列组合概率分布，那么h与f哪个与虚拟的最优评分函数g更接近呢？一般可以用两个分布概率之间的距离远近来度量相似性，::KL距离就是一种衡量概率分布差异大小的计算工具::，通过分别计算h与g的差异大小及f与g的差异大小，可以看出f比h更接近的最优函数g，那么在这个函数中，我们应该优先选f作为将来搜索可用的评分函数，::训练过程就是在可能的函数中寻找最接近虚拟最优函数g的那个函数作为训练结果，将来作为在搜索时的评分函数::。<br>上述例子只是描述了对于单个训练实例如何通过训练找到最优函数，事实上我们有K 个训练实例，虽然如此，其训练过程与上述说明是类似的，::可以认为存在一个虚拟的最优 评分函数g (实际上是人工打分），训练过程就是在所有训练实例基础上，探寻所有可能的 候选函数，从中选择那个KL距离最接近于函数g的，以此作为实际使用的评分函数::。 经验结果表明，基于文档列表方法的机器学习排序效果要好于前述两种方法。</p>
+<p>包含::LambdaMART::,RankNet, LambdaRank等方法</p>
+<h4 id="L2R效果评价"><a href="#L2R效果评价" class="headerlink" title="L2R效果评价"></a>L2R效果评价</h4><ol>
+<li>WTA(Winners take all) 对于给定的查询q，如果模型返回的结果列表中，第一个文档是相关的，则WTA(q)=1，否则为0.</li>
+<li>MRR(Mean Reciprocal Rank) 对于给定查询q，如果第一个相关的文档的位置是R(q)，则MRR(q)=1/R(q)。</li>
+<li>MAP(Mean Average Precision) 对于每个真实相关的文档d，考虑其在模型排序结果中的位置P(d)，统计该位置之前的文档集合的分类准确率，取所有这些准确率的平均值。</li>
+<li>NDCG(Normalized Discounted Cumulative Gain) 是一种综合考虑模型排序结果和真实序列之间的关系的一种指标，也是最常用的衡量排序结果的指标，详见Wikipedia。</li>
+<li>RC(Rank Correlation) 使用相关度来衡量排序结果和真实序列之间的相似度，常用的指标是Kendall’s Tau。 </li>
+</ol>
+<ol>
+<li><a href="http://blog.csdn.net/eastmount/article/details/42367515" target="_blank" rel="noopener">机器学习排序之Learning to Rank简单介绍 - 杨秀璋的专栏 - CSDN博客</a></li>
+<li><a href="l2rrecysystutaly-final-131012040539-phpapp01.pdf">l2rrecysystutaly-final-131012040539-phpapp01.pdf</a>…LTR 4 RS</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/15/GDBT学习/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/16/GBDT在CTR中的运用/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Learning-To-Rank"><span class="nav-number">1.</span> <span class="nav-text">Learning To Rank</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pointwise"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">Pointwise</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PairWise"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">PairWise</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ListWise"><span class="nav-number">1.0.0.3.</span> <span class="nav-text">ListWise</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#L2R效果评价"><span class="nav-number">1.0.0.4.</span> <span class="nav-text">L2R效果评价</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="上下文推荐系统#推荐引擎/推荐系统实践 下面会给出几种基于时间上下文/地点上下文的推荐算法 最近最热门其实就是给最热门的物品,但是热门的判定需要考虑到时间因素,用以下公式计算流行度:T代表时间T,i代表物品. Item CF with Time思想是若用户对i,j操作的时间相隔的很远,那么i,j相似度需要降低(也就是假设用户会在一段时间类搞相似的东西).在计算上需要的是,在余弦公式的点积部分乘一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/22/上下文推荐系统/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="上下文推荐系统#推荐引擎/推荐系统实践 下面会给出几种基于时间上下文/地点上下文的推荐算法 最近最热门其实就是给最热门的物品,但是热门的判定需要考虑到时间因素,用以下公式计算流行度:T代表时间T,i代表物品. Item CF with Time思想是若用户对i,j操作的时间相隔的很远,那么i,j相似度需要降低(也就是假设用户会在一段时间类搞相似的东西).在计算上需要的是,在余弦公式的点积部分乘一个">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/上下文推荐系统/814D6A7F-CC21-429D-9EAD-FA1743C5F593.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/上下文推荐系统/FE360C2F-629B-4CD7-B38A-6A88FE3CACE7.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/上下文推荐系统/D7F72F57-B3A0-4847-9720-AB3F3953841B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/上下文推荐系统/B68E4364-D365-4F20-817D-45539A19F1F0.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/上下文推荐系统/C1FC3947-0066-48F4-8E33-584B93CC0694.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/上下文推荐系统/5708224D-437C-498A-B2B0-2BE24D4E5820.png">
+<meta property="og:updated_time" content="2018-01-22T07:09:21.737Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="上下文推荐系统#推荐引擎/推荐系统实践 下面会给出几种基于时间上下文/地点上下文的推荐算法 最近最热门其实就是给最热门的物品,但是热门的判定需要考虑到时间因素,用以下公式计算流行度:T代表时间T,i代表物品. Item CF with Time思想是若用户对i,j操作的时间相隔的很远,那么i,j相似度需要降低(也就是假设用户会在一段时间类搞相似的东西).在计算上需要的是,在余弦公式的点积部分乘一个">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/22/上下文推荐系统/814D6A7F-CC21-429D-9EAD-FA1743C5F593.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/22/上下文推荐系统/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/22/上下文推荐系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-22T14:18:12+08:00">
+                2018-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="上下文推荐系统"><a href="#上下文推荐系统" class="headerlink" title="上下文推荐系统"></a>上下文推荐系统</h1><p>#推荐引擎/推荐系统实践</p>
+<p>下面会给出几种基于时间上下文/地点上下文的推荐算法</p>
+<h2 id="最近最热门"><a href="#最近最热门" class="headerlink" title="最近最热门"></a>最近最热门</h2><p>其实就是给最热门的物品,但是热门的判定需要考虑到时间因素,用以下公式计算流行度:<br><img src="/2018/01/22/上下文推荐系统/814D6A7F-CC21-429D-9EAD-FA1743C5F593.png" alt=""><br>T代表时间T,i代表物品.</p>
+<h2 id="Item-CF-with-Time"><a href="#Item-CF-with-Time" class="headerlink" title="Item CF with Time"></a>Item CF with Time</h2><p>思想是若用户对i,j操作的时间相隔的很远,那么i,j相似度需要降低(也就是假设用户会在一段时间类搞相似的东西).在计算上需要的是,在余弦公式的点积部分乘一个时间衰减函数,一个典型的时间衰减函数如下:<br><img src="/2018/01/22/上下文推荐系统/FE360C2F-629B-4CD7-B38A-6A88FE3CACE7.png" alt=""><br>分析一下,由于item相似度可以分为多个分相似度(点积分量),每个分相似度都是基于在某用户u1下i和j的共现行为,所以,就肯定有tui和tuj,代表u对i,j的操作时间,所以你给每个点积分量应用一下这个函数就好.</p>
+<blockquote>
+<p>item CF最好需要归一化,这也是其本身提高推荐性能的办法,归一的做法是<strong>按列中最大值归一</strong>  </p>
+</blockquote>
+<p>另外,还可以考虑时间信息对用户-物品推荐列表的预测公式做修改.这是基于假设”用户的兴趣可能和最近时间的兴趣差不多”<br><img src="/2018/01/22/上下文推荐系统/D7F72F57-B3A0-4847-9720-AB3F3953841B.png" alt=""></p>
+<h2 id="位置上下文"><a href="#位置上下文" class="headerlink" title="位置上下文"></a>位置上下文</h2><p>分析可知两个特性:</p>
+<ol>
+<li>兴趣本地化,比如湖南和陕西人喜欢的东西就不同的,要考虑到用户地域</li>
+<li>活动本地化:大多用户活动范围有限,于是需要考虑到物品地域.</li>
+</ol>
+<p>按用户/物品有没有位置信息,可以划分三种数据集<br><img src="/2018/01/22/上下文推荐系统/B68E4364-D365-4F20-817D-45539A19F1F0.png" alt=""><br>下面介绍LARS,其底层算法就算作使用了ItemCF吧.<br><img src="/2018/01/22/上下文推荐系统/C1FC3947-0066-48F4-8E33-584B93CC0694.png" alt=""><img src="/2018/01/22/上下文推荐系统/5708224D-437C-498A-B2B0-2BE24D4E5820.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/22/Deep Neural Networks for YouTube Recommendations/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/22/Local Item-Item Models for Top-N Recommendation/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#上下文推荐系统"><span class="nav-number">1.</span> <span class="nav-text">上下文推荐系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#最近最热门"><span class="nav-number">1.1.</span> <span class="nav-text">最近最热门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Item-CF-with-Time"><span class="nav-number">1.2.</span> <span class="nav-text">Item CF with Time</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#位置上下文"><span class="nav-number">1.3.</span> <span class="nav-text">位置上下文</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

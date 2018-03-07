@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Evaluation of Recommendations:Rating-Prediction and Ranking#推荐引擎/论文 ABSTRACT 在本文中，我们仔细研究了rating和ranking两种方法，发现主要  差异在于考虑到的训练和测试数据评级预测仅关注观察到的评级，而排名通常考虑集合中的所有物品，不论是用户对它们进行评价与否。 预测observed评级的试验方法虽然在文献中很受">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Evaluation of Recommendations:Rating-Prediction and Ranking#推荐引擎/论文 ABSTRACT 在本文中，我们仔细研究了rating和ranking两种方法，发现主要  差异在于考虑到的训练和测试数据评级预测仅关注观察到的评级，而排名通常考虑集合中的所有物品，不论是用户对它们进行评价与否。 预测observed评级的试验方法虽然在文献中很受">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/7A648180-F82A-413E-9595-C8D330696F57.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/2053F3C5-10FB-4C1E-BF08-A56A7D883E17.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/7EC5846E-ACE7-4A73-A934-CF83D1F37197.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/CA0F92F9-EBBD-401E-8303-CE2FB42EBBFF.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/F100B51E-77D7-4DE2-983C-F337363AEF00.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/5F7959BF-0BFB-479A-BA41-04A320DCD9D6.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/5F6B98DE-EAFE-4777-9DC1-E22D60B0D76B.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/F6008920-E23F-4BDB-9204-A58135C9962F.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/D3A53E47-6D3F-4EEF-8328-3FB18257E45D.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/5E1533EF-36DA-47E3-9EBD-60B114327AA1.png">
+<meta property="og:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/082FC39E-9F60-4228-8F70-1DEEAB8C67C2.png">
+<meta property="og:updated_time" content="2018-01-25T12:00:57.455Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Evaluation of Recommendations:Rating-Prediction and Ranking#推荐引擎/论文 ABSTRACT 在本文中，我们仔细研究了rating和ranking两种方法，发现主要  差异在于考虑到的训练和测试数据评级预测仅关注观察到的评级，而排名通常考虑集合中的所有物品，不论是用户对它们进行评价与否。 预测observed评级的试验方法虽然在文献中很受">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/22/Evaluation%20of%20RecommendationsRating-Prediction%20and%20Ranking/7A648180-F82A-413E-9595-C8D330696F57.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-22T22:08:26+08:00">
+                2018-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Evaluation-of-Recommendations-Rating-Prediction-and-Ranking"><a href="#Evaluation-of-Recommendations-Rating-Prediction-and-Ranking" class="headerlink" title="Evaluation of Recommendations:Rating-Prediction and Ranking"></a>Evaluation of Recommendations:Rating-Prediction and Ranking</h1><p>#推荐引擎/论文</p>
+<h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><hr>
+<p>在本文中，我们仔细研究了rating和ranking两种方法，发现主要</p>
+<ol>
+<li>差异在于考虑到的训练和测试数据评级预测仅关注观察到的评级，而排名通常考虑集合中的所有物品，不论是用户对它们进行评价与否。</li>
+<li>预测observed评级的试验方法虽然在文献中很受欢迎，但它只能解决集合中任何物品的评分预测任务的（小）部分，这是一个常见的现实世界问题。原因是数据中的选择偏差.</li>
+<li>We show that the latter rating-prediction task involves the prediction task ’Who rated What’ as a subproblem, which can be cast as a classiﬁcation or ranking problem. This suggests that solving the ranking problem is not only valuable by itself, but also for predicting the rating value of any item.::</li>
+</ol>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><hr>
+<p>关于推荐系统的文献通常区分测量推荐准确性的两种方法：::评分预测::，通常以均方根误差（RMSE）来衡量;和::排名::，其衡量::精度和召回::等指标。在本文中，我们将详细研究这两种精度测量，并确定不同的变体。</p>
+<p>关于评级预测，文献主要侧重于::预测用户故意选择评价的物品::的评价值。(::前提就是用户对这些东西感兴趣,即使看完评分很低::)这种数据可以很容易地收集，因此很容易用于推荐系统的培训和测试,所以::测试用的也是用户已然评分(感兴趣)的数据::,这样的系统泛化到实际情况难免有误差.</p>
+<p>在本文的<strong>第一部分</strong>，我们确定了三个rating prediction的变种，并且说明它们在提供给推荐问题的答案以及solve them困难程度方面是如何彼此不同的。 此外，我们显示许多真实世界的评级预测任务需要解决一个额外的子问题：::哪个用户故意选择哪个物品来评分::（也称为“Who rated What”[1]）。 这个子问题可能会被当作一个分类或排名问题。</p>
+<p>在本文的<strong>第二部分</strong>,我们研究了三种排名变体：收集中的所有物品的排名，仅评价用户尚未评分的物品的排名，以及仅评价用户已经评分的物品的排名。并标明”选择训练/测试集的时候,user-item pairs to consider, may be more important than the ranking metric for solving a given real-world ranking problem.”(选择训练/测试方法比选择ranking度量更重要)</p>
+<p>当将评级预测与排名进行比较时，我们发现它们的::主要差异不是由不同的度量标准引起的::（例如，RMSE与排名度量标准）。相反，::这是由于考虑了用户物品对：仅在数据中观察到评级的用户物品对的子集（例如，针对RMSE）与所有用户物品对（无论是用户故意选择给一个物品分配一个评估值。)::</p>
+<h2 id="Rating-Prediction"><a href="#Rating-Prediction" class="headerlink" title="Rating Prediction"></a>Rating Prediction</h2><hr>
+<h3 id="model"><a href="#model" class="headerlink" title="model"></a>model</h3><p>首先是<strong>建模</strong>.一般的可用数据中,rating数据是”<strong>missing not at random(非随机缺失)</strong>”的,主要原因是用户可以自由选择要评分的物品。</p>
+<blockquote>
+<p><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/7A648180-F82A-413E-9595-C8D330696F57.png" alt="">……(1)<br>如上图所示，在这个图形模型中，U表示与用户有关的随机变量，取值为u，其中u∈{1，…，n}表示用户ID，n是用户数量。同样，I是物品的随机变量，取值i∈{1，…，m}，其中m是集合中物品的数量。<br>用户故意::选择::对物品i进行评级的决定由随机变量C表示，其取值c∈{c+，c-}，其中c+表示用户选择对物品进行评级，而c-表示用户不会故意选择评价物品。<br>最后，R是关于rating value的随机变量，取值r。例如，在1到5星级的评级中，r∈{1，…，5}.</p>
+</blockquote>
+<p>C依赖于U和I,所以::这个模型能捕捉依赖于u和i的任何选择物品来评级的理由::(比如物品流行度). 上图左右两部分是马尔科夫等价的(::表示相同的概率分布::). 假设所有随机变量U，I，C和R都是离散的，我们假定最一般的概率分布是multinouli分布。</p>
+<h3 id="Variants"><a href="#Variants" class="headerlink" title="Variants"></a>Variants</h3><p>现在介绍<strong>Variants</strong>. 问题描述为<strong>预测u给i的r</strong>.可以转化为预测u对i打的每个评分值r的概率<img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/2053F3C5-10FB-4C1E-BF08-A56A7D883E17.png" alt="">.根据图1,这个式子又可以分解为:</p>
+<blockquote>
+<p><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/7EC5846E-ACE7-4A73-A934-CF83D1F37197.png" alt="">……(2)<br>(1)(2)(3)就是三种预测问题的变体.并且通过＂the probability that the user deliberately chooses to rate an item＂相关联</p>
+<ol>
+<li>(1)这是用户在集合中为物品i分配评分值r的概率。 对于物品i是没有限制的,它可以是物品集中的任何物品。 对于任何物品i做出准确的评级预测的能力在实际应用中是非常有用的，因为它让系统能从整个物品集中找出具有最高（预测）享受值的物品。</li>
+<li>(2)这是用户::在用户故意选择对该物品进行评分的情况下::将评分值r分配给物品i的概率。 事实上，由于数据的稀疏性，它可能只适用于一小部分物品. </li>
+<li>这是用户在用户不会故意选择评价该项目的条件下将评价值r分配给项目i的概率,这种数据一般得不到,这让我们::难以预测这个概率分布::,由于数据稀疏，此分布适用于绝大多数&lt;用户物品&gt;.</li>
+</ol>
+</blockquote>
+<p>(2)式还表明,<em>conditional probabilities</em> p(r|c+,u,i) and p(r|c−,u,i) <strong>have to be estimated</strong> as to obtain valid rating predictions for any item in the collection.</p>
+<h3 id="Relationship-of-the-three-Variants"><a href="#Relationship-of-the-three-Variants" class="headerlink" title="Relationship of the three Variants"></a>Relationship of the three Variants</h3><p>我们简单地介绍过程.p(r)表示对所有用户u和项目i的,评级值r平均概率,从边缘概率公式我们可以推出:(2~3是由图1右的结果推出的)<br><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/CA0F92F9-EBBD-401E-8303-CE2FB42EBBFF.png" alt=""><br>另外还有<br><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/F100B51E-77D7-4DE2-983C-F337363AEF00.png" alt=""><br>由于数据稀疏性,方程6约等号的准确度可达90%多以上,我们可以得出结论:</p>
+<blockquote>
+<p>由于数据稀疏，评分预测的变体1.和3.必须密切相关。 相比之下，变体2不需要与变体1或3相似。  </p>
+</blockquote>
+<p>推荐系统的预测评分值的平均值,对RMSE的准确性有重要影响,接下来,我们分析平均评分R的期望<br><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/5F7959BF-0BFB-479A-BA41-04A320DCD9D6.png" alt=""><br>这还是很容易看懂意思的,事实上,雅虎音乐数据集给出了相似证明:</p>
+<ul>
+<li>E[R|c − ] ≈ E[R] ≈ 1.8:这是当用户要求评价雅虎随机选择的歌曲时的平均评分。 （而不是由用户选择）</li>
+<li>E [R | c +]≈2.9：这是当用户有意识地选择要评分的项目时的平均评分。 显然这个数值明显大于1.8，表明有很强的选择偏差。</li>
+</ul>
+<p>实际研究中,一个non-personlized推荐器可以获得RMSE=1左右,而最好推荐器结果是RMSE=0.86左右, 这表明，RMSE为0.14（评分为1至5）的改善可能看起来很小，但实际上非常大。</p>
+<p>让我们假设我们在可用评级数据上训练推荐系统，用户可以自由选择要评分的项目。让它的RMSE（在测试集上）由RMSE0给出 ;其<strong>对整个系统的平均预测评分值</strong>将接近训练数据中的平均评分值E [R | c +],于是,这个推荐系统适用于variant2.</p>
+<p>现在，让我们考虑集合中的任何项目,也就是（变体1）任务的评分预测：在这种情况下，真实平均评级是E[R];现在，先前训练过的推荐系统有一个偏差于是有<br><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/5F6B98DE-EAFE-4777-9DC1-E22D60B0D76B.png" alt=""><br>那么就有<br><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/F6008920-E23F-4BDB-9204-A58135C9962F.png" alt=""><br>这表明,很可能对variant 1的任务而言,这个性能比non-personlized的推荐器更差,所以有结论2:</p>
+<blockquote>
+<p>对于评级预测变体2，具有低RMSE的推荐系统<strong>不能保证</strong>实现关于评级预测任务1或3的低RMSE。<br>于是,为variant1设计模型又是个研究方向了.</p>
+</blockquote>
+<h2 id="Ranking"><a href="#Ranking" class="headerlink" title="Ranking"></a>Ranking</h2><hr>
+<p>我们将ranking分为两部分:::ranking protocols and ranking metrics::,并在下面比较两者.</p>
+<h3 id="Ranking-Protocols"><a href="#Ranking-Protocols" class="headerlink" title="Ranking Protocols"></a>Ranking Protocols</h3><p>我们可以区分出两种variant</p>
+<ol>
+<li>所有项目都可被推荐</li>
+<li>过去user没有rating过的项目才能被推荐<br>于是有下面几种protocols</li>
+</ol>
+<ul>
+<li>all items:所有物品,包括trainning/test set.</li>
+<li>rated test-items:for each user, only those items are considered that <strong>have been rated</strong> by the user in the <strong>test set</strong>.</li>
+<li><strong>all</strong> unrated items:for each user, only those items are considered that <strong>have not yet been rated</strong> by the user.</li>
+</ul>
+<h3 id="Ranking-Metrics"><a href="#Ranking-Metrics" class="headerlink" title="Ranking Metrics"></a>Ranking Metrics</h3><p>数据中有显示隐式反馈,我们需要确定,物品和用户是否relevant,对于隐式反馈很好做,对于显示反馈,我们实验里把5 star的当做relevant,其余不相关.</p>
+<ol>
+<li>precision:(确实项目会导致这个值一般比较低),其绝对值意义不大,但是可以用于比较模型好坏.</li>
+<li>MAP: presision只考虑数量,而MAP还会考虑位置.<br><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/D3A53E47-6D3F-4EEF-8328-3FB18257E45D.png" alt="">,Rank is the ith element of the sorted ranks of the relevant items in the top N</li>
+<li>Recall</li>
+<li>Area under the Recall curve(ATOP):<br><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/5E1533EF-36DA-47E3-9EBD-60B114327AA1.png" alt=""><br>如果m+(relevant items)&lt;&lt;m,那么也可以估计AUC</li>
+<li>nDCG</li>
+</ol>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><hr>
+<p>对observed rated items的召回率最高的模型可能不是对all items召回最高的模型。<br>::这表明，在各种精度测试中测试模型是不够的。 相反,更重要的我们对所有项目进行测试，还是仅对observered rated item进行测试，也就是说Ranking Protocols似乎至关重要::。(也就是指示我们训练比较ranking模型的时候要从all items上去下手比较)<br><img src="/2018/01/22/Evaluation of RecommendationsRating-Prediction and Ranking/082FC39E-9F60-4228-8F70-1DEEAB8C67C2.png" alt=""><br>对于ranking,表b表示只用已有的数据(relevant/unrelavent)来测试并度量recall这些指标时的结果,表a表示使用了所有数据(哪怕是缺失数据),可见,对于ranking,我们一般都是采用表a的度量方法,所以其对整个系统的泛化能力描述的更好.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/22/Performance of Recommender Algorithms on Top-N Recommendation Tasks(2010)/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/25/Bayesian personalized ranking from implicit feedback 1/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Evaluation-of-Recommendations-Rating-Prediction-and-Ranking"><span class="nav-number">1.</span> <span class="nav-text">Evaluation of Recommendations:Rating-Prediction and Ranking</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ABSTRACT"><span class="nav-number">1.1.</span> <span class="nav-text">ABSTRACT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rating-Prediction"><span class="nav-number">1.3.</span> <span class="nav-text">Rating Prediction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#model"><span class="nav-number">1.3.1.</span> <span class="nav-text">model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Variants"><span class="nav-number">1.3.2.</span> <span class="nav-text">Variants</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Relationship-of-the-three-Variants"><span class="nav-number">1.3.3.</span> <span class="nav-text">Relationship of the three Variants</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ranking"><span class="nav-number">1.4.</span> <span class="nav-text">Ranking</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ranking-Protocols"><span class="nav-number">1.4.1.</span> <span class="nav-text">Ranking Protocols</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ranking-Metrics"><span class="nav-number">1.4.2.</span> <span class="nav-text">Ranking Metrics</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">1.5.</span> <span class="nav-text">实验</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

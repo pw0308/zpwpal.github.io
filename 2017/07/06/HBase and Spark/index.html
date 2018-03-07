@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="HBase and Spark#推荐引擎 #hbase 中文版:使用SparkSQL/DataFrame读取HBase表 basic sparkAt the root of all Spark and HBase integration is the HBaseContext. The HBaseContext takes in HBase configurations and pushes th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2017/07/06/HBase and Spark/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="HBase and Spark#推荐引擎 #hbase 中文版:使用SparkSQL/DataFrame读取HBase表 basic sparkAt the root of all Spark and HBase integration is the HBaseContext. The HBaseContext takes in HBase configurations and pushes th">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-07-07T12:22:49.620Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="HBase and Spark#推荐引擎 #hbase 中文版:使用SparkSQL/DataFrame读取HBase表 basic sparkAt the root of all Spark and HBase integration is the HBaseContext. The HBaseContext takes in HBase configurations and pushes th">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/06/HBase and Spark/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/06/HBase and Spark/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-06T18:53:12+08:00">
+                2017-07-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="HBase-and-Spark"><a href="#HBase-and-Spark" class="headerlink" title="HBase and Spark"></a>HBase and Spark</h1><p>#推荐引擎</p>
+<p>#hbase</p>
+<p>中文版:<a href="bear://x-callback-url/open-note?id=02FCACE4-C961-4748-96AB-E63683706760-4667-0000658B4F6D95AD" target="_blank" rel="noopener">使用SparkSQL/DataFrame读取HBase表</a></p>
+<h3 id="basic-spark"><a href="#basic-spark" class="headerlink" title="basic spark"></a>basic spark</h3><p>At the root of all Spark and HBase integration is th<strong>e HBaseContext</strong>. The HBaseContext takes in HBase configurations and <strong>pushes them to the Spark executors</strong>. This allows us to have an HBase Connection per Spark Executor in a static location</p>
+<p>Think of every Spark Executor as a multi-threaded client application. This allows any Spark Tasks running on the executors to access the shared Connection object.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">JavaSparkContext jsc = <span class="keyword">new</span> JavaSparkContext(sparkConf);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  List&lt;<span class="keyword">byte</span>[]&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">  list.add(Bytes.toBytes(<span class="string">"1"</span>));</span><br><span class="line">  ...</span><br><span class="line">  list.add(Bytes.toBytes(<span class="string">"5"</span>));</span><br><span class="line">  JavaRDD&lt;<span class="keyword">byte</span>[]&gt; rdd = jsc.parallelize(list);<span class="comment">//创建了一个RDD</span></span><br><span class="line"></span><br><span class="line">  Configuration conf = HBaseConfiguration.create();</span><br><span class="line">  JavaHBaseContext hbaseContext = <span class="keyword">new</span> JavaHBaseContext(jsc, conf);<span class="comment">//创建HBASEContext</span></span><br><span class="line"></span><br><span class="line">  hbaseContext.foreachPartition(rdd,</span><br><span class="line">      <span class="keyword">new</span> VoidFunction&lt;Tuple2&lt;Iterator&lt;<span class="keyword">byte</span>[]&gt;, Connection&gt;&gt;() &#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Tuple2&lt;Iterator&lt;<span class="keyword">byte</span>[]&gt;, Connection&gt; t)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Table table = t._2().getTable(TableName.valueOf(tableName));<span class="comment">//使用connection获取表</span></span><br><span class="line">    BufferedMutator mutator = t._2().getBufferedMutator(TableName.valueOf(tableName));<span class="comment">//获取mutator</span></span><br><span class="line">    <span class="keyword">while</span> (t._1().hasNext()) &#123;</span><br><span class="line">      <span class="keyword">byte</span>[] b = t._1().next();</span><br><span class="line">      Result r = table.get(<span class="keyword">new</span> Get(b));<span class="comment">//从table get t_1</span></span><br><span class="line">      <span class="keyword">if</span> (r.getExists()) &#123;</span><br><span class="line">       mutator.mutate(<span class="keyword">new</span> Put(b));<span class="comment">//改变,进行put..</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mutator.flush();</span><br><span class="line">    mutator.close();</span><br><span class="line">    table.close();<span class="comment">//应用更改</span></span><br><span class="line">   &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">  jsc.stop();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//就是一些增删改查api</span></span><br></pre></td></tr></table></figure>
+<p>The examples above illustrate how to do a foreachPartition with a connection. notice there is<br>a hBaseRDD() function.</p>
+<h3 id="bulk-load"><a href="#bulk-load" class="headerlink" title="bulk load"></a>bulk load</h3><p>There are <strong>two options</strong> for bulk loading data into HBase with Spark. There is the <strong>basic bulk load</strong> functionality that will work for cases where your rows have <strong>millions of columns</strong> and cases where your columns are not consolidated and partitions before the on the map side of the Spark bulk load process.</p>
+<p>There is also a <strong>thin record bulk load option</strong> with Spark, this second option is designed for tables that have <strong>less then 10k columns per row</strong>. The advantage of this second option is <strong>higher throughput</strong> and less over all load on the Spark shuffle operation.</p>
+<p>In Spark terms, the bulk load will be implemented around a the Spark repartitionAndSortWithinPartitions followed by a Spark foreachPartition.</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> sc = <span class="keyword">new</span> <span class="type">SparkContext</span>(<span class="string">"local"</span>, <span class="string">"test"</span>)</span><br><span class="line"><span class="keyword">val</span> config = <span class="keyword">new</span> <span class="type">HBaseConfiguration</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> hbaseContext = <span class="keyword">new</span> <span class="type">HBaseContext</span>(sc, config)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> stagingFolder = ...</span><br><span class="line"><span class="keyword">val</span> rdd = sc.parallelize(<span class="type">Array</span>(</span><br><span class="line">      (<span class="type">Bytes</span>.toBytes(<span class="string">"1"</span>),</span><br><span class="line">        (<span class="type">Bytes</span>.toBytes(columnFamily1), <span class="type">Bytes</span>.toBytes(<span class="string">"a"</span>), <span class="type">Bytes</span>.toBytes(<span class="string">"foo1"</span>))),</span><br><span class="line">      (<span class="type">Bytes</span>.toBytes(<span class="string">"3"</span>),</span><br><span class="line">        (<span class="type">Bytes</span>.toBytes(columnFamily1), <span class="type">Bytes</span>.toBytes(<span class="string">"b"</span>), <span class="type">Bytes</span>.toBytes(<span class="string">"foo2.b"</span>))), ...</span><br><span class="line"><span class="comment">//创建rdd</span></span><br><span class="line"></span><br><span class="line">rdd.hbaseBulkLoad(<span class="type">TableName</span>.valueOf(tableName),<span class="comment">//把rdd转化为一个hbase表的格式</span></span><br><span class="line">  t =&gt; &#123;</span><br><span class="line">   <span class="keyword">val</span> rowKey = t._1</span><br><span class="line">   <span class="keyword">val</span> family:<span class="type">Array</span>[<span class="type">Byte</span>] = t._2(<span class="number">0</span>)._1</span><br><span class="line">   <span class="keyword">val</span> qualifier = t._2(<span class="number">0</span>)._2</span><br><span class="line">   <span class="keyword">val</span> value = t._2(<span class="number">0</span>)._3</span><br><span class="line"></span><br><span class="line">   <span class="keyword">val</span> keyFamilyQualifier= <span class="keyword">new</span> <span class="type">KeyFamilyQualifier</span>(rowKey, family, qualifier)</span><br><span class="line"></span><br><span class="line">   <span class="type">Seq</span>((keyFamilyQualifier, value)).iterator</span><br><span class="line">  &#125;,</span><br><span class="line">  stagingFolder.getPath)<span class="comment">//其实是创建了Hfiles</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> load = <span class="keyword">new</span> <span class="type">LoadIncrementalHFiles</span>(config)<span class="comment">//do bulkload</span></span><br><span class="line">load.doBulkLoad(<span class="keyword">new</span> <span class="type">Path</span>(stagingFolder.getPath),</span><br><span class="line">  conn.getAdmin, table, conn.getRegionLocator(<span class="type">TableName</span>.valueOf(tableName)))</span><br></pre></td></tr></table></figure>
+<p>The hbaseBulkLoad function takes three required parameters:</p>
+<ol>
+<li>table name</li>
+<li>A function that will convert a record in the RDD to a tuple key value par. With the tuple key being a KeyFamilyQualifer object and the value being the cell value. The KeyFamilyQualifer object will hold the RowKey, Column Family, and Column Qualifier. The shuffle will partition on the RowKey but will sort by all three values.一个转换函数</li>
+<li>The temporary path for the HFile to be written out too</li>
+</ol>
+<p>Following the Spark bulk load command, use the HBase’s <strong>LoadIncrementalHFiles</strong> object to load the newly created HFiles into HBase.</p>
+<p>下面是thin function的例子:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> sc = <span class="keyword">new</span> <span class="type">SparkContext</span>(<span class="string">"local"</span>, <span class="string">"test"</span>)</span><br><span class="line"><span class="keyword">val</span> config = <span class="keyword">new</span> <span class="type">HBaseConfiguration</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> hbaseContext = <span class="keyword">new</span> <span class="type">HBaseContext</span>(sc, config)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> stagingFolder = ...</span><br><span class="line"><span class="keyword">val</span> rdd = sc.parallelize(<span class="type">Array</span>(</span><br><span class="line">      (<span class="string">"1"</span>,</span><br><span class="line">        (<span class="type">Bytes</span>.toBytes(columnFamily1), <span class="type">Bytes</span>.toBytes(<span class="string">"a"</span>), <span class="type">Bytes</span>.toBytes(<span class="string">"foo1"</span>))),</span><br><span class="line">      (<span class="string">"3"</span>,</span><br><span class="line">        (<span class="type">Bytes</span>.toBytes(columnFamily1), <span class="type">Bytes</span>.toBytes(<span class="string">"b"</span>), <span class="type">Bytes</span>.toBytes(<span class="string">"foo2.b"</span>))), ...</span><br><span class="line"></span><br><span class="line">rdd.hbaseBulkLoadThinRows(hbaseContext,</span><br><span class="line">      <span class="type">TableName</span>.valueOf(tableName),</span><br><span class="line">      t =&gt; &#123;</span><br><span class="line">        <span class="keyword">val</span> rowKey = t._1</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> familyQualifiersValues = <span class="keyword">new</span> <span class="type">FamiliesQualifiersValues</span></span><br><span class="line">        t._2.foreach(f =&gt; &#123;</span><br><span class="line">          <span class="keyword">val</span> family:<span class="type">Array</span>[<span class="type">Byte</span>] = f._1</span><br><span class="line">          <span class="keyword">val</span> qualifier = f._2</span><br><span class="line">          <span class="keyword">val</span> value:<span class="type">Array</span>[<span class="type">Byte</span>] = f._3</span><br><span class="line"></span><br><span class="line">          familyQualifiersValues +=(family, qualifier, value)</span><br><span class="line">        &#125;)</span><br><span class="line">        (<span class="keyword">new</span> <span class="type">ByteArrayWrapper</span>(<span class="type">Bytes</span>.toBytes(rowKey)), familyQualifiersValues)</span><br><span class="line">      &#125;,</span><br><span class="line">      stagingFolder.getPath,</span><br><span class="line">      <span class="keyword">new</span> java.util.<span class="type">HashMap</span>[<span class="type">Array</span>[<span class="type">Byte</span>], <span class="type">FamilyHFileWriteOptions</span>],</span><br><span class="line">      compactionExclude = <span class="literal">false</span>,</span><br><span class="line">      <span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> load = <span class="keyword">new</span> <span class="type">LoadIncrementalHFiles</span>(config)</span><br><span class="line">load.doBulkLoad(<span class="keyword">new</span> <span class="type">Path</span>(stagingFolder.getPath),</span><br><span class="line">  conn.getAdmin, table, conn.getRegionLocator(<span class="type">TableName</span>.valueOf(tableName)))</span><br></pre></td></tr></table></figure></p>
+<p>不同就在于hbaseBulkLoadThinRows()方法,它 returns a tuple with the <strong>first value being the row key</strong> and the <strong>second value being an object of FamiliesQualifiersValues</strong>, which will contain all the values for this row for all column families.</p>
+<h3 id="SparkSQL"><a href="#SparkSQL" class="headerlink" title="SparkSQL"></a>SparkSQL</h3><p>HBase-Spark Connector leverages DataSource API, bridges the gap between simple HBase KV store and complex relational SQL queries and enables users to perform complex data analytical work on top of HBase using Spark. </p>
+<p>HBase Dataframe is a standard Spark Dataframe, and is able to interact with any other data sources such as Hive. To use <strong>HBase-Spark connector</strong>, users need to define the Catalog for the schema mapping between HBase and Spark tables, prepare the data and populate the HBase table, then load HBase DataFrame. After that, users can do integrated query and access records in HBase table with SQL query</p>
+<p>save the dataframe:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">HBaseRecord</span>(<span class="params">//定义数据模板</span></span></span><br><span class="line"><span class="class"><span class="params">   col0: <span class="type">String</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">   col1: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">   col2: <span class="type">Double</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">   col3: <span class="type">Float</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">   col4: <span class="type">Int</span>,       </span></span></span><br><span class="line"><span class="class"><span class="params">   col5: <span class="type">Long</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">   col6: <span class="type">Short</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">   col7: <span class="type">String</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">   col8: <span class="type">Byte</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">HBaseRecord</span></span></span><br><span class="line"><span class="class"></span>&#123;                                                                                                             </span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>(i: <span class="type">Int</span>, t: <span class="type">String</span>): <span class="type">HBaseRecord</span> = &#123;</span><br><span class="line">      <span class="keyword">val</span> s = <span class="string">s""</span><span class="string">"row$&#123;"</span>%<span class="number">03</span><span class="string">d".format(i)&#125;"</span><span class="string">""</span>       </span><br><span class="line">      <span class="type">HBaseRecord</span>(s,</span><br><span class="line">      i % <span class="number">2</span> == <span class="number">0</span>,</span><br><span class="line">      i.toDouble,</span><br><span class="line">      i.toFloat,  </span><br><span class="line">      i,</span><br><span class="line">      i.toLong,</span><br><span class="line">      i.toShort,  </span><br><span class="line">      <span class="string">s"String<span class="subst">$i</span>: <span class="subst">$t</span>"</span>,      </span><br><span class="line">      i.toByte)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> data = (<span class="number">0</span> to <span class="number">255</span>).map &#123; i =&gt;  <span class="type">HBaseRecord</span>(i, <span class="string">"extra"</span>)&#125;<span class="comment">//创建了数据</span></span><br><span class="line"></span><br><span class="line">sc.parallelize(data).toDF.write.options(</span><br><span class="line"> <span class="type">Map</span>(<span class="type">HBaseTableCatalog</span>.tableCatalog -&gt; catalog, <span class="type">HBaseTableCatalog</span>.newTable -&gt; <span class="string">"5"</span>))</span><br><span class="line"> .format(<span class="string">"org.apache.hadoop.hbase.spark "</span>)</span><br><span class="line"> .save()</span><br><span class="line"></span><br><span class="line"><span class="comment">//把data弄成dataframe,write function returns a DataFrameWriter used to write the DataFrame to external storage systems ,Given a DataFrame with specified schema catalog, save function will create an HBase table with 5 regions and save the DataFrame inside.注意他这里说是会创建hbase table的,所以我们有了dataframe,我们就可以用这个来save喽</span></span><br></pre></td></tr></table></figure></p>
+<p>Load the dataframe<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">withCatalog</span></span>(cat: <span class="type">String</span>): <span class="type">DataFrame</span> = &#123;</span><br><span class="line">  sqlContext</span><br><span class="line">  .read</span><br><span class="line">  .options(<span class="type">Map</span>(<span class="type">HBaseTableCatalog</span>.tableCatalog-&gt;cat))</span><br><span class="line">  .format(<span class="string">"org.apache.hadoop.hbase.spark"</span>)</span><br><span class="line">  .load()</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">val</span> df = withCatalog(catalog)</span><br></pre></td></tr></table></figure></p>
+<p>In ‘withCatalog’ function, sqlContext is a variable of SQLContext, which is the entry point for working with structured data (rows and columns) in Spark. read returns a DataFrameReader that can be used to read data in as a DataFrame. option function adds input options for the underlying data source to the DataFrameReader, and format function specifies the input data source format for the DataFrameReader. The load() function loads input in as a DataFrame. The date frame df returned by withCatalog function could be used to access HBase table.</p>
+<p>注意,这都需要我们定义好cataLog:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">catalog</span> </span>= <span class="string">s""</span><span class="string">"&#123;</span></span><br><span class="line"><span class="string">       |"</span><span class="string">table":&#123;"</span><span class="string">namespace":"</span><span class="string">default", "</span><span class="string">name":"</span>table1<span class="string">"&#125;,</span></span><br><span class="line"><span class="string">       |"</span><span class="string">rowkey":"</span><span class="string">key",</span></span><br><span class="line"><span class="string">       |"</span><span class="string">columns":&#123;</span></span><br><span class="line"><span class="string">         |"</span>col0<span class="string">":&#123;"</span><span class="string">cf":"</span><span class="string">rowkey", "</span><span class="string">col":"</span><span class="string">key", "</span><span class="string">type":"</span><span class="string">string"&#125;,</span></span><br><span class="line"><span class="string">         |"</span>col1<span class="string">":&#123;"</span><span class="string">cf":"</span>cf1<span class="string">", "</span><span class="string">col":"</span>col1<span class="string">", "</span><span class="string">type":"</span><span class="string">boolean"&#125;,</span></span><br><span class="line"><span class="string">         |"</span>col2<span class="string">":&#123;"</span><span class="string">cf":"</span>cf2<span class="string">", "</span><span class="string">col":"</span>col2<span class="string">", "</span><span class="string">type":"</span><span class="string">double"&#125;,</span></span><br><span class="line"><span class="string">         |"</span>col3<span class="string">":&#123;"</span><span class="string">cf":"</span>cf3<span class="string">", "</span><span class="string">col":"</span>col3<span class="string">", "</span><span class="string">type":"</span><span class="string">float"&#125;,</span></span><br><span class="line"><span class="string">         |"</span>col4<span class="string">":&#123;"</span><span class="string">cf":"</span>cf4<span class="string">", "</span><span class="string">col":"</span>col4<span class="string">", "</span><span class="string">type":"</span><span class="string">int"&#125;,</span></span><br><span class="line"><span class="string">         |"</span>col5<span class="string">":&#123;"</span><span class="string">cf":"</span>cf5<span class="string">", "</span><span class="string">col":"</span>col5<span class="string">", "</span><span class="string">type":"</span><span class="string">bigint"&#125;,</span></span><br><span class="line"><span class="string">         |"</span>col6<span class="string">":&#123;"</span><span class="string">cf":"</span>cf6<span class="string">", "</span><span class="string">col":"</span>col6<span class="string">", "</span><span class="string">type":"</span><span class="string">smallint"&#125;,</span></span><br><span class="line"><span class="string">         |"</span>col7<span class="string">":&#123;"</span><span class="string">cf":"</span>cf7<span class="string">", "</span><span class="string">col":"</span>col7<span class="string">", "</span><span class="string">type":"</span><span class="string">string"&#125;,</span></span><br><span class="line"><span class="string">         |"</span>col8<span class="string">":&#123;"</span><span class="string">cf":"</span>cf8<span class="string">", "</span><span class="string">col":"</span>col8<span class="string">", "</span><span class="string">type":"</span><span class="string">tinyint"&#125;</span></span><br><span class="line"><span class="string">       |&#125;</span></span><br><span class="line"><span class="string">     |&#125;"</span><span class="string">""</span>.stripMargin</span><br></pre></td></tr></table></figure></p>
+<p>得到dataframe之后,可以把它注册为Temptable,然后在上面运行sql方法就可以做数据操作…</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/17/Tuning Guide/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/06/使用SparkSQLDataFrame读取HBase表/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HBase-and-Spark"><span class="nav-number">1.</span> <span class="nav-text">HBase and Spark</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#basic-spark"><span class="nav-number">1.0.1.</span> <span class="nav-text">basic spark</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bulk-load"><span class="nav-number">1.0.2.</span> <span class="nav-text">bulk load</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SparkSQL"><span class="nav-number">1.0.3.</span> <span class="nav-text">SparkSQL</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

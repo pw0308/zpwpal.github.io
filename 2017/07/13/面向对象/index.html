@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="面向对象#scala 类定义类12345678910111213141516171819//简单类class A//普通类class A&amp;#123; //包含fileds,methods and inner classes	val name:String=&quot;haha&quot;  def greet:String=println(&quot;xxx&quot;)  override def toString=$name&amp;#12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2017/07/13/面向对象/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="面向对象#scala 类定义类12345678910111213141516171819//简单类class A//普通类class A&amp;#123; //包含fileds,methods and inner classes	val name:String=&quot;haha&quot;  def greet:String=println(&quot;xxx&quot;)  override def toString=$name&amp;#12">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2017/07/13/面向对象/FullSizeRender_500x213.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/07/13/面向对象/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-07-13%2021.02.11_600x269.png">
+<meta property="og:updated_time" content="2017-07-13T13:05:20.054Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="面向对象#scala 类定义类12345678910111213141516171819//简单类class A//普通类class A&amp;#123; //包含fileds,methods and inner classes	val name:String=&quot;haha&quot;  def greet:String=println(&quot;xxx&quot;)  override def toString=$name&amp;#12">
+<meta name="twitter:image" content="http://yoursite.com/2017/07/13/面向对象/FullSizeRender_500x213.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/13/面向对象/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/13/面向对象/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-13T17:39:16+08:00">
+                2017-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h1><p>#scala</p>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><h4 id="定义类"><a href="#定义类" class="headerlink" title="定义类"></a>定义类</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//简单类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">//普通类</span></span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line"> <span class="comment">//包含fileds,methods and inner classes</span></span><br><span class="line">	<span class="keyword">val</span> name:<span class="type">String</span>=<span class="string">"haha"</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">greet</span></span>:<span class="type">String</span>=println(<span class="string">"xxx"</span>)</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">toString=$name</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">//含参数field的类</span>,<span class="title">相当于写了构造函数</span></span></span><br><span class="line"><span class="function"><span class="title">class</span> <span class="title">A</span></span>(<span class="keyword">val</span> name:<span class="type">String</span>=<span class="string">"dft"</span>)&#123;</span><br><span class="line"> <span class="comment">//包含fileds,methods and inner classes</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">greet</span></span>:<span class="type">String</span>=println(<span class="string">"xxx"</span>)</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">toString=$name</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"><span class="title">val</span> <span class="title">s=new</span> <span class="title">A</span></span>(<span class="string">"zpw"</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="apply"><a href="#apply" class="headerlink" title="apply()"></a>apply()</h4><p>名为apply的方法是不需要指定.apply()调用而是直接’实例()’的方式调用的,用以快捷触发功能喽<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//class的apply是给实例用的.</span></span><br><span class="line">scala&gt; <span class="class"><span class="keyword">class</span> <span class="title">mtp</span>(<span class="params">val factor:<span class="type">Int</span></span>)</span>&#123;</span><br><span class="line">     | <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>(input:<span class="type">Int</span>)=input*factor</span><br><span class="line">     | &#125;</span><br><span class="line">defined <span class="class"><span class="keyword">class</span> <span class="title">mtp</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">scala&gt;</span> <span class="title">val</span> <span class="title">obj=new</span> <span class="title">mtp</span>(<span class="params">10</span>)</span></span><br><span class="line"><span class="class"><span class="title">obj</span></span>: mtp = mtp@<span class="number">7</span>c4a7770</span><br><span class="line"></span><br><span class="line">scala&gt; obj(<span class="number">3</span>)<span class="comment">//notice here</span></span><br><span class="line">res6: <span class="type">Int</span> = <span class="number">30</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="lazy-val"><a href="#lazy-val" class="headerlink" title="lazy val"></a>lazy val</h4><p>对val field声明为lazy val,那么这个field将在实例被初次使用的时候初始化.如果要确保时间性能,lazy val很有效果,它可以用来打开数据库连接等等,它只有在却是必要初始化(连接数据库)的时候才花时间去做,很适合用于储存这样的不可变数据.</p>
+<h4 id="访问控制"><a href="#访问控制" class="headerlink" title="访问控制"></a>访问控制</h4><p>默认是没有访问保护的.</p>
+<ul>
+<li>protected:对method and field添加,只有同一个类或子类的代码可以访问</li>
+<li>private:仅本类内能访问</li>
+<li>细粒度控制:private[package],限制只在package包内可以访问..[]还可以应用到class上</li>
+</ul>
+<hr>
+<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><blockquote>
+<p>注意到,class里的field和method都是实例的,如果我们需要static字段/方法呢?比如写一个Util包的时候,这时候我们使用Object.  </p>
+</blockquote>
+<p>Object可以看做singleton class,只有定义的这一个实例不能再实例化.</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">scala&gt; <span class="class"><span class="keyword">object</span> <span class="title">util</span></span>&#123;</span><br><span class="line">		| <span class="keyword">val</span> x:<span class="type">Int</span>=<span class="number">5</span></span><br><span class="line">     | <span class="function"><span class="keyword">def</span> <span class="title">remove</span></span>(input:<span class="type">Int</span>)=&#123;</span><br><span class="line">     | println(input)</span><br><span class="line">     | &#125;</span><br><span class="line">     | &#125;</span><br><span class="line">defined <span class="class"><span class="keyword">object</span> <span class="title">util</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">scala&gt;</span> <span class="title">util</span>.<span class="title">remove</span>(<span class="params">5</span>)</span></span><br><span class="line"><span class="class">5</span></span><br></pre></td></tr></table></figure>
+<h4 id="apply-和伴生对象"><a href="#apply-和伴生对象" class="headerlink" title="apply()和伴生对象"></a>apply()和伴生对象</h4><p>Object的apply方法就不是使用实例来调用了,直接使用Object来调用即可,比如List()语法使用的就是List对象的apply().<br>工厂方法是流行的,可以从伴生对象生成一个类的新实例.伴生对象是和类同名的对象,与类在一个文件里定义.提供伴生对象是常用的scala模式.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">mtp</span>(<span class="params">val x:<span class="type">Int</span></span>)</span>&#123;<span class="function"><span class="keyword">def</span> <span class="title">product</span></span>(y:<span class="type">Int</span>)=x*y&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">mtp</span></span>&#123; <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>(x:<span class="type">Int</span>)=<span class="keyword">new</span> mtp(x) &#125;<span class="comment">//作为工厂,apply工厂方法里写创建逻辑而不是调用mtp的构造函数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> s=mtp(<span class="number">3</span>)<span class="comment">//object mtp的apply</span></span><br><span class="line"></span><br><span class="line">s.product(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//另外,使用伴生对象来存放一些static field比如数据库连接url/user/passwd等都是好的.同名的class里是可以访问它的.</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="Case-Class"><a href="#Case-Class" class="headerlink" title="Case Class"></a>Case Class</h4><p>case类是不可实例化的,包含多个自动生成的方法和一个自动生成的伴生对象,这个伴生对象也有自动生成的方法.case类主要可以用来<strong>储存数据</strong>,因为自动生成的方法是方便进行操作的.<br>case类创建的时候不用new,不需要编写很多样板代码.直接可以使用的几个case类方法如下:<br><img src="/2017/07/13/面向对象/FullSizeRender_500x213.jpg" alt=""><br><img src="/2017/07/13/面向对象/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-07-13%2021.02.11_600x269.png" alt="">注意<strong>只读性</strong><br>unapply方法就是为了支持模式匹配的,实例代码如下<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">scala&gt; <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span>(<span class="params"> a: <span class="type">Int</span> </span>)</span></span><br><span class="line"><span class="class">  <span class="title">defined</span> <span class="title">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">  <span class="title">scala&gt;</span> <span class="title">case</span> <span class="title">class</span> <span class="title">B</span>(<span class="params"> b: <span class="type">String</span> </span>)</span></span><br><span class="line"><span class="class">  <span class="title">defined</span> <span class="title">class</span> <span class="title">B</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">  <span class="title">scala&gt;</span> <span class="title">def</span> <span class="title">classMath</span>(<span class="params"> x: <span class="type">AnyRef</span> </span>)</span>: <span class="type">Unit</span> = &#123;</span><br><span class="line">       |   x <span class="keyword">match</span> &#123;</span><br><span class="line">       |     <span class="keyword">case</span> <span class="type">A</span>(a) =&gt; println( <span class="string">"A:"</span> + a )<span class="comment">//unapply()将实例分解为不同部分,用a作值绑定</span></span><br><span class="line">       |     <span class="keyword">case</span> <span class="type">B</span>(b) =&gt; println( <span class="string">"B:"</span> + b )</span><br><span class="line">       |     <span class="keyword">case</span> <span class="type">A</span> =&gt; println( <span class="type">A</span>.apply(<span class="number">100</span>) )</span><br><span class="line">       |   &#125;</span><br><span class="line">       | &#125;</span><br><span class="line">  classMath: (x: <span class="type">AnyRef</span>)<span class="type">Unit</span></span><br><span class="line"></span><br><span class="line">  scala&gt; <span class="keyword">val</span> a = <span class="type">A</span>( <span class="number">1</span> )</span><br><span class="line">  a: <span class="type">A</span> = <span class="type">A</span>(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">  scala&gt; <span class="keyword">val</span> b = <span class="type">B</span>( <span class="string">"b"</span> )</span><br><span class="line">  b: <span class="type">B</span> = <span class="type">B</span>(b)</span><br><span class="line"></span><br><span class="line">  scala&gt; classMath( a )</span><br><span class="line">  <span class="type">A</span>:<span class="number">1</span></span><br><span class="line"></span><br><span class="line">  scala&gt; classMath( b )</span><br><span class="line">  <span class="type">B</span>:b</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/13/集合/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/19/高并发程序/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#面向对象"><span class="nav-number">1.</span> <span class="nav-text">面向对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#类"><span class="nav-number">1.1.</span> <span class="nav-text">类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义类"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">定义类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#apply"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">apply()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lazy-val"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">lazy val</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#访问控制"><span class="nav-number">1.1.0.4.</span> <span class="nav-text">访问控制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象"><span class="nav-number">1.2.</span> <span class="nav-text">对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#apply-和伴生对象"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">apply()和伴生对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Case-Class"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">Case Class</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

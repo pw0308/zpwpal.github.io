@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Hbase书#推荐引擎 #hbase 管理界面端口:60010 储存模型和增删改查机制一个HRegionServer包含多个HRegion,每个HRegion对应了table中的一个Region(包含key从a~b的一系列row,管理整行),Region又由多个HStore(管理列族)组成,每个HStore对应table中一个列族的储存. HStore包含MemStore,BlockCache和S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2017/07/07/Hbase书/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Hbase书#推荐引擎 #hbase 管理界面端口:60010 储存模型和增删改查机制一个HRegionServer包含多个HRegion,每个HRegion对应了table中的一个Region(包含key从a~b的一系列row,管理整行),Region又由多个HStore(管理列族)组成,每个HStore对应table中一个列族的储存. HStore包含MemStore,BlockCache和S">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2017/07/07/Hbase书/FullSizeRender.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/07/07/Hbase书/FullSizeRender%202_600x450.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/07/07/Hbase书/FullSizeRender%203_600x113.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/07/07/Hbase书/IMG_0903_600x800.JPG">
+<meta property="og:image" content="http://yoursite.com/2017/07/07/Hbase书/IMG_0904_600x800.JPG">
+<meta property="og:image" content="http://yoursite.com/2017/07/07/Hbase书/IMG_0905_600x800.JPG">
+<meta property="og:updated_time" content="2017-07-07T12:23:02.093Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Hbase书#推荐引擎 #hbase 管理界面端口:60010 储存模型和增删改查机制一个HRegionServer包含多个HRegion,每个HRegion对应了table中的一个Region(包含key从a~b的一系列row,管理整行),Region又由多个HStore(管理列族)组成,每个HStore对应table中一个列族的储存. HStore包含MemStore,BlockCache和S">
+<meta name="twitter:image" content="http://yoursite.com/2017/07/07/Hbase书/FullSizeRender.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/07/Hbase书/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/07/Hbase书/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-07T11:10:50+08:00">
+                2017-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Hbase书"><a href="#Hbase书" class="headerlink" title="Hbase书"></a>Hbase书</h1><p>#推荐引擎</p>
+<p>#hbase</p>
+<p>管理界面端口:60010</p>
+<h3 id="储存模型和增删改查机制"><a href="#储存模型和增删改查机制" class="headerlink" title="储存模型和增删改查机制"></a>储存模型和增删改查机制</h3><p>一个HRegionServer包含多个HRegion,每个HRegion对应了table中的一个Region(包含key从a~b的一系列row,管理整行),Region又由多个HStore(管理列族)组成,每个<strong>HStore对应table中一个列族</strong>的储存.</p>
+<p>HStore包含MemStore,BlockCache和StoreFile(Hfile).<br>首先用户写入数据在MemStore中,当大小超过一个threshold1之后形成一个Hfile,然后MemStore重新积累,不断形成Hfile,当Htore中Hfile数量超过threshold2之后,触发compact把多个Hfile合并成一个. 当合并大小又超过threshold3,会触发split把当前Region分裂成两个并分配到新的HRegionServer,以分流压力.</p>
+<p>Hbase都是以字节数组写数据,所以需要’’.toBytes()</p>
+<p>为了避免menstore的数据没有flush到硬盘就丢失了,每一台Hbase服务器维护一个WAL来记录发生的变化,WAL是一个文件.知道WAL新纪录成功写入,写才算完成.当server崩溃,HBASE可以自动回放WAL来恢复</p>
+<p>Delete删除背后,并不马上删除内容而是打上删除标记,当执行一次major compaction的时候,那些标记要删除的才会被删除.合并分为小合并,大合并;小合并把多个小Hfile合并成一个大Hfile,这是为了读一个完整的行的时候能少弄一点Hfile IO.大合并把指定Region内一个列族(Hstore)的所有Hfile.</p>
+<p>对于时间版本,每次对cell操作都会存一个新时间版本,取的时候可以根据参数取出不同的时间版本,默认储存3个版本.</p>
+<h3 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h3><p>Hbase采用四维数据坐标:{rowKey,cf,column,timestamp}确定一个值,看做一个map,key是四维坐标,并且按rowKey字典序排序<br><img src="/2017/07/07/Hbase书/FullSizeRender.jpg" alt=""><br>取数据的时候,你可以只给某前几个维的坐标,它会返回余下的所有部分.</p>
+<p>Hbase设计上没有数据类型,数据记录(可能)包含不一致的列结构,这是<strong>半结构化数据</strong></p>
+<p>逻辑模型上,看做sorted map of maps.从java上可以看做下面,用一个图表示就是:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Rowkey,Map&lt;ColumnFamily,Map&lt;Qualifier,Map&lt;Version,Data&gt;&gt;&gt;&gt;&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2017/07/07/Hbase书/FullSizeRender%202_600x450.jpg" alt=""></p>
+<p>物理模型上,是面向列族的,表按列族分组.每个列族有自己的Hfile集合.Hfile里比如一行数据,储存的结构如下:<br><img src="/2017/07/07/Hbase书/FullSizeRender%203_600x113.jpg" alt=""><br>也就是说,这行数据里每一列的数据在物理上存成一行.这也意味着,读取的时候,物理上只需要按需读取一些列族的数据,这有利于稀疏数据集合的快速读取.</p>
+<h3 id="表扫描"><a href="#表扫描" class="headerlink" title="表扫描"></a>表扫描</h3><p>查找包含某个特定值的唯一方法是:使用扫描命令读出表的某些部分,然后使用过滤器来得到有关记录.当然,你得到的东西也是sorted的.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//放入数据</span></span><br><span class="line">put=<span class="keyword">new</span> Put(<span class="string">"RowKey"</span>);</span><br><span class="line">put.add(Bytes.toByte(cf),Bytes.toByte(user),Bytes.toByte(<span class="string">"pw"</span>))<span class="comment">//这就添加了一列数据到行,user数据</span></span><br><span class="line">put.add(Bytes.toByte(cf),Bytes.toByte(twit),Bytes.toByte(<span class="string">"fuck"</span>))<span class="comment">//这添加了这一行twit列的数据.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//扫描数据</span></span><br><span class="line">Scan s=<span class="keyword">new</span> Scan(StartRow,EndROw)<span class="comment">//Roekey是按字典序排的,所以要设计好Rowkey尽量取出来是你想要的.</span></span><br><span class="line">s.addColumn(<span class="string">"cf"</span>,<span class="string">"qualifier"</span>)<span class="comment">//取出这些row数据的某一列</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//过滤,是在server端过滤,只返回对应结果,而不是返回之后再过滤</span></span><br><span class="line">Filter f=...</span><br><span class="line">s.setFilter(f);</span><br><span class="line"><span class="comment">//比如使用ValueFilter</span></span><br><span class="line">f=<span class="keyword">new</span> ValueFilter(CompareOp.equal,<span class="keyword">new</span> RegexStringComparator(<span class="string">'regex'</span>));</span><br></pre></td></tr></table></figure>
+<p>过滤器可以应用到rowKey,qualifier或者value,所以你就充分地过滤咯..</p>
+<h2 id="HBase与并行计算-以MapRed为例"><a href="#HBase与并行计算-以MapRed为例" class="headerlink" title="HBase与并行计算(以MapRed为例)"></a>HBase与并行计算(以MapRed为例)</h2><ol>
+<li>作为数据源</li>
+<li>接收数据</li>
+</ol>
+<p>使用的是一套Mapred的API.</p>
+<h2 id="HBase表设计"><a href="#HBase表设计" class="headerlink" title="HBase表设计"></a>HBase表设计</h2><p>RowKey上:</p>
+<ol>
+<li>字典序从大到小,比如你想展现出一个排行榜,那么对于这种排序需求你需要定义好RowKey让其取出来就有序</li>
+<li>保证散列,使得数据不至于都在一个Region上以降低查询负载.比如储存视频网站的观影记录,RowKey设计为userid+videoId,这样的话,查一个User的时候就可能造成负载很大.可以:<ul>
+<li>反转User_id</li>
+<li>散列USer_id</li>
+</ul>
+</li>
+<li>RowKey尽量短,提高效率,时间尽量用Long表示,尽量使用编码压缩.</li>
+</ol>
+<p>列族设计,列组要尽量少一点.看几个实例吧.<br><img src="/2017/07/07/Hbase书/IMG_0903_600x800.JPG" alt=""><br><img src="/2017/07/07/Hbase书/IMG_0904_600x800.JPG" alt=""><br><img src="/2017/07/07/Hbase书/IMG_0905_600x800.JPG" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/06/使用SparkSQLDataFrame读取HBase表/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/07/Hive整合HBase/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hbase书"><span class="nav-number">1.</span> <span class="nav-text">Hbase书</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#储存模型和增删改查机制"><span class="nav-number">1.0.1.</span> <span class="nav-text">储存模型和增删改查机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据模型"><span class="nav-number">1.0.2.</span> <span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表扫描"><span class="nav-number">1.0.3.</span> <span class="nav-text">表扫描</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase与并行计算-以MapRed为例"><span class="nav-number">1.1.</span> <span class="nav-text">HBase与并行计算(以MapRed为例)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase表设计"><span class="nav-number">1.2.</span> <span class="nav-text">HBase表设计</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

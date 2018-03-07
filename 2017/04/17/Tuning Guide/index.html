@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Tuning Guide#spark #推荐引擎 Spark中的cache:cache和persist都是用于将一个RDD进行缓存的，这样在之后使用的过程中就不需要重新计算了，可以大大节省程序运行时间,而cache和persist的区别是：cache只有一个默认的缓存级别MEMORY_ONLY ，而persist可以根据情况设置其它的缓存级别。123456class StorageLevel pr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2017/04/17/Tuning Guide/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="Tuning Guide#spark #推荐引擎 Spark中的cache:cache和persist都是用于将一个RDD进行缓存的，这样在之后使用的过程中就不需要重新计算了，可以大大节省程序运行时间,而cache和persist的区别是：cache只有一个默认的缓存级别MEMORY_ONLY ，而persist可以根据情况设置其它的缓存级别。123456class StorageLevel pr">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2017/04/17/Tuning%20Guide/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-08%2009.52.05_800x503.png">
+<meta property="og:updated_time" content="2017-12-08T01:54:53.977Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="Tuning Guide#spark #推荐引擎 Spark中的cache:cache和persist都是用于将一个RDD进行缓存的，这样在之后使用的过程中就不需要重新计算了，可以大大节省程序运行时间,而cache和persist的区别是：cache只有一个默认的缓存级别MEMORY_ONLY ，而persist可以根据情况设置其它的缓存级别。123456class StorageLevel pr">
+<meta name="twitter:image" content="http://yoursite.com/2017/04/17/Tuning%20Guide/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-08%2009.52.05_800x503.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/17/Tuning Guide/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/17/Tuning Guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-17T16:36:04+08:00">
+                2017-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Tuning-Guide"><a href="#Tuning-Guide" class="headerlink" title="Tuning Guide"></a>Tuning Guide</h1><p>#spark</p>
+<p>#推荐引擎</p>
+<p>Spark中的cache:<br>cache和persist都是用于将一个RDD进行缓存的，这样在之后使用的过程中就不需要重新计算了，可以大大节省程序运行时间,而cache和persist的区别是：cache只有一个默认的缓存级别MEMORY_ONLY ，而persist可以根据情况设置其它的缓存级别。<br><img src="/2017/04/17/Tuning Guide/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-08%2009.52.05_800x503.png" alt=""><br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StorageLevel</span> <span class="title">private</span>(<span class="params"></span></span></span><br><span class="line"><span class="class"><span class="params">    private var _useDisk: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    private var _useMemory: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    private var _useOffHeap: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    private var _deserialized: <span class="type">Boolean</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">    private var _replication: <span class="type">Int</span> = 1</span>)</span></span><br></pre></td></tr></table></figure></p>
+<p>怎么做根据名字还是好分辨的,每种level的构造参数都不同,_2代表复制保存两份.每个参数具体的意思在上面:</p>
+<ul>
+<li>useDisk：使用硬盘（外存）</li>
+<li>useMemory：使用内存</li>
+<li>useOffHeap：使用堆外内存，这是Java虚拟机里面的概念，堆外内存意味着把内存对象分配在Java虚拟机的堆以外的内存，这些内存直接受操作系统管理（而不是虚拟机）。这样做的结果就是能保持一个较小的堆，以减少垃圾收集对应用的影响。</li>
+<li>deserialized：反序列化，其逆过程序列化（Serialization）是java提供的一种机制，将对象表示成一连串的字节；而反序列化就表示将字节恢复为对象的过程。序列化是对象永久化的一种机制，可以将对象及其属性保存起来，并能在反序列化后直接恢复这个对象</li>
+<li>replication：备份数（在多个节点上备份）</li>
+</ul>
+<p>Most often, if the data fits in memory, <strong>the bottleneck is network bandwidth</strong>, but sometimes, you also need to do some tuning, such as storing RDDs in serialized form, to decrease memory usage. This guide will cover two main topics: </p>
+<ol>
+<li>data serialization, 既能加速网络性能又能减少内存使用;</li>
+<li>memory tuning.</li>
+</ol>
+<p>对于同一个Application，它在一个worker上只能拥有一个executor</p>
+<h3 id="Data-Serialization"><a href="#Data-Serialization" class="headerlink" title="Data Serialization"></a>Data Serialization</h3><p>有两个序列化库可以使用</p>
+<ul>
+<li>Java serialization: <strong>By default</strong>, Spark serializes objects using Java’s ObjectOutputStream framework, 只要实现的类实现了 java.io.Serializable即可. You can also control the performance of your serialization more closely by extending java.io.Externalizable.这个库很灵活,但速度不很快,and leads to large serialized formats for many classes.</li>
+<li>Kryo serialization: Spark can also use the Kryo library (version 2) to serialize objects <strong>more quickly</strong>. Kryo is significantly faster and more compact than Java serialization,但不支持所有Serializable类型,并且需要提前注册你在程序中使用的类.</li>
+</ul>
+<p>你可以使用Kryo库,只需要calling conf.set(“spark.serializer”, “org.apache.spark.serializer.KryoSerializer”). This setting configures the serializer used for not only <strong>shuffling data between worker nodes</strong> but also when <strong>serializing RDDs to disk</strong>. 在任何网络密集型场景下,我们推荐这么使用.</p>
+<p>To register your own custom classes with Kryo, use the registerKryoClasses method.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val conf = <span class="keyword">new</span> SparkConf().setMaster(...).setAppName(...)</span><br><span class="line">conf.registerKryoClasses(Array(classOf[MyClass1], classOf[MyClass2]))</span><br><span class="line">val sc = <span class="keyword">new</span> SparkContext(conf)</span><br></pre></td></tr></table></figure></p>
+<p>If your objects are large, you may also need to increase the spark.kryoserializer.buffer ,这个值要大到能装下你要序列化的最大的对象.</p>
+<p>Finally, if you don’t register your custom classes, Kryo will still work, 但是效率就没那么高了.</p>
+<h3 id="Memory-Tuning"><a href="#Memory-Tuning" class="headerlink" title="Memory Tuning"></a>Memory Tuning</h3><p>内存优化有三个方面的考虑 : 对象所占用的内存，访问对象的消耗以及垃圾回收所占用的开销.默认情况下，Java 对象存取速度快，但可以很消耗空间,比内部 “raw” 数据的字段的消耗的 2-5 倍以及更多空间,主要的原因还是<strong>储存了额外信息或者编码导致的</strong>,这是语言决定了的,没办法去提升它.</p>
+<h4 id="Memory-Management-Overview"><a href="#Memory-Management-Overview" class="headerlink" title="Memory Management Overview"></a>Memory Management Overview</h4><p>execution and storage. <strong>Execution memory</strong> refers to that used for computation in shuffles, joins, sorts and aggregations. <strong>storage memory</strong> refers to that used for caching (RDDs) and propagating internal data across the cluster.</p>
+<p>In Spark, execution and storage 分享共同的内存区域 (M). When no execution memory is used, storage can acquire all the available memory.  Execution may evict storage if necessary, 但是Storage至少也需要R区域的内存,这就是threshold了. In other words, R describes a subregion within M where cached blocks are never evicted. Storage无法侵占Execution的内存,因为实现复杂.</p>
+<p>我们可以看出几点</p>
+<ul>
+<li>没有使用chching的应用,所有内存都能用来Execution,避免不必要的<strong>磁盘溢出??</strong></li>
+<li>使用了cache的应用,Storage有最小配额</li>
+<li>这种方式提供了较好的性能,也不用问用户到底怎么分配内存.</li>
+</ul>
+<p>有两个参数可调,但是对大多数情况,他们不需要被调整.</p>
+<ul>
+<li>spark.memory.fraction: M大小占JVM堆内存大小的百分比. The rest of the space (40%) is reserved for user data structures, internal metadata in Spark, and safeguarding against OOM errors in the case of sparse and unusually large records.</li>
+<li>spark.memory.storageFraction: R占M的比例</li>
+</ul>
+<h4 id="估计Memory-Consumption"><a href="#估计Memory-Consumption" class="headerlink" title="估计Memory Consumption"></a>估计Memory Consumption</h4><p>你可以把数据集装入一个rdd里,然后把它cache,然后在Web UI可以看见这个RDD消耗了多少内存.</p>
+<p>或者,To estimate the memory consumption of a particular object, use <strong>SizeEstimator’s estimate</strong> method This is useful for experimenting with different data layouts to trim memory usage, 对于确定一个广播变量需要在每个executtor堆上所需的内存也是实用的.</p>
+<h4 id="Tuning-Data-Structures"><a href="#Tuning-Data-Structures" class="headerlink" title="Tuning Data Structures"></a>Tuning Data Structures</h4><ol>
+<li>尽可能避免嵌套数据结构,那将包含很多小的对象和指针</li>
+<li>RAM&lt;32g时,可开启-XX:+UseCompressedOops,让指针是4B而不是8B</li>
+<li>对主键,采用数字ID或者枚举类型以替代String类型.</li>
+<li>使用自己设计,或者比如fastutil类库来取代原始JAVA集合类</li>
+</ol>
+<h4 id="Serialized-RDD-Storage"><a href="#Serialized-RDD-Storage" class="headerlink" title="Serialized RDD Storage"></a>Serialized RDD Storage</h4><p>最简单的方式是以序列化形式储存rdd, , using the serialized StorageLevels in the RDD persistence API, such as <em>MEMORY_ONLY_SER</em>. Spark will then store each RDD partition as one large byte array. 唯一的缺陷就是access会慢一点因为需要反序列化,推荐使用Kryo来做.</p>
+<h4 id="GC-Tuning"><a href="#GC-Tuning" class="headerlink" title="GC Tuning"></a>GC Tuning</h4><p>要记住,gc的开销与对象的数量是成正比的, so using data structures with fewer objects (e.g. an array of Ints instead of a LinkedList) greatly lowers this cost. 一个更好的方法是cache序列化的rdd,那么一个rdd就只会有一个对象:那就是序列化后的字符数组了.下面我们讨论如何控制为 RDD 分配空间以便减轻这种影响。</p>
+<p>开启了参数-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps,下一次发生gc以及持续的时间都会在worker的log下打印,注意不是在driver下.</p>
+<p>The Young generation is further divided into three regions [Eden, Survivor1, Survivor2]</p>
+<p>gc的简要描述是:A simplified description of the garbage collection procedure: When Eden is full, a minor GC is run on Eden and objects that are alive from Eden and Survivor1 are copied to Survivor2. The Survivor regions are swapped. If an object is old enough or Survivor2 is full, it is moved to Old. Finally when Old is close to full, a full GC is invoked</p>
+<p>我们的目的是确保只有长期存在的rdd在老年代内,并且年轻代足够放下那些短命rdd,这能尽可能减少full gc.</p>
+<ul>
+<li>首先检查,如果在task完成前,full gc出现多次,就该优化了.</li>
+<li>如果有很多小集合,但没很多minor gc,那么可是尝试设置Eden大一些,You can set the size of the Eden to be an over-estimate of how much memory each task will need. If the size of Eden is determined to be E, then you can set the size of the Young generation using the option -Xmn=4/3*E.</li>
+<li>如果gc完老年代也快满尝试调低,spark.memory.fraction,宁愿少缓存一点数据,也不要降低task速度;老年代占heap的大小也应该超过spark.memory.fraction(这样可以使老年大足够大装下spark数据,减少gc).</li>
+<li>甚至可以Try the G1GC garbage collector with -XX:+UseG1GC. It can improve performance in some situations where garbage collection is a bottleneck</li>
+<li>如果task从HDFS读取数据,task使用的内存跟HDFS中读取的数据block大小有关.注意到,解压后的块儿大小可能有3个原本block那么大,.所以如果我们希望有4个任务的工作空间，HDFS块的大小是128 MB，我们可以估计Eden的大小是4 <em> 3 </em> 128MB。</li>
+</ul>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ol>
+<li>并行级别: Spark automatically sets the number of “map” tasks to run on each file <strong>according to its size</strong>; for distributed “reduce” operations, such as groupByKey and reduceByKey, it uses the largest parent RDD’s number of partitions. 可以在spark.default.parallelism参数中设置,一般推荐每个CPU两到三个task.</li>
+<li>Reduce的内存使用:Sometimes, you will get an OutOfMemoryError not because your RDDs don’t fit in memory(Storage), but because the working set of one of your tasks, such as one of the reduce tasks in groupByKey, was too large(Execution). Spark’s shuffle operations (sortByKey, groupByKey, reduceByKey, join, etc) <strong>build a hash table within each task</strong> to perform the grouping, which can often be large. The simplest fix here is to <strong>increase the level of parallelism</strong>, so that each task’s input set is smaller</li>
+<li>广播变量:减少task的大小和在cluster中启动job的开销. If your tasks use any large object from the driver program inside of them (e.g. a static lookup table), consider turning it into a broadcast variable. Spark会在master上打印每个task的序列化后大小, so you can look at that to decide whether your tasks are too large,一般来讲,超过20K的task就值得去优化了.</li>
+<li>数据本地性:这对性能还算是个主要的影响因素,If data and the code that operates on it are together then computation tends to be fast. But if code and data are separated, one must move to the other. 一般来讲移动代码当然比移动数据集要快,现在有几种级别<ul>
+<li>PROCESS_LOCAL:数据在运行代码的相同JVM中,这是最好的</li>
+<li>NODE_LOCAL : data is on the same node. 比如在相同node上的HDFS中,或者另一个Executor中,This is a little slower than PROCESS_LOCAL because the data has to travel between processes</li>
+<li>NO_PREF data is <strong>accessed equally quickly</strong> from anywhere and has no locality preference??</li>
+<li>RACK_LOCAL data在同rack的server上. Data is on a different server on the same rack so needs to be sent over the network, typically through a single switch</li>
+<li>ANY : data不在同rack上<br>Spark 倾向于把任务都调度在best locality level,但不可能吧也;所以,当任何<strong>空闲Executor</strong>上都没有要处理的data,就要降低本地性级别.那么要么等待一个空闲的CPU在数据所在节点上来做.或者在别的地方开启task,这样数据需要运输.实际上,spark会等一会儿,超时之后,就放到把数据往别的空闲cpu上弄了. The <strong>wait timeout</strong> for fallback between each level can be configured individually or all together in one parameter; see the spark.locality parameters.</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/17/hadoop中NameNode、DataNode、Secondary NameNode、JobTracker TaskTracker介绍/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/06/HBase and Spark/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Tuning-Guide"><span class="nav-number">1.</span> <span class="nav-text">Tuning Guide</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Serialization"><span class="nav-number">1.0.1.</span> <span class="nav-text">Data Serialization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Memory-Tuning"><span class="nav-number">1.0.2.</span> <span class="nav-text">Memory Tuning</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Memory-Management-Overview"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">Memory Management Overview</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#估计Memory-Consumption"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">估计Memory Consumption</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tuning-Data-Structures"><span class="nav-number">1.0.2.3.</span> <span class="nav-text">Tuning Data Structures</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Serialized-RDD-Storage"><span class="nav-number">1.0.2.4.</span> <span class="nav-text">Serialized RDD Storage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GC-Tuning"><span class="nav-number">1.0.2.5.</span> <span class="nav-text">GC Tuning</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他"><span class="nav-number">1.0.2.6.</span> <span class="nav-text">其他</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

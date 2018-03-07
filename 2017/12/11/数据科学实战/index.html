@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="数据科学实战#推荐引擎/知识  CS 数学 统计学 Machine Learning.  推荐引擎 当不使用行为而使用某些profile对用户建模的时候,特征变量的选择变得很重要.可能对有些商品,有些场景,年龄特征不重要,有时候又至关重要,所以要根据研究对象的不同给不同的变量赋予不同的权重,确定权重可以看看变量之间的协方差矩阵 使用KNN要防止过拟合,比如取k=1,那么唯一的邻居可能有很多噪声信息">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PW&#39;s notes">
+<meta property="og:url" content="http://yoursite.com/2017/12/11/数据科学实战/index.html">
+<meta property="og:site_name" content="PW&#39;s notes">
+<meta property="og:description" content="数据科学实战#推荐引擎/知识  CS 数学 统计学 Machine Learning.  推荐引擎 当不使用行为而使用某些profile对用户建模的时候,特征变量的选择变得很重要.可能对有些商品,有些场景,年龄特征不重要,有时候又至关重要,所以要根据研究对象的不同给不同的变量赋予不同的权重,确定权重可以看看变量之间的协方差矩阵 使用KNN要防止过拟合,比如取k=1,那么唯一的邻居可能有很多噪声信息">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.40.51.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.41.21.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.50.17.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.51.37.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.52.50.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.53.17.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.15.02.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-12%2015.06.45.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.34.44.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.45.00.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.48.33.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2022.32.04.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.50.58.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2016.02.04.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.51.19.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.52.57.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2016.36.44.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2016.40.16.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2016.50.56.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/38BB27D3-ED71-4AC3-8E13-C98C6BC440CE.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/BA8F2A56-E376-4876-929B-448A30095614.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/BA8F2A56-E376-4876-929B-448A30095614.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/11/数据科学实战/FE73306C-3C27-479E-A67D-1F55E0EA9913.png">
+<meta property="og:updated_time" content="2018-02-02T09:13:27.666Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PW&#39;s notes">
+<meta name="twitter:description" content="数据科学实战#推荐引擎/知识  CS 数学 统计学 Machine Learning.  推荐引擎 当不使用行为而使用某些profile对用户建模的时候,特征变量的选择变得很重要.可能对有些商品,有些场景,年龄特征不重要,有时候又至关重要,所以要根据研究对象的不同给不同的变量赋予不同的权重,确定权重可以看看变量之间的协方差矩阵 使用KNN要防止过拟合,比如取k=1,那么唯一的邻居可能有很多噪声信息">
+<meta name="twitter:image" content="http://yoursite.com/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.40.51.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/11/数据科学实战/"/>
+
+
+
+
+
+  <title> | PW's notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">PW's notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/11/数据科学实战/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PW">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PW's notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T10:48:18+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="数据科学实战"><a href="#数据科学实战" class="headerlink" title="数据科学实战"></a>数据科学实战</h1><p>#推荐引擎/知识</p>
+<ol>
+<li>CS</li>
+<li>数学</li>
+<li>统计学</li>
+<li>Machine Learning.</li>
+</ol>
+<h3 id="推荐引擎"><a href="#推荐引擎" class="headerlink" title="推荐引擎"></a>推荐引擎</h3><ul>
+<li>当不使用行为而使用某些profile对用户建模的时候,特征变量的选择变得很重要.可能对有些商品,有些场景,年龄特征不重要,有时候又至关重要,所以要根据研究对象的不同<strong>给不同的变量赋予不同的权重</strong>,确定权重可以看看变量之间的<strong>协方差矩阵</strong></li>
+<li>使用KNN要防止过拟合,比如取k=1,那么唯一的邻居可能有很多噪声信息.</li>
+<li>根据实践,采用精简的模型,比如年龄大的人通常性格比较保守,所以两个特征就拿一个就好,不然某项信息会过度使用,带来欠佳的模型表现.</li>
+<li>兴趣的<strong>时变!</strong>我觉得这个很重要…..</li>
+</ul>
+<p>使用<strong>线性回归</strong>分类的思想是:<br>首先把问题定义为预测用户是否喜欢一个物品,每个物品都会有一个预测模型;假设每个用户都有三种属性变量,f1i,f2i,f3i.,预测用户i对每个商品的喜好可以使用</p>
+<blockquote>
+<p>pi=β1f1i+β2f2i+β3f3i+e.<br>这样的好处是它是天生的权重模型,解决了变量需要采用不同权重的问题.<br>坏处是,它预测的是单个商品,于是有多少商品就有多少个p模型,而且他没有考虑商品之间的相关关系,丢掉了太多信息.而且容易产生<strong>过拟合</strong>特别是当该商品行为数据不足的时候(参数β值过大).<br>为了解决过拟合,可以设定贝叶斯先验信息的方式强制所有参数估计值落在一定范围内,惩罚过大的参数值.这是思想,惩罚大参数的具体做法是<a href="http://mathbabe.org/2013/02/24/theoverburdened-prior/" target="_blank" rel="noopener">paper</a>.它会需要一个惩罚参数λ,这个参数可以通过模型交叉验证的方法,不停地训练和验证看效果,直到找到一个比较合理的值.</p>
+</blockquote>
+<h3 id="三大基本算法"><a href="#三大基本算法" class="headerlink" title="三大基本算法"></a>三大基本算法</h3><p>这三个算法涵盖了预测,分类,聚类.</p>
+<h5 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h5><p>想要预测两个变量之间的(线性)数学关系就可以使用线性回归.由于只要函数是连续的,函数是可以被一些局部线性函数拟合的,所以<strong>局部线性关系</strong>假设在大多数情况都是合理的.</p>
+<blockquote>
+<p>模型对于数据来说,需要捕捉的两方面,<strong>趋势</strong>,和<strong>变动幅度(variation)</strong>  </p>
+</blockquote>
+<p>把模型表示为<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.40.51.png" alt="">两个参数就是截距和斜率.<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.41.21.png" alt=""><br>基本的线性回归自然使用最小二乘法最小化<strong>离差和平方</strong>.∑(真实值yi-预测值βxi)^2</p>
+<p>当我们得到了模型,我们又有多大程度能信这个模型给出的结果呢?需要<strong>confidence</strong>.<br>首先我们可以把模型改进为<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.50.17.png" alt=""><br>e代表真实值与预测值的偏差,我们一般可以假设e服从正态分布N(0,o^2).于是在给定x的条件下y的真实值是一个条件概率:<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.51.37.png" alt=""><br>如何估计e?其实你得到模型了以后,在测试集上就能测出一些个e来,即y-yi.那么e=<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.52.50.png" alt=""><br>于是o^2的<strong>无偏估计量</strong>为:<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2014.53.17.png" alt=""><br>这个,也就叫<strong>均方误差MSE.</strong>,就是一种<strong>cost function损失函数</strong>.<br>关于<strong>置信度验证</strong>,可以用R^2,p值,但是只记一个交叉验证.分测试集和验证集,得到验证集上MSE误差最小的就是好的.</p>
+<p>另外,即使画出图,也可以发现y和某些feature不是线性关系,比如你就觉得他是个二次关系,那么你就可以变化,以x^2作为z来当做新的变量.这时,依然可以是用线性回归拟合模型</p>
+<blockquote>
+<p>y=β0+β1x+β2(x^2)….  </p>
+</blockquote>
+<h5 id="KNN"><a href="#KNN" class="headerlink" title="KNN"></a>KNN</h5><p>这很简单,只要把新样本去跟旧样本计算距离,取k个邻居,看看k个邻居的标签,次数更多的标签值就是新样本的分类.k的选择通过交叉验证探究探究…<br>明显,这个模型不需要任何参数,对数据的分布也没有任何假设,但是还是有一些隐含的假设:</p>
+<ol>
+<li>在数据的特征空间中可以定义某种意义的“距离”。</li>
+<li>有监督</li>
+<li>我们选择和观测的<strong>特征变量</strong>对于预测因变量的标签值有所帮助，</li>
+</ol>
+<h5 id="Kmeans"><a href="#Kmeans" class="headerlink" title="Kmeans"></a>Kmeans</h5><p>这玩意儿关键是你得自己选择k(分类数).简单复习一下,是下面四步</p>
+<ol>
+<li>选择k个中心点来初始化,让中心点尽量靠近数据点,各个中心点之间要明显不同.</li>
+<li>数据划分到最近的中心点</li>
+<li>重新计算中心点.(mean最小)</li>
+<li>重复,直至中心点不太变化.<blockquote>
+<p>这是第(3)步的计算公式<img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.15.02.png" alt="">,即质心向量每个维度上的取值是所有该分类点在每个维度上取值的均值.  </p>
+</blockquote>
+</li>
+</ol>
+<h3 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h3><p>首先介绍一下应用背景:用户会点击网页,最终形成一个行为矩阵,行是用户,列是网站.这同样是一个稀疏矩阵,就当做特征矩阵吧.而任务是分析<strong>广告</strong>是否会被点击,任务是<strong>某个用户点击我广告的概率</strong>比如下面的数据<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-12%2015.06.45.png" alt=""><br>用户2点击过url2,url3,这是特征,label是他点击了该广告,于是是1.<br>另外一个是看网上的CTR应用,特征数据其实是物品本身的特征加上其现有的点击率作为label来训练,到来了一个新的物品,根据其特征来<strong>预测这个物品的综合点击率</strong>,不过这种做法对推荐系统个性化需求是没啥意义的…<br>在推荐系统中,我们也可以根据稀疏的行为矩阵来做,每个物品建立预测模型..预测用户会不会点击物品.但是行为得选适合的行为来表示用户这个行为的确代表对物品感兴趣.</p>
+<blockquote>
+<p>随机梯度下降法每次只关注一个数据点,每次迭代至下一个数据点都会根据所得到的信息更新参数估计值,知道穷尽所有数据点.适合于应用于大数据和稀疏特征矩阵的场景.缺点是有时候优化效果一般且依赖于步长λ的设定.  </p>
+</blockquote>
+<p>其有两个大优点</p>
+<ul>
+<li>作为线性模型,训练时间比KNN这样的快</li>
+<li>可解释性<br>  其与线性回归最大的不同的是预测值在(0,1)之间(就像朴素贝叶斯),可以作为概率来使用,而线性回归给的是(-∞,+∞)之间的一个值.<br>  为什么会这样?因为数据的特征矩阵被一个函数巧妙地转换到了严格位于[0,1]之间的数值.这样一个函数当然定义域为R,值域为[0,1].这个函数就是<strong>sigmoid</strong>了.其导数还就是<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.34.44.png" alt=""></li>
+</ul>
+<p><strong>正式地说明</strong>,从线性回归开始,假设我们认为数据集对应的输出标记是在指数尺度上变化,于是也可以变换y,得到:<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.45.00.png" alt="">    ….(1)<br>这个叫<strong>对数线性回归</strong>,推广到一般情况,用g()对y做变换,即g^-1对自变量做变换,得到广义线性模型<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.48.33.png" alt=""></p>
+<p>考虑二分类任务,样本们的label要么是0要么是1,所以我们想要变换能把线性回归的结果z转换为0,1值,于是需要一个g()变换,而我们可以采用采用阶跃函数,但是阶跃函数又不好,于是就用sigmoid,而这样的话预测值就落在(0,1)之内,这正好还可以看作概率….<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2022.32.04.png" alt=""><br>其实不管是用哪个函数 在变换前线性回归的层面上都是正例回归出的值(z)大于0,负例回归出的值小于0 通过训练就可以达到这种效果<br>我们看做<strong>y是代表正例概率,然后正例概率大就认为是正例咯</strong>…于是就可以使用sigmoid函数转化.将其作为g^-1代入,可以得到:<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.50.58.png" alt="">,y可以按任务特性表示为<img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2016.02.04.png" alt=""><br>也就是:<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.51.19.png" alt=""><br>由于y代表的是概率,不妨把y视为x为正例的概率,那么1-y就是反例可能性.于是我们拟合的是两者比值的对数.称为<strong>对数几率</strong>,也就是z.<br>z=<img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2015.52.57.png" alt=""><br>所以,这个式子在用线性模型的结果z取逼近真实标记的<strong>对数几率</strong>.</p>
+<p>另一个特别的地方在于求解,这个式子无解析解,得使用数值计算方法.思路是通过<strong>极大似然函数建立模型</strong>,然后转换到负对数似然函数(凸函数),然后通过SGD方法来最小化极大似然函数.进而求解w,b….具体看书吧😎….</p>
+<p>(一个关键的问题是有多少物品你就得建立多少个模型取预测….)</p>
+<p><strong>其建立的线性关系是样本和正例概率的对数几率间的线性关系…而自变量和概率y的关系是一种非线性关系了…看(1)式的那段话就知道如何计算到底是怎样的关系了</strong></p>
+<h3 id="垃圾邮件过滤与朴素贝叶斯model"><a href="#垃圾邮件过滤与朴素贝叶斯model" class="headerlink" title="垃圾邮件过滤与朴素贝叶斯model"></a>垃圾邮件过滤与朴素贝叶斯model</h3><p>Why not linear regreesion?</p>
+<ul>
+<li>首先,这是个分类任务,线性回归不好做,阈值也不好取</li>
+<li>难以打标签</li>
+<li>特征个数比样本还多,这让线性回归模型实在是不好做.</li>
+</ul>
+<p>Why not KNN?</p>
+<ul>
+<li>最主要的问题是维度太多,最近的邻居也隔得很远.</li>
+<li>计算量问题</li>
+</ul>
+<p>首先是基于个别单词的过滤:<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2016.36.44.png" alt=""><br>右边各个都很好通过有标签数据统计出来,整个公式也不要再多讲了.</p>
+<p>然后是基于特征向量:<br>首先要<strong>假设特征向量的各个维度是独立</strong>的,于是可以把贝叶斯公式中的p(多个word|spam)分解开来,得到:<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2016.40.16.png" alt=""><br>对于P(xi|c)你看他是离散的还是连续的,使用概率质量或者概率密度即可<br>分类的时候哪个分类概率最大你就拿哪个就好了.</p>
+<p>拉普拉斯平滑:拉普拉斯修正避免了因训练集样本不充分而导致概率估值为零的问题.思想很简单,直接上图了:<br><img src="/2017/12/11/数据科学实战/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-11%2016.50.56.png" alt=""></p>
+<h3 id="逻辑回归新解"><a href="#逻辑回归新解" class="headerlink" title="逻辑回归新解"></a>逻辑回归新解</h3><p>先从线性回归看,我们使用线性回归模型去预测了一个z,z的值在(-∞,+∞).而我们需要做<strong>二分类</strong>,所以需要把预测值z映射到y=(0,1)之间,而y正好可以代表为正例的概率.</p>
+<p>sigmoid函数正是在z和y之间做这么个转换…由于:<br><img src="/2017/12/11/数据科学实战/38BB27D3-ED71-4AC3-8E13-C98C6BC440CE.png" alt=""><br>于是<br>z=<img src="/2017/12/11/数据科学实战/BA8F2A56-E376-4876-929B-448A30095614.png" alt="">,所以数学上我们线性模型预测的z也就是<strong>对数几率”</strong><br>所以我们的线性回归模型是在预测<img src="/2017/12/11/数据科学实战/BA8F2A56-E376-4876-929B-448A30095614.png" alt="">,我们只要让最后程序的输出是y不是z就好…<br>所以在逻辑回归时,我们要拟合出下式<br><img src="/2017/12/11/数据科学实战/FE73306C-3C27-479E-A67D-1F55E0EA9913.png" alt=""><br>解出的y就是概率了…使用最大似然法来解…</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/06/冷启动问题/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/25/内部类/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">PW</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据科学实战"><span class="nav-number">1.</span> <span class="nav-text">数据科学实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#推荐引擎"><span class="nav-number">1.0.1.</span> <span class="nav-text">推荐引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三大基本算法"><span class="nav-number">1.0.2.</span> <span class="nav-text">三大基本算法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#线性回归"><span class="nav-number">1.0.2.0.1.</span> <span class="nav-text">线性回归</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#KNN"><span class="nav-number">1.0.2.0.2.</span> <span class="nav-text">KNN</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Kmeans"><span class="nav-number">1.0.2.0.3.</span> <span class="nav-text">Kmeans</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑回归"><span class="nav-number">1.0.3.</span> <span class="nav-text">逻辑回归</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾邮件过滤与朴素贝叶斯model"><span class="nav-number">1.0.4.</span> <span class="nav-text">垃圾邮件过滤与朴素贝叶斯model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑回归新解"><span class="nav-number">1.0.5.</span> <span class="nav-text">逻辑回归新解</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PW</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
